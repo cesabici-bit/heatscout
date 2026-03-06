@@ -1,0 +1,67 @@
+{
+  "name": "Complesso industriale multi-stream",
+  "description": "Fabbrica complessa con 6 stream di scarto a diverse temperature. Test stress del tool.",
+  "T_ambient": 25,
+  "streams": [
+    {
+      "name": "Fumi forno principale",
+      "fluid_type": "fumi_gas_naturale",
+      "T_in": 450,
+      "T_out": 200,
+      "mass_flow": 2.5,
+      "hours_per_day": 20,
+      "days_per_year": 300,
+      "stream_type": "hot_waste"
+    },
+    {
+      "name": "Fumi caldaia secondaria",
+      "fluid_type": "fumi_gas_naturale",
+      "T_in": 250,
+      "T_out": 130,
+      "mass_flow": 1.0,
+      "hours_per_day": 18,
+      "days_per_year": 300,
+      "stream_type": "hot_waste"
+    },
+    {
+      "name": "Aria compressa aftercooler",
+      "fluid_type": "aria",
+      "T_in": 120,
+      "T_out": 40,
+      "mass_flow": 0.3,
+      "hours_per_day": 20,
+      "days_per_year": 300,
+      "stream_type": "hot_waste"
+    },
+    {
+      "name": "Acqua raffreddamento processo",
+      "fluid_type": "acqua",
+      "T_in": 65,
+      "T_out": 35,
+      "mass_flow": 3.0,
+      "hours_per_day": 20,
+      "days_per_year": 300,
+      "stream_type": "hot_waste"
+    },
+    {
+      "name": "Olio diatermico bypass",
+      "fluid_type": "olio_diatermico",
+      "T_in": 200,
+      "T_out": 120,
+      "mass_flow": 0.5,
+      "hours_per_day": 18,
+      "days_per_year": 300,
+      "stream_type": "hot_waste"
+    },
+    {
+      "name": "Acqua lavaggio tiepida",
+      "fluid_type": "acqua",
+      "T_in": 45,
+      "T_out": 25,
+      "mass_flow": 2.0,
+      "hours_per_day": 12,
+      "days_per_year": 300,
+      "stream_type": "hot_waste"
+    }
+  ]
+}

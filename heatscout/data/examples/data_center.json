@@ -1,0 +1,18 @@
+{
+  "name": "Data Center — raffreddamento server",
+  "description": "Data center con sistema di raffreddamento ad acqua. Grande portata, bassa temperatura.",
+  "T_ambient": 25,
+  "streams": [
+    {
+      "name": "Acqua raffreddamento server",
+      "fluid_type": "acqua",
+      "T_in": 40,
+      "T_out": 28,
+      "mass_flow": 15.0,
+      "hours_per_day": 24,
+      "days_per_year": 365,
+      "stream_type": "hot_waste",
+      "notes": "Grande portata di acqua tiepida dal raffreddamento dei rack server. T bassa ma portata molto elevata."
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "name": "Cartiera — carta tissue",
+  "description": "Produzione carta tissue con essiccazione a vapore e caldaia a gas.",
+  "T_ambient": 25,
+  "streams": [
+    {
+      "name": "Vapore essiccazione",
+      "fluid_type": "fumi_gas_naturale",
+      "T_in": 150,
+      "T_out": 90,
+      "mass_flow": 1.5,
+      "hours_per_day": 22,
+      "days_per_year": 340,
+      "stream_type": "hot_waste",
+      "notes": "Vapore esausto dalla cappa di essiccazione, approssimato come gas"
+    },
+    {
+      "name": "Acqua di processo",
+      "fluid_type": "acqua",
+      "T_in": 60,
+      "T_out": 35,
+      "mass_flow": 5.0,
+      "hours_per_day": 22,
+      "days_per_year": 340,
+      "stream_type": "hot_waste",
+      "notes": "Acqua calda dall'impianto di preparazione impasto"
+    },
+    {
+      "name": "Fumi caldaia",
+      "fluid_type": "fumi_gas_naturale",
+      "T_in": 200,
+      "T_out": 120,
+      "mass_flow": 1.0,
+      "hours_per_day": 22,
+      "days_per_year": 340,
+      "stream_type": "hot_waste",
+      "notes": "Fumi camino caldaia principale"
+    }
+  ]
+}

@@ -370,3 +370,32 @@ if st.button("🔍 Analizza", type="primary", use_container_width=True):
                 f"**Rientro migliore in {best.payback_years:.1f} anni** — "
                 f"**Risparmio netto a 10 anni: € {total_npv:,.0f}**"
             )
+
+            # ══════════════════════════════════════════════════════════════
+            # SEZIONE: Report PDF
+            # ══════════════════════════════════════════════════════════════
+            st.header("📄 Report PDF")
+
+            from heatscout.report.pdf_generator import generate_report
+            from heatscout.report.executive_summary import generate_executive_summary
+
+            # Mostra anteprima executive summary
+            exec_text = generate_executive_summary(summary, all_econ_results, energy_price)
+            with st.expander("Anteprima Executive Summary", expanded=False):
+                st.text(exec_text)
+
+            # Genera e scarica PDF
+            try:
+                fig_sankey = create_sankey(hb, factory_name)
+                pdf_bytes = generate_report(
+                    summary, all_econ_results, fig_sankey, energy_price=energy_price
+                )
+                st.download_button(
+                    label="📥 Scarica Report PDF",
+                    data=pdf_bytes,
+                    file_name=f"HeatScout_Report_{factory_name.replace(' ', '_')}.pdf",
+                    mime="application/pdf",
+                    use_container_width=True,
+                )
+            except Exception as ex:
+                st.error(f"Errore nella generazione del PDF: {ex}")

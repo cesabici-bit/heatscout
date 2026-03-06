@@ -1,0 +1,40 @@
+{
+  "name": "Impianto chimico — intermedi organici",
+  "description": "Produzione intermedi chimici con reattori, colonne di distillazione e inceneritore.",
+  "T_ambient": 25,
+  "streams": [
+    {
+      "name": "Vapore reazione",
+      "fluid_type": "fumi_gas_naturale",
+      "T_in": 180,
+      "T_out": 100,
+      "mass_flow": 0.8,
+      "hours_per_day": 20,
+      "days_per_year": 330,
+      "stream_type": "hot_waste",
+      "notes": "Vapore esausto dai reattori, approssimato come gas"
+    },
+    {
+      "name": "Acqua cooling tower",
+      "fluid_type": "acqua",
+      "T_in": 40,
+      "T_out": 25,
+      "mass_flow": 10.0,
+      "hours_per_day": 24,
+      "days_per_year": 330,
+      "stream_type": "hot_waste",
+      "notes": "Grande portata di acqua di raffreddamento dalla torre evaporativa"
+    },
+    {
+      "name": "Fumi inceneritore",
+      "fluid_type": "fumi_gas_naturale",
+      "T_in": 600,
+      "T_out": 200,
+      "mass_flow": 1.5,
+      "hours_per_day": 20,
+      "days_per_year": 330,
+      "stream_type": "hot_waste",
+      "notes": "Fumi dall'inceneritore termico dei solventi esausti"
+    }
+  ]
+}

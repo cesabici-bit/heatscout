@@ -1,0 +1,29 @@
+{
+  "name": "Vetreria — vetro cavo",
+  "description": "Produzione vetro cavo con forno fusione e aria di raffreddamento.",
+  "T_ambient": 25,
+  "streams": [
+    {
+      "name": "Fumi forno fusione vetro",
+      "fluid_type": "fumi_gas_naturale",
+      "T_in": 500,
+      "T_out": 200,
+      "mass_flow": 3.0,
+      "hours_per_day": 24,
+      "days_per_year": 350,
+      "stream_type": "hot_waste",
+      "notes": "Fumi dalla rigenerazione del forno fusione, funzionamento continuo. T forno ~1500°C."
+    },
+    {
+      "name": "Aria raffreddamento stampi",
+      "fluid_type": "aria",
+      "T_in": 300,
+      "T_out": 120,
+      "mass_flow": 2.0,
+      "hours_per_day": 24,
+      "days_per_year": 350,
+      "stream_type": "hot_waste",
+      "notes": "Aria calda dalla sezione di formatura e raffreddamento"
+    }
+  ]
+}

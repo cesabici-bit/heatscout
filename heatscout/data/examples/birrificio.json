@@ -1,0 +1,29 @@
+{
+  "name": "Birrificio artigianale",
+  "description": "Birrificio con sala cottura e fermentazione refrigerata.",
+  "T_ambient": 25,
+  "streams": [
+    {
+      "name": "Acqua bollitura mosto",
+      "fluid_type": "acqua",
+      "T_in": 100,
+      "T_out": 60,
+      "mass_flow": 0.3,
+      "hours_per_day": 8,
+      "days_per_year": 250,
+      "stream_type": "hot_waste",
+      "notes": "Acqua calda dal raffreddamento del mosto dopo bollitura"
+    },
+    {
+      "name": "Acqua raffreddamento fermentazione",
+      "fluid_type": "acqua",
+      "T_in": 35,
+      "T_out": 20,
+      "mass_flow": 0.5,
+      "hours_per_day": 24,
+      "days_per_year": 300,
+      "stream_type": "hot_waste",
+      "notes": "Acqua dal circuito di raffreddamento dei fermentatori"
+    }
+  ]
+}
