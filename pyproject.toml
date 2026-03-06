@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "heatscout"
+version = "0.1.0"
+description = "Analisi recupero calore industriale — from waste heat to savings"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "HeatScout Team"},
+]
+keywords = ["heat recovery", "energy efficiency", "industrial", "sankey", "thermal analysis"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "CoolProp>=6.4",
+    "plotly>=5.18",
+    "streamlit>=1.30",
+    "numpy>=1.24",
+    "numpy-financial>=1.0",
+    "reportlab>=4.0",
+    "kaleido>=0.2",
+    "pandas>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
