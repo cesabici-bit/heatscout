@@ -1,0 +1,94 @@
+{
+  "fluids": [
+    {
+      "id": "aria",
+      "name": "Aria",
+      "coolprop_name": "Air",
+      "type": "gas",
+      "T_min": -40,
+      "T_max": 800,
+      "notes": "Aria secca a pressione atmosferica"
+    },
+    {
+      "id": "acqua",
+      "name": "Acqua",
+      "coolprop_name": "Water",
+      "type": "liquid",
+      "T_min": 1,
+      "T_max": 350,
+      "notes": "Acqua liquida. Per T > 100°C assume pressione sufficiente a mantenere fase liquida."
+    },
+    {
+      "id": "vapore",
+      "name": "Vapore d'acqua",
+      "coolprop_name": "Water",
+      "type": "gas",
+      "T_min": 100,
+      "T_max": 500,
+      "notes": "Vapore surriscaldato. CoolProp gestisce automaticamente le fasi."
+    },
+    {
+      "id": "olio_diatermico",
+      "name": "Olio diatermico",
+      "coolprop_name": null,
+      "type": "liquid",
+      "T_min": 20,
+      "T_max": 350,
+      "notes": "Cp medio ~2.0 kJ/kgK. Correlazione custom: cp = 1.68 + 0.00164*T [kJ/kgK]"
+    },
+    {
+      "id": "fumi_gas_naturale",
+      "name": "Fumi di combustione (gas naturale)",
+      "coolprop_name": null,
+      "type": "gas",
+      "T_min": 50,
+      "T_max": 1200,
+      "notes": "Composizione tipica: 71% N2, 15% CO2, 12% H2O, 2% O2. Cp(T) custom."
+    },
+    {
+      "id": "fumi_gasolio",
+      "name": "Fumi di combustione (gasolio)",
+      "coolprop_name": null,
+      "type": "gas",
+      "T_min": 50,
+      "T_max": 1200,
+      "notes": "Composizione tipica: 73% N2, 13% CO2, 10% H2O, 4% O2. Cp(T) custom."
+    },
+    {
+      "id": "glicole_etilenico_30",
+      "name": "Glicole etilenico 30%",
+      "coolprop_name": null,
+      "type": "liquid",
+      "T_min": -15,
+      "T_max": 110,
+      "notes": "Miscela acqua-glicole etilenico 30% vol. Cp medio ~3.6 kJ/kgK."
+    },
+    {
+      "id": "co2",
+      "name": "CO2",
+      "coolprop_name": "CarbonDioxide",
+      "type": "gas",
+      "T_min": -40,
+      "T_max": 500,
+      "notes": "Anidride carbonica gassosa"
+    },
+    {
+      "id": "azoto",
+      "name": "Azoto",
+      "coolprop_name": "Nitrogen",
+      "type": "gas",
+      "T_min": -40,
+      "T_max": 800,
+      "notes": "Azoto gassoso"
+    },
+    {
+      "id": "metano",
+      "name": "Metano",
+      "coolprop_name": "Methane",
+      "type": "gas",
+      "T_min": -160,
+      "T_max": 300,
+      "notes": "Gas naturale approssimato come metano puro"
+    }
+  ]
+}

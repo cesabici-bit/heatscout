@@ -1,0 +1,40 @@
+{
+  "name": "Fonderia di ghisa",
+  "description": "Fonderia con forno a induzione, raffreddamento ad acqua e dispersioni termiche.",
+  "T_ambient": 25,
+  "streams": [
+    {
+      "name": "Fumi forno fusione",
+      "fluid_type": "fumi_gas_naturale",
+      "T_in": 500,
+      "T_out": 200,
+      "mass_flow": 1.5,
+      "hours_per_day": 16,
+      "days_per_year": 250,
+      "stream_type": "hot_waste",
+      "notes": "Fumi dal forno fusione a cubilotto, T variabile 400-600°C"
+    },
+    {
+      "name": "Acqua raffreddamento",
+      "fluid_type": "acqua",
+      "T_in": 60,
+      "T_out": 35,
+      "mass_flow": 3.0,
+      "hours_per_day": 16,
+      "days_per_year": 250,
+      "stream_type": "hot_waste",
+      "notes": "Circuito raffreddamento forni e stampi"
+    },
+    {
+      "name": "Irraggiamento forni e siviere",
+      "fluid_type": "aria",
+      "T_in": 200,
+      "T_out": 80,
+      "mass_flow": 0.8,
+      "hours_per_day": 16,
+      "days_per_year": 250,
+      "stream_type": "hot_waste",
+      "notes": "Aria calda da ventilazione forzata attorno ai forni"
+    }
+  ]
+}

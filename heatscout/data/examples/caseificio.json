@@ -1,0 +1,40 @@
+{
+  "name": "Caseificio medio",
+  "description": "Caseificio con linea pastorizzazione, produzione vapore, lavaggi CIP.",
+  "T_ambient": 25,
+  "streams": [
+    {
+      "name": "Vapore flash",
+      "fluid_type": "fumi_gas_naturale",
+      "T_in": 120,
+      "T_out": 80,
+      "mass_flow": 0.3,
+      "hours_per_day": 12,
+      "days_per_year": 300,
+      "stream_type": "hot_waste",
+      "notes": "Vapore flash dalla condensazione, approssimato come gas caldo"
+    },
+    {
+      "name": "Acqua da pastorizzazione",
+      "fluid_type": "acqua",
+      "T_in": 72,
+      "T_out": 40,
+      "mass_flow": 1.2,
+      "hours_per_day": 10,
+      "days_per_year": 300,
+      "stream_type": "hot_waste",
+      "notes": "Acqua calda uscente da scambiatore pastorizzazione"
+    },
+    {
+      "name": "Acqua lavaggio CIP",
+      "fluid_type": "acqua",
+      "T_in": 45,
+      "T_out": 25,
+      "mass_flow": 0.8,
+      "hours_per_day": 4,
+      "days_per_year": 300,
+      "stream_type": "hot_waste",
+      "notes": "Acqua da lavaggio CIP (Cleaning in Place)"
+    }
+  ]
+}

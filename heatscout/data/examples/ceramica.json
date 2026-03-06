@@ -1,0 +1,40 @@
+{
+  "name": "Ceramica — piastrelle",
+  "description": "Produzione piastrelle con forno tunnel, essiccatoio a rulli.",
+  "T_ambient": 25,
+  "streams": [
+    {
+      "name": "Fumi forno cottura",
+      "fluid_type": "fumi_gas_naturale",
+      "T_in": 400,
+      "T_out": 180,
+      "mass_flow": 2.0,
+      "hours_per_day": 24,
+      "days_per_year": 330,
+      "stream_type": "hot_waste",
+      "notes": "Fumi dal forno tunnel di cottura, funzionamento continuo"
+    },
+    {
+      "name": "Aria raffreddamento rapido",
+      "fluid_type": "aria",
+      "T_in": 250,
+      "T_out": 120,
+      "mass_flow": 1.5,
+      "hours_per_day": 24,
+      "days_per_year": 330,
+      "stream_type": "hot_waste",
+      "notes": "Aria dalla sezione di raffreddamento rapido del forno"
+    },
+    {
+      "name": "Fumi essiccatoio",
+      "fluid_type": "fumi_gas_naturale",
+      "T_in": 150,
+      "T_out": 80,
+      "mass_flow": 3.0,
+      "hours_per_day": 24,
+      "days_per_year": 330,
+      "stream_type": "hot_waste",
+      "notes": "Fumi umidi dall'essiccatoio a rulli"
+    }
+  ]
+}

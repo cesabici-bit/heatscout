@@ -1,0 +1,77 @@
+{
+  "_note": "Correlazioni di costo CAPEX: C = a × Q^b [EUR], Q in kW. Range: fattori min/max su 'a'. Fonti documentate per ogni tecnologia.",
+  "costs": {
+    "recuperatore_gas_gas": {
+      "capex_a": 800,
+      "capex_b": 0.80,
+      "capex_a_min": 500,
+      "capex_a_max": 1200,
+      "opex_pct": 0.03,
+      "installation_factor": 1.5,
+      "source": "Thekdi & Belt, 'Waste Heat Recovery', ACEEE (2011) + vendor quotes"
+    },
+    "economizzatore_gas_liquido": {
+      "capex_a": 600,
+      "capex_b": 0.78,
+      "capex_a_min": 400,
+      "capex_a_max": 900,
+      "opex_pct": 0.03,
+      "installation_factor": 1.5,
+      "source": "Boiler economizer pricing, Cleaver-Brooks + literature"
+    },
+    "scambiatore_liquido_liquido": {
+      "capex_a": 400,
+      "capex_b": 0.75,
+      "capex_a_min": 250,
+      "capex_a_max": 600,
+      "opex_pct": 0.02,
+      "installation_factor": 1.3,
+      "source": "Alfa Laval plate HE pricing + Perry's Handbook Table 11-13"
+    },
+    "caldaia_recupero": {
+      "capex_a": 1500,
+      "capex_b": 0.80,
+      "capex_a_min": 1000,
+      "capex_a_max": 2000,
+      "opex_pct": 0.04,
+      "installation_factor": 1.8,
+      "source": "HRSG vendor quotes, Ganapathy 'Waste Heat Boiler Deskbook' (2003)"
+    },
+    "pompa_calore_aria_acqua": {
+      "capex_a": 600,
+      "capex_b": 0.85,
+      "capex_a_min": 450,
+      "capex_a_max": 800,
+      "opex_pct": 0.03,
+      "installation_factor": 1.4,
+      "source": "Industrial heat pump market survey, IEA HPT Annex 48"
+    },
+    "pompa_calore_acqua_acqua": {
+      "capex_a": 550,
+      "capex_b": 0.85,
+      "capex_a_min": 400,
+      "capex_a_max": 750,
+      "opex_pct": 0.03,
+      "installation_factor": 1.4,
+      "source": "Industrial heat pump market survey, IEA HPT Annex 48"
+    },
+    "orc": {
+      "capex_a": 3000,
+      "capex_b": 0.75,
+      "capex_a_min": 2200,
+      "capex_a_max": 4000,
+      "opex_pct": 0.05,
+      "installation_factor": 1.6,
+      "source": "Quoilin et al. (2013), Turboden ORC modules pricing"
+    },
+    "preriscaldamento_aria": {
+      "capex_a": 300,
+      "capex_b": 0.80,
+      "capex_a_min": 200,
+      "capex_a_max": 450,
+      "opex_pct": 0.02,
+      "installation_factor": 1.4,
+      "source": "Combustion air preheater sizing, Baukal (2004)"
+    }
+  }
+}
