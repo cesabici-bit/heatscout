@@ -203,199 +203,225 @@ if st.button("🔍 Analizza", type="primary", use_container_width=True):
             hb.add_stream(stream)
         except ValueError as e:
             errors.append(f"Stream {i+1} ({data['name']}): {e}")
+        except Exception as e:
+            # CoolProp o altri errori di calcolo proprietà fluido
+            error_msg = str(e)
+            if "CoolProp" in type(e).__module__ if hasattr(type(e), '__module__') else False:
+                errors.append(f"Stream {i+1} ({data['name']}): Errore calcolo proprietà fluido: {error_msg}")
+            elif "fluid" in error_msg.lower() or "coolprop" in error_msg.lower() or "property" in error_msg.lower():
+                errors.append(f"Stream {i+1} ({data['name']}): Errore calcolo proprietà fluido: {error_msg}")
+            else:
+                errors.append(f"Stream {i+1} ({data['name']}): {error_msg}")
 
     if errors:
         for err in errors:
             st.error(err)
+    elif not hb.streams:
+        st.error("Aggiungi almeno uno stream prima di analizzare.")
+    elif all(s.stream_type == StreamType.COLD_DEMAND for s in hb.streams):
+        st.error("Serve almeno uno stream di tipo **🔴 Calore di scarto** (HOT_WASTE) per l'analisi di recupero calore.")
     else:
-        # Input energetico
-        if energy_input_mode == "Inserisci manualmente" and manual_consumption:
-            hb.set_energy_input("gas_naturale", manual_consumption, manual_unit)
-        else:
-            hb.estimate_energy_input(efficiency=0.85)
+        try:
+            # Input energetico
+            if energy_input_mode == "Inserisci manualmente" and manual_consumption:
+                hb.set_energy_input("gas_naturale", manual_consumption, manual_unit)
+            else:
+                hb.estimate_energy_input(efficiency=0.85)
 
-        # Calcola risultati
-        summary = hb.summary()
-        st.session_state.last_summary = summary
-        st.session_state.last_hb = hb
+            # Calcola risultati
+            summary = hb.summary()
+            st.session_state.last_summary = summary
+            st.session_state.last_hb = hb
 
-        st.success(f"Analisi completata per {summary['n_streams']} stream")
+            st.success(f"Analisi completata per {summary['n_streams']} stream")
 
-        # ── Metriche in evidenza ─────────────────────────────────────────
-        st.header("📈 Risultati Analisi")
+            # ── Metriche in evidenza ─────────────────────────────────────
+            st.header("📈 Risultati Analisi")
 
-        m1, m2, m3, m4 = st.columns(4)
-        m1.metric("Potenza scarto totale", f"{summary['total_waste_kW']:,.1f} kW")
-        m2.metric("Energia scarto annua", f"{summary['total_waste_MWh_anno']:,.1f} MWh/a")
-        m3.metric("Exergia totale scarto", f"{summary['total_waste_exergy_kW']:,.1f} kW")
-        m4.metric(
-            "Costo annuo scarto",
-            f"€ {summary['total_waste_MWh_anno'] * 1000 * energy_price:,.0f}"
-        )
+            m1, m2, m3, m4 = st.columns(4)
+            m1.metric("Potenza scarto totale", f"{summary['total_waste_kW']:,.1f} kW")
+            m2.metric("Energia scarto annua", f"{summary['total_waste_MWh_anno']:,.1f} MWh/a")
+            m3.metric("Exergia totale scarto", f"{summary['total_waste_exergy_kW']:,.1f} kW")
+            m4.metric(
+                "Costo annuo scarto",
+                f"€ {summary['total_waste_MWh_anno'] * 1000 * energy_price:,.0f}"
+            )
 
-        # ── Diagramma Sankey ─────────────────────────────────────────────
-        st.header("🔄 Diagramma Sankey — Bilancio Energetico")
-        fig_sankey = create_sankey(hb, factory_name)
-        st.plotly_chart(fig_sankey, use_container_width=True)
+            # ── Diagramma Sankey ─────────────────────────────────────────
+            st.header("🔄 Diagramma Sankey — Bilancio Energetico")
+            fig_sankey = create_sankey(hb, factory_name)
+            st.plotly_chart(fig_sankey, use_container_width=True)
 
-        # ── Tabella risultati per stream ─────────────────────────────────
-        st.subheader("Dettaglio per stream")
+            # ── Tabella risultati per stream ─────────────────────────────
+            st.subheader("Dettaglio per stream")
 
-        rows = []
-        for r in summary["stream_results"]:
-            rows.append({
-                "Nome": r["name"],
-                "Tipo": "🔴 Scarto" if r["stream_type"] == "hot_waste" else "🔵 Domanda",
-                "Fluido": r["fluid_type"],
-                "T_in (°C)": r["T_in"],
-                "T_out (°C)": r["T_out"],
-                "Q (kW)": r["Q_kW"],
-                "E (MWh/a)": r["E_MWh_anno"],
-                "Exergia (kW)": r["Ex_kW"],
-                "Classe T": r["T_class"].capitalize(),
-                "Qualità": f"{r['quality_ratio']:.1%}",
-            })
+            rows = []
+            for r in summary["stream_results"]:
+                rows.append({
+                    "Nome": r["name"],
+                    "Tipo": "🔴 Scarto" if r["stream_type"] == "hot_waste" else "🔵 Domanda",
+                    "Fluido": r["fluid_type"],
+                    "T_in (°C)": r["T_in"],
+                    "T_out (°C)": r["T_out"],
+                    "Q (kW)": r["Q_kW"],
+                    "E (MWh/a)": r["E_MWh_anno"],
+                    "Exergia (kW)": r["Ex_kW"],
+                    "Classe T": r["T_class"].capitalize(),
+                    "Qualità": f"{r['quality_ratio']:.1%}",
+                })
 
-        df = pd.DataFrame(rows)
-        st.dataframe(df, use_container_width=True, hide_index=True)
+            df = pd.DataFrame(rows)
+            st.dataframe(df, use_container_width=True, hide_index=True)
 
-        # ── Breakdown per classe temperatura ─────────────────────────────
-        st.subheader("Breakdown per classe di temperatura")
-        by_class = summary["by_temperature_class"]
+            # ── Breakdown per classe temperatura ─────────────────────────
+            st.subheader("Breakdown per classe di temperatura")
+            by_class = summary["by_temperature_class"]
 
-        tc1, tc2, tc3 = st.columns(3)
-        for col, (cls, label, color) in zip(
-            [tc1, tc2, tc3],
-            [("alta", "Alta (>250°C)", "🔴"), ("media", "Media (80-250°C)", "🟠"), ("bassa", "Bassa (<80°C)", "🟡")]
-        ):
-            cls_data = by_class[cls]
-            col.markdown(f"### {color} {label}")
-            col.markdown(f"**{cls_data['count']}** stream — **{cls_data['Q_kW']:,.1f} kW** ({cls_data['pct_of_waste']:.1f}%)")
+            tc1, tc2, tc3 = st.columns(3)
+            for col, (cls, label, color) in zip(
+                [tc1, tc2, tc3],
+                [("alta", "Alta (>250°C)", "🔴"), ("media", "Media (80-250°C)", "🟠"), ("bassa", "Bassa (<80°C)", "🟡")]
+            ):
+                cls_data = by_class[cls]
+                col.markdown(f"### {color} {label}")
+                col.markdown(f"**{cls_data['count']}** stream — **{cls_data['Q_kW']:,.1f} kW** ({cls_data['pct_of_waste']:.1f}%)")
 
-        # ── Messaggio impatto ────────────────────────────────────────────
-        st.divider()
-        waste_pct = summary.get("waste_pct_of_input")
-        waste_pct_str = f" ({waste_pct:.0f}% dell'input)" if waste_pct else ""
-        st.markdown(
-            f"### 💡 Stai sprecando **{summary['total_waste_kW']:,.1f} kW** di calore{waste_pct_str}, "
-            f"pari a **{summary['total_waste_MWh_anno']:,.1f} MWh/anno**, "
-            f"che costano circa **€ {summary['total_waste_MWh_anno'] * 1000 * energy_price:,.0f}/anno**."
-        )
-
-        # ══════════════════════════════════════════════════════════════════
-        # SEZIONE: Tecnologie Raccomandate
-        # ══════════════════════════════════════════════════════════════════
-        st.header("🔧 Tecnologie Raccomandate")
-
-        from heatscout.core.technology_selector import select_technologies
-        from heatscout.core.economics import economic_analysis
-        from heatscout.plotting.comparison_chart import (
-            capex_comparison_chart,
-            payback_comparison_chart,
-            npv_comparison_chart,
-            cumulative_cashflow_chart,
-            do_nothing_comparison,
-        )
-
-        all_econ_results = []
-
-        for stream in hb.streams:
-            if stream.stream_type != StreamType.HOT_WASTE:
-                continue
-
-            recs = select_technologies(stream, energy_price_EUR_kWh=energy_price)
-            if not recs:
-                st.info(f"**{stream.name}**: nessuna tecnologia compatibile trovata")
-                continue
-
-            with st.expander(f"🔥 {stream.name} — {len(recs)} tecnologie", expanded=True):
-                tech_rows = []
-                for rec in recs:
-                    econ = economic_analysis(rec, energy_price_EUR_kWh=energy_price,
-                                            discount_rate=0.05, years=10)
-                    all_econ_results.append(econ)
-                    eff_str = f"COP {rec.efficiency:.1f}" if rec.is_heat_pump else f"{rec.efficiency:.0%}"
-                    tech_rows.append({
-                        "Tecnologia": rec.technology.name,
-                        "Q recup. (kW)": rec.Q_recovered_kW,
-                        "E recup. (MWh/a)": rec.E_recovered_MWh,
-                        "Efficienza": eff_str,
-                        "CAPEX (€)": f"{econ.capex_EUR:,.0f}",
-                        "Risparmio/a (€)": f"{econ.annual_savings_EUR:,.0f}",
-                        "Payback (anni)": f"{econ.payback_years:.1f}" if econ.payback_years < 50 else ">50",
-                        "NPV 10a (€)": f"{econ.npv_EUR:,.0f}",
-                    })
-
-                st.dataframe(pd.DataFrame(tech_rows), use_container_width=True, hide_index=True)
-
-        # ══════════════════════════════════════════════════════════════════
-        # SEZIONE: Analisi Economica
-        # ══════════════════════════════════════════════════════════════════
-        if all_econ_results:
-            st.header("💰 Analisi Economica")
-
-            # Metriche riassuntive
-            best = min(all_econ_results, key=lambda e: e.payback_years)
-            total_capex = sum(e.total_investment_EUR for e in all_econ_results)
-            total_savings = sum(e.annual_savings_EUR for e in all_econ_results)
-            total_npv = sum(e.npv_EUR for e in all_econ_results)
-
-            e1, e2, e3 = st.columns(3)
-            e1.metric("Investimento totale", f"€ {total_capex:,.0f}")
-            e2.metric("Risparmio annuo totale", f"€ {total_savings:,.0f}")
-            e3.metric("Payback migliore", f"{best.payback_years:.1f} anni",
-                      delta=best.tech_recommendation.technology.name)
-
-            # Grafici confronto
-            gc1, gc2 = st.columns(2)
-            with gc1:
-                st.plotly_chart(payback_comparison_chart(all_econ_results), use_container_width=True)
-            with gc2:
-                st.plotly_chart(npv_comparison_chart(all_econ_results), use_container_width=True)
-
-            gc3, gc4 = st.columns(2)
-            with gc3:
-                st.plotly_chart(capex_comparison_chart(all_econ_results), use_container_width=True)
-            with gc4:
-                st.plotly_chart(do_nothing_comparison(all_econ_results), use_container_width=True)
-
-            # Cashflow cumulativo del miglior progetto
-            st.subheader("Cashflow cumulativo — progetto migliore")
-            st.plotly_chart(cumulative_cashflow_chart(best), use_container_width=True)
-
-            # Tabella riassuntiva finale
-            st.subheader("Riepilogo investimenti")
+            # ── Messaggio impatto ────────────────────────────────────────
+            st.divider()
+            waste_pct = summary.get("waste_pct_of_input")
+            waste_pct_str = f" ({waste_pct:.0f}% dell'input)" if waste_pct else ""
             st.markdown(
-                f"**Investimento totale: € {total_capex:,.0f}** — "
-                f"**Rientro migliore in {best.payback_years:.1f} anni** — "
-                f"**Risparmio netto a 10 anni: € {total_npv:,.0f}**"
+                f"### 💡 Stai sprecando **{summary['total_waste_kW']:,.1f} kW** di calore{waste_pct_str}, "
+                f"pari a **{summary['total_waste_MWh_anno']:,.1f} MWh/anno**, "
+                f"che costano circa **€ {summary['total_waste_MWh_anno'] * 1000 * energy_price:,.0f}/anno**."
             )
 
             # ══════════════════════════════════════════════════════════════
-            # SEZIONE: Report PDF
+            # SEZIONE: Tecnologie Raccomandate
             # ══════════════════════════════════════════════════════════════
-            st.header("📄 Report PDF")
+            st.header("🔧 Tecnologie Raccomandate")
 
-            from heatscout.report.pdf_generator import generate_report
-            from heatscout.report.executive_summary import generate_executive_summary
+            from heatscout.core.technology_selector import select_technologies
+            from heatscout.core.economics import economic_analysis
+            from heatscout.plotting.comparison_chart import (
+                capex_comparison_chart,
+                payback_comparison_chart,
+                npv_comparison_chart,
+                cumulative_cashflow_chart,
+                do_nothing_comparison,
+            )
 
-            # Mostra anteprima executive summary
-            exec_text = generate_executive_summary(summary, all_econ_results, energy_price)
-            with st.expander("Anteprima Executive Summary", expanded=False):
-                st.text(exec_text)
+            all_econ_results = []
 
-            # Genera e scarica PDF
-            try:
-                fig_sankey = create_sankey(hb, factory_name)
-                pdf_bytes = generate_report(
-                    summary, all_econ_results, fig_sankey, energy_price=energy_price
+            for stream in hb.streams:
+                if stream.stream_type != StreamType.HOT_WASTE:
+                    continue
+
+                recs = select_technologies(stream, energy_price_EUR_kWh=energy_price)
+                if not recs:
+                    st.info(f"**{stream.name}**: nessuna tecnologia compatibile trovata")
+                    continue
+
+                with st.expander(f"🔥 {stream.name} — {len(recs)} tecnologie", expanded=True):
+                    tech_rows = []
+                    for rec in recs:
+                        econ = economic_analysis(rec, energy_price_EUR_kWh=energy_price,
+                                                discount_rate=0.05, years=10)
+                        all_econ_results.append(econ)
+                        eff_str = f"COP {rec.efficiency:.1f}" if rec.is_heat_pump else f"{rec.efficiency:.0%}"
+                        tech_rows.append({
+                            "Tecnologia": rec.technology.name,
+                            "Q recup. (kW)": rec.Q_recovered_kW,
+                            "E recup. (MWh/a)": rec.E_recovered_MWh,
+                            "Efficienza": eff_str,
+                            "CAPEX (€)": f"{econ.capex_EUR:,.0f}",
+                            "Risparmio/a (€)": f"{econ.annual_savings_EUR:,.0f}",
+                            "Payback (anni)": f"{econ.payback_years:.1f}" if econ.payback_years < 50 else ">50",
+                            "NPV 10a (€)": f"{econ.npv_EUR:,.0f}",
+                        })
+
+                    st.dataframe(pd.DataFrame(tech_rows), use_container_width=True, hide_index=True)
+
+            # ══════════════════════════════════════════════════════════════
+            # SEZIONE: Analisi Economica
+            # ══════════════════════════════════════════════════════════════
+            if all_econ_results:
+                st.header("💰 Analisi Economica")
+
+                # Metriche riassuntive
+                best = min(all_econ_results, key=lambda e: e.payback_years)
+                total_capex = sum(e.total_investment_EUR for e in all_econ_results)
+                total_savings = sum(e.annual_savings_EUR for e in all_econ_results)
+                total_npv = sum(e.npv_EUR for e in all_econ_results)
+
+                e1, e2, e3 = st.columns(3)
+                e1.metric("Investimento totale", f"€ {total_capex:,.0f}")
+                e2.metric("Risparmio annuo totale", f"€ {total_savings:,.0f}")
+                e3.metric("Payback migliore", f"{best.payback_years:.1f} anni",
+                          delta=best.tech_recommendation.technology.name)
+
+                # Grafici confronto
+                gc1, gc2 = st.columns(2)
+                with gc1:
+                    st.plotly_chart(payback_comparison_chart(all_econ_results), use_container_width=True)
+                with gc2:
+                    st.plotly_chart(npv_comparison_chart(all_econ_results), use_container_width=True)
+
+                gc3, gc4 = st.columns(2)
+                with gc3:
+                    st.plotly_chart(capex_comparison_chart(all_econ_results), use_container_width=True)
+                with gc4:
+                    st.plotly_chart(do_nothing_comparison(all_econ_results), use_container_width=True)
+
+                # Cashflow cumulativo del miglior progetto
+                st.subheader("Cashflow cumulativo — progetto migliore")
+                st.plotly_chart(cumulative_cashflow_chart(best), use_container_width=True)
+
+                # Tabella riassuntiva finale
+                st.subheader("Riepilogo investimenti")
+                st.markdown(
+                    f"**Investimento totale: € {total_capex:,.0f}** — "
+                    f"**Rientro migliore in {best.payback_years:.1f} anni** — "
+                    f"**Risparmio netto a 10 anni: € {total_npv:,.0f}**"
                 )
-                st.download_button(
-                    label="📥 Scarica Report PDF",
-                    data=pdf_bytes,
-                    file_name=f"HeatScout_Report_{factory_name.replace(' ', '_')}.pdf",
-                    mime="application/pdf",
-                    use_container_width=True,
-                )
-            except Exception as ex:
-                st.error(f"Errore nella generazione del PDF: {ex}")
+
+                # ══════════════════════════════════════════════════════════
+                # SEZIONE: Report PDF
+                # ══════════════════════════════════════════════════════════
+                st.header("📄 Report PDF")
+
+                from heatscout.report.pdf_generator import generate_report
+                from heatscout.report.executive_summary import generate_executive_summary
+
+                # Mostra anteprima executive summary
+                exec_text = generate_executive_summary(summary, all_econ_results, energy_price)
+                with st.expander("Anteprima Executive Summary", expanded=False):
+                    st.text(exec_text)
+
+                # Genera e scarica PDF
+                try:
+                    fig_sankey = create_sankey(hb, factory_name)
+                    pdf_bytes = generate_report(
+                        summary, all_econ_results, fig_sankey, energy_price=energy_price
+                    )
+                    st.download_button(
+                        label="📥 Scarica Report PDF",
+                        data=pdf_bytes,
+                        file_name=f"HeatScout_Report_{factory_name.replace(' ', '_')}.pdf",
+                        mime="application/pdf",
+                        use_container_width=True,
+                    )
+                except Exception:
+                    st.error(
+                        "Errore nella generazione del report PDF. "
+                        "Puoi comunque consultare i risultati nella pagina sopra."
+                    )
+
+        except Exception:
+            import traceback
+            traceback.print_exc()  # Log in console per debug
+            st.error(
+                "Errore imprevisto durante l'analisi. "
+                "Segnalalo su [GitHub Issues](https://github.com/cesabici-bit/heatscout/issues) "
+                "indicando i parametri inseriti."
+            )

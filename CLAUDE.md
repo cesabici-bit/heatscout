@@ -87,7 +87,11 @@ tests/            # 89 test inclusi sanity check fisici
 ## Stato progetto
 - Fase 1+2 COMPLETE: core engine, 10 esempi, UI, PDF report, 163 test
 - Fase 3-4: roadmap completa in ROADMAP.md (17 task, da CI/CD a Release v1.0)
-- Prossimo task: 3A.1 (GitHub + CI)
+- 3A.1 DONE: GitHub pubblico https://github.com/cesabici-bit/heatscout
+- 3A.2 DONE: GitHub Actions CI (163 test, verde)
+- 3B.1 DONE: Deploy live https://heatscout.streamlit.app
+- 3F.1 DONE: Error handling UI (5 scenari errore user-friendly, catch-all con link GitHub)
+- Prossimo task: 3F.2 (Integration test end-to-end)
 
 ## Gotcha
 - CoolProp puo' essere lento alla prima chiamata (caricamento tabelle)
