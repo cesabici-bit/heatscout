@@ -637,6 +637,48 @@ with st.sidebar:
         except Exception as e:
             st.error(f"Error loading file: {e}")
 
+    # Import streams from CSV/Excel
+    st.divider()
+    st.markdown("### 📤 Import Streams")
+    col_tpl, col_imp = st.columns(2)
+    with col_tpl:
+        from heatscout.report.stream_import import generate_template
+        st.download_button(
+            "📋 Template CSV",
+            data=generate_template(),
+            file_name="heatscout_template.csv",
+            mime="text/csv",
+            use_container_width=True,
+        )
+    with col_imp:
+        uploaded_streams = st.file_uploader(
+            "Upload CSV/Excel", type=["csv", "xlsx", "xls"],
+            help="Upload a CSV or Excel file with stream data",
+            label_visibility="collapsed",
+        )
+    if uploaded_streams is not None:
+        try:
+            from heatscout.report.stream_import import import_streams
+            stream_dicts = import_streams(uploaded_streams.getvalue(), uploaded_streams.name)
+
+            restored = []
+            for sd in stream_dicts:
+                st_type_str = sd["stream_type"]
+                st_type = StreamType.HOT_WASTE if "hot" in st_type_str else StreamType.COLD_DEMAND
+                restored.append(ThermalStream(
+                    name=sd["name"], fluid_type=sd["fluid_type"],
+                    T_in=sd["T_in"], T_out=sd["T_out"],
+                    mass_flow=sd["mass_flow"],
+                    hours_per_day=sd["hours_per_day"],
+                    days_per_year=sd["days_per_year"],
+                    stream_type=st_type,
+                ))
+            st.session_state.n_streams = len(restored)
+            st.session_state.loaded_example = {"streams": restored, "meta": {}}
+            st.success(f"Imported {len(restored)} streams from {uploaded_streams.name}")
+        except Exception as e:
+            st.error(f"Import error: {e}")
+
     # Sidebar footer
     st.divider()
     st.caption(
