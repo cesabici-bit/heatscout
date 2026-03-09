@@ -1,43 +1,69 @@
 # Contributing to HeatScout
 
-Grazie per il tuo interesse nel contribuire a HeatScout!
+Thanks for your interest in contributing!
 
-## Come contribuire
-
-### Segnalare bug o proporre feature
-- Apri una [Issue](../../issues) descrivendo il problema o la proposta
-- Includi: cosa ti aspettavi, cosa è successo, come riprodurre
-
-### Inviare codice
-1. Fork del repository
-2. Crea un branch (`git checkout -b feature/nome-feature`)
-3. Scrivi test per le modifiche
-4. Verifica che tutti i test passino: `pytest tests/ -v`
-5. Commit e push
-6. Apri una Pull Request
-
-### Convenzioni
-- **Codice**: Python 3.10+, dataclass per modelli, unità SI internamente
-- **Test**: ogni nuova funzionalità deve avere test (unit + sanity check dove applicabile)
-- **Commit**: messaggi chiari e concisi in inglese
-- **Documentazione**: docstring Google-style sulle funzioni pubbliche
-
-### Setup locale
+## Getting Started
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/heatscout.git
+# Clone the repo
+git clone https://github.com/cesabici-bit/heatscout.git
 cd heatscout
+
+# Install in dev mode
 pip install -e ".[dev]"
-pytest tests/ -v
+
+# Install pre-commit hooks
+pip install pre-commit
+pre-commit install
+
+# Run the app
 streamlit run heatscout/web/app.py
+
+# Run tests
+pytest tests/ -v
 ```
 
-## Architettura test (5 livelli)
+## Development Workflow
 
-1. **Unit test** — ogni funzione fa ciò che deve
-2. **Sanity check fisici** — cp, termodinamica, exergia vs valori tabulati
-3. **Property-based** (Hypothesis) — invarianti su input random
-4. **Snapshot golden** — anti-regressione sui 10 esempi
-5. **Validazione reale** — confronto con dati misurati da impianti reali
+1. Create a branch from `master`
+2. Make your changes
+3. `pre-commit run --all-files` — ruff lint + format must pass
+4. `pytest tests/ -v` — all 249 tests must pass
+5. Open a pull request
 
-Ogni PR deve passare tutti e 5 i livelli.
+## Code Conventions
+
+- Python 3.10+, type hints where useful
+- Dataclasses for data models (not dicts)
+- SI units internally (W, K, kg/s, J) — conversion only in UI
+- Pure functions where possible, side effects only in `web/` and `report/`
+- Fail-fast assertions in production code with descriptive messages
+- Ruff for linting (F/E/W/I rules) and formatting
+
+## Test Architecture (5 levels)
+
+1. **Unit tests** — each function does what it should
+2. **Physics sanity** — cp vs tabulated values, thermodynamics laws
+3. **Property-based** (Hypothesis) — invariants on random inputs
+4. **Snapshot golden** — anti-regression on 10 examples
+5. **Real validation** — comparison with measured data from real plants
+
+To update golden snapshots: `python tests/update_snapshots.py` (requires human review).
+
+## What to Contribute
+
+- Bug reports → [GitHub Issues](https://github.com/cesabici-bit/heatscout/issues)
+- New industrial examples (add to `heatscout/core/examples.py`)
+- Improved cost correlations (with published source citation)
+- UI/UX improvements
+- Documentation improvements
+
+## What NOT to Change Without Discussion
+
+- CAPEX correlation coefficients (need published source)
+- Efficiency model formulas (need academic reference)
+- Golden snapshot files (require `update_snapshots.py` + review)
+
+## License
+
+By contributing, you agree that your contributions will be licensed under the [MIT License](LICENSE).

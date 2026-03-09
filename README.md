@@ -1,13 +1,12 @@
 # HeatScout
 
-**Screening gratuito per il recupero di calore industriale.**
+**Free screening tool for industrial waste heat recovery.**
 
-Inserisci i flussi termici di scarto del tuo impianto → ottieni in 5 minuti le tecnologie applicabili, i costi stimati e il tempo di rientro dell'investimento.
+Enter your plant's waste heat streams → get in 5 minutes the applicable technologies, estimated costs, and investment payback.
 
-<!-- TODO: aggiungere screenshot dell'UI con esempio fonderia -->
-<!-- ![HeatScout Screenshot](docs/screenshot.png) -->
+![HeatScout Screenshot](docs/screenshot.png)
 
-[**Prova la demo live →**](https://heatscout.streamlit.app)
+[**Try the live demo →**](https://heatscout.streamlit.app)
 
 [![CI](https://github.com/cesabici-bit/heatscout/actions/workflows/ci.yml/badge.svg)](https://github.com/cesabici-bit/heatscout/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -15,77 +14,85 @@ Inserisci i flussi termici di scarto del tuo impianto → ottieni in 5 minuti le
 
 ---
 
-## Cosa fa
+## What it does
 
-| Step | Descrizione |
+| Step | Description |
 |------|-------------|
-| **1. Input** | Definisci i flussi termici: fluido, temperature, portata, ore di funzionamento |
-| **2. Analisi** | Calcola potenza termica (kW), energia annua (MWh), exergia, costo dello spreco |
-| **3. Bilancio** | Diagramma Sankey interattivo del bilancio energetico |
-| **4. Tecnologie** | Raccomanda tra 9 tecnologie di recupero (scambiatori, pompe di calore, ORC, ...) |
-| **5. Economia** | Stima CAPEX (±30%), payback, NPV, IRR per ogni tecnologia |
-| **6. Report** | Genera report PDF professionale + export Excel |
+| **1. Input** | Define thermal streams: fluid, temperatures, flow rate, operating hours |
+| **2. Analysis** | Calculates thermal power (kW), annual energy (MWh), exergy, waste cost |
+| **3. Balance** | Interactive Sankey diagram of the energy balance |
+| **4. Technologies** | Recommends from 8 recovery technologies (HX, heat pumps, ORC, ...) |
+| **5. Economics** | Estimates CAPEX (±30%), payback, NPV, IRR for each technology |
+| **6. Sensitivity** | Energy price sweep (±50%) and tornado chart on 4 key parameters |
+| **7. Report** | Professional PDF report + Excel export + JSON save/load |
 
-## A chi serve
+## Features
 
-- **Energy manager** che vogliono valutare il recupero calore nel proprio impianto
-- **ESCo e consulenti energetici** che fanno audit industriali (D.lgs 102/2014)
-- **Studenti e ricercatori** di ingegneria energetica
-- Chiunque abbia calore di scarto e si chieda: *"vale la pena recuperarlo?"*
+- **8 recovery technologies**: gas-gas HX, economizer, liquid HX, HRSG, air/water heat pumps, ORC, combustion air preheater
+- **10 preloaded industrial examples**: foundry, dairy, ceramics, glass, paper, brewery, chemical, textile, data center, multi-stream complex
+- **Incentive analysis**: generic CAPEX reduction (tax credits, grants — any country) + Italian White Certificates (TEE)
+- **Sensitivity analysis**: energy price sweep with payback/NPV charts + tornado chart (±20% on price, CAPEX, hours, efficiency)
+- **All parameters editable**: energy price, discount rate, analysis horizon, OPEX/installation multipliers
+- **Import/Export**: CSV/Excel stream import, Excel export (3 sheets), JSON save/load, PDF report
+- **Methodology section**: all formulas, correlations, and sources cited in-app
+- **249 automated tests** across 5 levels (unit, physics sanity, property-based, snapshot, real validation)
+
+## Who needs it
+
+- **Energy managers** evaluating heat recovery in their plant
+- **ESCos and energy consultants** doing industrial energy audits
+- **Engineering students and researchers** in energy/thermal engineering
+- Anyone with waste heat asking: *"is it worth recovering?"*
 
 ## Quick Start
 
 ```bash
-# Installa
+# Install
 pip install -e ".[dev]"
 
-# Avvia
+# Run
 streamlit run heatscout/web/app.py
 ```
 
-L'app si apre su `http://localhost:8501`. Seleziona un esempio precaricato dalla sidebar per iniziare.
+Opens at `http://localhost:8501`. Load a preloaded example from the sidebar to get started.
 
-## 10 Esempi industriali inclusi
-
-Fonderia · Caseificio · Ceramica · Vetreria · Cartiera · Birrificio · Chimica · Tessile · Data Center · Complesso multi-stream
-
-Ogni esempio ha stream realistici con temperature, portate e ore di funzionamento tipiche del settore.
-
-## Test
+## Tests
 
 ```bash
 pytest tests/ -v
 ```
 
-163 test su 5 livelli:
+249 tests on 5 levels:
 
-1. **Unit test** — validazione funzionale di ogni modulo
-2. **Sanity check fisici** — cp vs valori tabulati (ASHRAE, Perry's), leggi termodinamica
-3. **Property-based** (Hypothesis) — invarianti verificate su input random
-4. **Snapshot golden** — anti-regressione sui 10 esempi (83 raccomandazioni)
-5. **Validazione reale** — confronto con dati misurati da impianti reali (DOE, ETEKINA H2020)
+1. **Unit tests** — functional validation of every module
+2. **Physics sanity** — cp vs tabulated values (ASHRAE, Perry's), thermodynamics laws
+3. **Property-based** (Hypothesis) — invariants verified on random inputs
+4. **Snapshot golden** — anti-regression on 10 examples (83 recommendations)
+5. **Real validation** — comparison with measured data from real plants (DOE, ETEKINA H2020)
 
 ## Stack
 
-| Componente | Tecnologia |
-|------------|-----------|
-| Proprietà fluidi | [CoolProp](http://www.coolprop.org/) + correlazioni custom |
-| Grafici | [Plotly](https://plotly.com/) (Sankey, bar chart, cashflow) |
+| Component | Technology |
+|-----------|-----------|
+| Fluid properties | [CoolProp](http://www.coolprop.org/) + custom correlations |
+| Charts | [Plotly](https://plotly.com/) (Sankey, bar charts, sensitivity) |
 | UI | [Streamlit](https://streamlit.io/) |
 | PDF | [ReportLab](https://www.reportlab.com/) |
-| Economia | [numpy-financial](https://numpy.org/numpy-financial/) (NPV, IRR) |
+| Economics | [numpy-financial](https://numpy.org/numpy-financial/) (NPV, IRR) |
+| Linting | [Ruff](https://docs.astral.sh/ruff/) (pre-commit hooks) |
 
-## Assunzioni e limitazioni
+## Assumptions and Limitations
 
-- Le correlazioni CAPEX hanno incertezza **±30%** (fonti: Thekdi, ACEEE, IEA)
-- I risparmi stimati hanno incertezza **±15%**
-- I modelli di efficienza sono di primo livello (correlazioni semplificate)
-- Lo strumento è pensato per **screening iniziale**, non sostituisce uno studio di fattibilità ingegneristico
+- CAPEX correlations have **±30%** uncertainty (sources: Thekdi/ACEEE, IEA, Quoilin et al.)
+- Estimated savings have **±15%** uncertainty
+- Efficiency models are first-order (simplified correlations)
+- This tool is for **initial screening** — it does not replace a detailed engineering feasibility study
+- All sources and formulas are documented in the in-app Methodology section
 
-## Contribuire
+## Contributing
 
-Vedi [CONTRIBUTING.md](CONTRIBUTING.md) per le linee guida.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## Licenza
+## License
 
 [MIT](LICENSE)
