@@ -101,8 +101,10 @@ tests/            # 89 test inclusi sanity check fisici
 - 3E.2 DONE: Tornado chart multi-parameter (±20% on 4 params, sorted by NPV impact)
 - DONE: All economic params user-editable (discount rate, horizon, OPEX/install multipliers)
 - 3A.3 DONE: Pre-commit hooks (ruff lint + format, .pre-commit-config.yaml)
+- 4A.1 DONE: Help in-app (tooltips, disclaimer, interpretation guide)
+- 4A.2 DONE: Methodology page (efficiency models, CAPEX table, bibliography)
 - Totale: 249 test
-- Prossimo task: 4A.1 (Help in-app tooltips)
+- Prossimo task: 4B.1 (Beta testing)
 
 ## Gotcha
 - CoolProp puo' essere lento alla prima chiamata (caricamento tabelle)

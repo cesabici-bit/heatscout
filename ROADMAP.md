@@ -234,7 +234,7 @@ Ogni task ha:
 
 > Credibilità = trasparenza. Fonti, limiti, assunzioni tutto visibile.
 
-### Task 4A.1: Help in-app (tooltips)
+### Task 4A.1: Help in-app (tooltips) ✅
 
 - **Input:** UI attuale senza help contestuale
 - **Output:**
@@ -247,7 +247,7 @@ Ogni task ha:
 - **Pre-mortem:**
   - UI cluttered → expander collassabili, max 2 frasi per tooltip
 
-### Task 4A.2: Pagina Metodologia
+### Task 4A.2: Pagina Metodologia ✅
 
 - **Input:** Fonti già documentate in cost_correlations.py, efficiency_models.py
 - **Output:** Pagina Streamlit "Metodologia" con:
