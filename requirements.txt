@@ -7,3 +7,4 @@ numpy-financial>=1.0
 reportlab>=4.0
 kaleido>=0.2
 pandas>=2.0
+openpyxl>=3.1

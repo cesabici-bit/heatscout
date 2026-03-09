@@ -1061,7 +1061,7 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
 
                     st.divider()
 
-                    col_pdf, col_info = st.columns([2, 3])
+                    col_pdf, col_xlsx, col_info = st.columns([2, 2, 3])
                     with col_pdf:
                         try:
                             fig_sankey_pdf = create_sankey(hb, factory_name)
@@ -1069,7 +1069,7 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                                 summary, all_econ_results, fig_sankey_pdf, energy_price=energy_price
                             )
                             st.download_button(
-                                label="📥 Scarica Report PDF",
+                                label="📥 Download PDF Report",
                                 data=pdf_bytes,
                                 file_name=f"HeatScout_Report_{factory_name.replace(' ', '_')}.pdf",
                                 mime="application/pdf",
@@ -1078,13 +1078,30 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                             )
                         except Exception:
                             st.error(
-                                "Errore nella generazione del report PDF. "
-                                "Puoi comunque consultare i risultati nelle tab sopra."
+                                "Error generating PDF report. "
+                                "Results are still available in the tabs above."
                             )
+                    with col_xlsx:
+                        try:
+                            from heatscout.report.excel_export import export_to_excel
+                            xlsx_bytes = export_to_excel(
+                                summary, all_econ_results,
+                                incentive_summaries=all_summaries if has_incentives else None,
+                                energy_price=energy_price,
+                            )
+                            st.download_button(
+                                label="📊 Download Excel",
+                                data=xlsx_bytes,
+                                file_name=f"HeatScout_{factory_name.replace(' ', '_')}.xlsx",
+                                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                use_container_width=True,
+                            )
+                        except Exception:
+                            st.error("Error generating Excel export.")
                     with col_info:
                         st.caption(
-                            "Il report PDF include: executive summary, tabelle stream, "
-                            "tecnologie raccomandate, analisi economica e diagramma Sankey."
+                            "PDF: executive summary, charts, Sankey diagram. "
+                            "Excel: 3 sheets (Streams, Technologies, Economics) with all data."
                         )
                 else:
                     st.info("Nessun risultato da esportare. Esegui prima un'analisi con stream HOT_WASTE.")
