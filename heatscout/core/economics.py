@@ -48,6 +48,9 @@ def calc_payback(capex: float, annual_savings: float, opex: float) -> float:
     payback = CAPEX / (savings - OPEX)
     Se net benefit ≤ 0, ritorna inf.
     """
+    assert capex >= 0, f"CAPEX negativo: {capex}"
+    assert annual_savings >= 0, f"Savings negativo: {annual_savings}"
+    assert opex >= 0, f"OPEX negativo: {opex}"
     net = annual_savings - opex
     if net <= 0:
         return float("inf")
@@ -123,6 +126,15 @@ def economic_analysis(
     cumulative = [-total_inv]
     for t in range(1, years + 1):
         cumulative.append(cumulative[-1] + net_annual / (1 + discount_rate) ** t)
+
+    # Fail-fast: payback corto ma NPV molto negativo = probabile errore
+    # (payback semplice non sconta, NPV sì — divergenza leggera è ok)
+    if payback < years * 0.5 and npv < -total_inv * 0.1:
+        assert False, (
+            f"Inconsistenza: payback={payback:.1f}yr << horizon/2={years/2}yr "
+            f"ma NPV={npv:.0f} molto negativo (>{total_inv*0.1:.0f}). "
+            f"capex={total_inv:.0f}, savings={annual_savings:.0f}, opex={opex:.0f}"
+        )
 
     return EconomicResult(
         tech_recommendation=rec,

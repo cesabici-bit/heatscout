@@ -1,0 +1,228 @@
+{
+  "_description": "Case study REALI con dati misurati per validazione del modello HeatScout",
+  "_usage": "Usati in test_validation_real.py per confrontare output HeatScout con dati reali",
+  "_note": "I valori misurati hanno incertezza. La tolleranza nei test riflette sia l'incertezza dei dati reali sia le semplificazioni del modello HeatScout",
+
+  "fonderia_waupaca": {
+    "source": "DOE Better Buildings Initiative - Waupaca Foundry Plant 23, Wisconsin, USA",
+    "source_url": "https://betterbuildingssolutioncenter.energy.gov/showcase-projects/waupaca-foundry-cupola-waste-heat-recovery-upgrade-drives-deeper-energy-savings",
+    "industry": "Iron foundry (gray and ductile iron)",
+    "data_quality": "measured",
+    "input": {
+      "fluid_type": "fumi_gas_naturale",
+      "T_in_C": 760,
+      "T_out_C": 177,
+      "Q_thermal_kW": 20500,
+      "notes": "Cupola furnace exhaust, two-stage HX (air-to-air + air-to-oil)"
+    },
+    "technology": {
+      "type": "heat_exchanger",
+      "subtype": "two-stage (gas-gas + gas-liquid)",
+      "description": "Air preheating from 1400F to 950F, then oil loop from 950F to 350F"
+    },
+    "economics_measured": {
+      "capex_USD": 442188,
+      "incentive_USD": 177178,
+      "net_capex_USD": 265010,
+      "annual_savings_USD": 109165,
+      "annual_savings_therms": 242590,
+      "payback_years_with_incentive": 2.4,
+      "payback_years_without_incentive": 4.1,
+      "CO2_reduction_tons_yr": 1456
+    }
+  },
+
+  "ceramica_atlas_concorde": {
+    "source": "ETEKINA H2020 Project (ID 768772) - Atlas Concorde, Modena, Italy",
+    "source_url": "https://www.sciencedirect.com/science/article/pii/S2666202719300023",
+    "source_paper": "Jouhara et al., Int. J. Thermofluids, 2019. DOI: 10.1016/j.ijft.2019.100002",
+    "industry": "Ceramic tile manufacturing",
+    "data_quality": "measured (full-scale demonstration)",
+    "input": {
+      "fluid_type": "fumi_gas_naturale",
+      "T_in_C": null,
+      "T_out_C": null,
+      "Q_thermal_kW": 100,
+      "notes": "Cooling section exhaust from ceramic kiln"
+    },
+    "technology": {
+      "type": "heat_pipe_heat_exchanger",
+      "subtype": "HPHE (carbon steel shell, water working fluid)",
+      "description": "Heat pipe heat exchanger on kiln exhaust"
+    },
+    "economics_measured": {
+      "annual_savings_GBP": 30000,
+      "energy_recovered_MWh_yr": 863,
+      "primary_energy_saved_MWh_yr": 4003,
+      "natural_gas_saved_Sm3_yr": 110600,
+      "payback_months": 16,
+      "CO2_reduction_tons_yr": 164,
+      "efficiency_pct": 47
+    }
+  },
+
+  "acciaio_sij_ravne": {
+    "source": "ETEKINA H2020 Project - SIJ Metal Ravne, Slovenia",
+    "source_url": "https://cordis.europa.eu/article/id/435328",
+    "industry": "Steel production",
+    "data_quality": "measured (full-scale demonstration)",
+    "input": {
+      "fluid_type": "fumi_gas_naturale",
+      "T_in_C": 450,
+      "T_out_C": null,
+      "Q_thermal_kW": null,
+      "notes": "Flue gases from steel furnace, two-stage HPHE"
+    },
+    "technology": {
+      "type": "heat_pipe_heat_exchanger",
+      "subtype": "HPHE two-stage: stage 1 preheats air >400C, stage 2 heats water",
+      "description": "Two-stage heat pipe heat exchanger"
+    },
+    "economics_measured": {
+      "energy_saved_MWh_yr": 3020,
+      "payback_months": 9,
+      "CO2_reduction_tons_yr": 600,
+      "fuel_cost_reduction_pct": 40,
+      "efficiency_pct": 47
+    }
+  },
+
+  "birrificio_small_usa": {
+    "source": "L&L Engineering (2025) - Small brewery heat recovery analysis",
+    "source_url": "https://landlengineering.com/2025/02/23/maximizing-energy-efficiency-heat-recovery-opportunities-for-small-breweries/",
+    "industry": "Small brewery ($50K/year energy cost)",
+    "data_quality": "measured/documented",
+    "streams": [
+      {
+        "name": "Boiling vapors HX",
+        "T_range_C": "60-100",
+        "technology": "shell-and-tube / plate HX",
+        "capex_USD": 10500,
+        "annual_savings_USD": 3500,
+        "payback_years": 3.0
+      },
+      {
+        "name": "Fermentation heat recovery",
+        "T_range_C": "20-35",
+        "technology": "heat exchanger",
+        "capex_USD": 5000,
+        "annual_savings_USD": 2500,
+        "payback_years": 2.0
+      },
+      {
+        "name": "Refrigeration waste heat for water heating",
+        "T_range_C": "30-50",
+        "technology": "heat exchanger on condenser",
+        "capex_USD": 15000,
+        "annual_savings_USD": 5000,
+        "payback_years": 3.0
+      }
+    ]
+  },
+
+  "tessile_bursa": {
+    "source": "Waste heat recovery potential in Turkish textile industry, Bursa",
+    "source_url": "https://www.sciencedirect.com/science/article/abs/pii/S1364032107001396",
+    "industry": "Textile dyeing",
+    "data_quality": "measured",
+    "input": {
+      "fluid_type": "acqua",
+      "T_in_C": 50,
+      "T_out_C": 20,
+      "notes": "Warm dyeing wastewater, shell and tube HX"
+    },
+    "technology": {
+      "type": "shell_and_tube_heat_exchanger",
+      "subtype": "water-to-water"
+    },
+    "economics_measured": {
+      "energy_recovered_MWh_yr": 5716,
+      "annual_savings_USD": 47100,
+      "payback_months_less_than": 6
+    }
+  },
+
+  "cartiera_swiss": {
+    "source": "Swiss Paper Mill waste heat recovery study, ScienceDirect 2025",
+    "source_url": "https://www.sciencedirect.com/science/article/pii/S0959652625014593",
+    "industry": "Paper mill",
+    "data_quality": "measured",
+    "input": {
+      "Q_thermal_MW": 26.8,
+      "notes": "Paper drying process waste heat"
+    },
+    "technology": {
+      "type": "direct_heat_recovery",
+      "description": "Direct heat recovery system"
+    },
+    "economics_measured": {
+      "heat_recovery_fraction_pct": 49.8,
+      "LCOE_c_kWh": 1.14,
+      "payback_years": 1.08,
+      "CO2_reduction_tons_yr": 46360
+    }
+  },
+
+  "data_center_reuseheat": {
+    "source": "ReUseHeat H2020 Project (ID 767429) - Brunswick, Germany",
+    "source_url": "https://cordis.europa.eu/project/id/767429/results",
+    "industry": "Data center",
+    "data_quality": "measured",
+    "input": {
+      "fluid_type": "acqua",
+      "T_in_C": 45,
+      "T_out_C": 25,
+      "notes": "Data center cooling water to district heating via heat pump"
+    },
+    "technology": {
+      "type": "heat_pump",
+      "subtype": "heat pump + district heating connection"
+    },
+    "economics_measured": {
+      "payback_years": 3.05,
+      "LCOH_EUR_MWh": 74,
+      "notes": "Originally expected 8yr payback, achieved 3.05yr. Gas boiler comparison: 83 EUR/MWh"
+    }
+  },
+
+  "chimica_electroplating_ningbo": {
+    "source": "Cascade air-source HP, electroplating factory, Ningbo, China",
+    "source_url": "https://www.sciencedirect.com/science/article/abs/pii/S0960148124011625",
+    "source_paper": "Renewable Energy, 2024. DOI: 10.1016/j.renene.2024.121063",
+    "industry": "Electroplating factory",
+    "data_quality": "measured (industrial application)",
+    "input": {
+      "T_process_C": "85-120",
+      "notes": "Phosphating lines 85-90C, hot water up to 120C"
+    },
+    "technology": {
+      "type": "heat_pump",
+      "subtype": "cascade air-source high-temperature, 4 units",
+      "heating_capacity_kW": 480,
+      "COP_measured": 1.8
+    },
+    "economics_measured": {
+      "annual_savings_USD": 123200,
+      "payback_years": 1.65
+    }
+  },
+
+  "confectionery_uk": {
+    "source": "Law et al., Energies (MDPI), 13(23), 6446, 2020",
+    "source_paper": "DOI: 10.3390/en13236446",
+    "industry": "Confectionery/bakery manufacturing, UK",
+    "data_quality": "measured",
+    "input": {
+      "notes": "Baking oven exhaust gases (low temperature)"
+    },
+    "technology": {
+      "type": "gas_to_air_heat_recovery",
+      "subtype": "combustion air preheating"
+    },
+    "economics_measured": {
+      "capex_GBP": 35616,
+      "fuel_savings_pct": 33,
+      "payback_years": 1.57
+    }
+  }
+}

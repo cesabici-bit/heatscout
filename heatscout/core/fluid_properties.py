@@ -107,16 +107,22 @@ def get_cp(fluid_id: str, T_celsius: float, P: float = 101325) -> float:
         cp in kJ/kgK
     """
     if fluid_id in _CUSTOM_CP:
-        return _CUSTOM_CP[fluid_id](T_celsius)
+        cp = _CUSTOM_CP[fluid_id](T_celsius)
+    else:
+        info = get_fluid_info(fluid_id)
+        coolprop_name = info["coolprop_name"]
+        if coolprop_name is None:
+            raise ValueError(f"Fluido '{fluid_id}' non ha nome CoolProp né correlazione custom")
+        T_K = T_celsius + 273.15
+        # CoolProp ritorna in J/kgK, convertiamo in kJ/kgK
+        cp = CP.PropsSI("Cpmass", "T", T_K, "P", P, coolprop_name) / 1000.0
 
-    info = get_fluid_info(fluid_id)
-    coolprop_name = info["coolprop_name"]
-    if coolprop_name is None:
-        raise ValueError(f"Fluido '{fluid_id}' non ha nome CoolProp né correlazione custom")
-
-    T_K = T_celsius + 273.15
-    # CoolProp ritorna in J/kgK, convertiamo in kJ/kgK
-    return CP.PropsSI("Cpmass", "T", T_K, "P", P, coolprop_name) / 1000.0
+    assert 0.1 < cp < 15, (
+        f"cp={cp:.3f} kJ/kgK fuori range plausibile "
+        f"per {fluid_id} a {T_celsius}°C. "
+        f"Range atteso: 0.1-15 kJ/kgK (aria~1.0, acqua~4.2, glicole~3.5)"
+    )
+    return cp
 
 
 def get_density(fluid_id: str, T_celsius: float, P: float = 101325) -> float:

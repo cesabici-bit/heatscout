@@ -1,0 +1,1917 @@
+{
+  "birrificio": {
+    "metadata": {
+      "name": "Birrificio artigianale",
+      "description": "Birrificio con sala cottura e fermentazione refrigerata.",
+      "T_ambient": 25
+    },
+    "n_streams": 2,
+    "analyses": [
+      {
+        "name": "Acqua bollitura mosto",
+        "stream_type": "hot_waste",
+        "fluid_type": "acqua",
+        "T_in": 100,
+        "T_out": 60,
+        "T_mean": 80.0,
+        "Q_kW": 37.6,
+        "E_MWh_anno": 75.2,
+        "Ex_kW": 5.9,
+        "T_class": "media",
+        "quality_ratio": 0.156
+      },
+      {
+        "name": "Acqua raffreddamento fermentazione",
+        "stream_type": "hot_waste",
+        "fluid_type": "acqua",
+        "T_in": 35,
+        "T_out": 20,
+        "T_mean": 27.5,
+        "Q_kW": 31.4,
+        "E_MWh_anno": 225.8,
+        "Ex_kW": 0.3,
+        "T_class": "bassa",
+        "quality_ratio": 0.008
+      }
+    ],
+    "recommendations": [
+      {
+        "stream": "Acqua bollitura mosto",
+        "tech_id": "scambiatore_liquido_liquido",
+        "Q_available_kW": 37.6,
+        "Q_recovered_kW": 28.2,
+        "E_recovered_MWh": 56.4,
+        "efficiency": 0.75,
+        "savings_EUR": 4511.0
+      },
+      {
+        "stream": "Acqua bollitura mosto",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "Q_available_kW": 37.6,
+        "Q_recovered_kW": 35.5,
+        "E_recovered_MWh": 71.0,
+        "efficiency": 10.0,
+        "savings_EUR": 4260.0
+      },
+      {
+        "stream": "Acqua raffreddamento fermentazione",
+        "tech_id": "scambiatore_liquido_liquido",
+        "Q_available_kW": 31.4,
+        "Q_recovered_kW": 22.0,
+        "E_recovered_MWh": 158.1,
+        "efficiency": 0.7,
+        "savings_EUR": 12645.0
+      },
+      {
+        "stream": "Acqua raffreddamento fermentazione",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "Q_available_kW": 31.4,
+        "Q_recovered_kW": 34.0,
+        "E_recovered_MWh": 245.1,
+        "efficiency": 4.613,
+        "savings_EUR": 8980.0
+      }
+    ],
+    "economics": [
+      {
+        "stream": "Acqua bollitura mosto",
+        "tech_id": "scambiatore_liquido_liquido",
+        "capex_EUR": 4895.0,
+        "payback_years": 1.4,
+        "npv_EUR": 27712.0,
+        "irr_pct": 69.0
+      },
+      {
+        "stream": "Acqua bollitura mosto",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "capex_EUR": 11430.0,
+        "payback_years": 4.1,
+        "npv_EUR": 14244.0,
+        "irr_pct": 20.8
+      },
+      {
+        "stream": "Acqua raffreddamento fermentazione",
+        "tech_id": "scambiatore_liquido_liquido",
+        "capex_EUR": 4063.0,
+        "payback_years": 0.4,
+        "npv_EUR": 91734.0,
+        "irr_pct": 237.9
+      },
+      {
+        "stream": "Acqua raffreddamento fermentazione",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "capex_EUR": 11018.0,
+        "payback_years": 1.8,
+        "npv_EUR": 51360.0,
+        "irr_pct": 55.4
+      }
+    ]
+  },
+  "cartiera": {
+    "metadata": {
+      "name": "Cartiera — carta tissue",
+      "description": "Produzione carta tissue con essiccazione a vapore e caldaia a gas.",
+      "T_ambient": 25
+    },
+    "n_streams": 3,
+    "analyses": [
+      {
+        "name": "Vapore essiccazione",
+        "stream_type": "hot_waste",
+        "fluid_type": "fumi_gas_naturale",
+        "T_in": 150,
+        "T_out": 90,
+        "T_mean": 120.0,
+        "Q_kW": 92.7,
+        "E_MWh_anno": 693.2,
+        "Ex_kW": 22.4,
+        "T_class": "media",
+        "quality_ratio": 0.242
+      },
+      {
+        "name": "Acqua di processo",
+        "stream_type": "hot_waste",
+        "fluid_type": "acqua",
+        "T_in": 60,
+        "T_out": 35,
+        "T_mean": 47.5,
+        "Q_kW": 522.8,
+        "E_MWh_anno": 3910.3,
+        "Ex_kW": 36.7,
+        "T_class": "bassa",
+        "quality_ratio": 0.07
+      },
+      {
+        "name": "Fumi caldaia",
+        "stream_type": "hot_waste",
+        "fluid_type": "fumi_gas_naturale",
+        "T_in": 200,
+        "T_out": 120,
+        "T_mean": 160.0,
+        "Q_kW": 83.1,
+        "E_MWh_anno": 621.9,
+        "Ex_kW": 25.9,
+        "T_class": "media",
+        "quality_ratio": 0.312
+      }
+    ],
+    "recommendations": [
+      {
+        "stream": "Vapore essiccazione",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 92.7,
+        "Q_recovered_kW": 63.0,
+        "E_recovered_MWh": 471.4,
+        "efficiency": 0.68,
+        "savings_EUR": 37711.0
+      },
+      {
+        "stream": "Vapore essiccazione",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 92.7,
+        "Q_recovered_kW": 57.5,
+        "E_recovered_MWh": 429.8,
+        "efficiency": 0.62,
+        "savings_EUR": 34384.0
+      },
+      {
+        "stream": "Vapore essiccazione",
+        "tech_id": "orc",
+        "Q_available_kW": 92.7,
+        "Q_recovered_kW": 9.5,
+        "E_recovered_MWh": 71.4,
+        "efficiency": 0.103,
+        "savings_EUR": 14282.0
+      },
+      {
+        "stream": "Acqua di processo",
+        "tech_id": "scambiatore_liquido_liquido",
+        "Q_available_kW": 522.8,
+        "Q_recovered_kW": 392.1,
+        "E_recovered_MWh": 2932.7,
+        "efficiency": 0.75,
+        "savings_EUR": 234616.0
+      },
+      {
+        "stream": "Acqua di processo",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "Q_available_kW": 522.8,
+        "Q_recovered_kW": 533.2,
+        "E_recovered_MWh": 3988.5,
+        "efficiency": 6.0,
+        "savings_EUR": 186129.0
+      },
+      {
+        "stream": "Fumi caldaia",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 83.1,
+        "Q_recovered_kW": 56.5,
+        "E_recovered_MWh": 422.9,
+        "efficiency": 0.68,
+        "savings_EUR": 33834.0
+      },
+      {
+        "stream": "Fumi caldaia",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 83.1,
+        "Q_recovered_kW": 51.6,
+        "E_recovered_MWh": 385.6,
+        "efficiency": 0.62,
+        "savings_EUR": 30848.0
+      },
+      {
+        "stream": "Fumi caldaia",
+        "tech_id": "orc",
+        "Q_available_kW": 83.1,
+        "Q_recovered_kW": 11.2,
+        "E_recovered_MWh": 84.0,
+        "efficiency": 0.135,
+        "savings_EUR": 16800.0
+      },
+      {
+        "stream": "Fumi caldaia",
+        "tech_id": "preriscaldamento_aria",
+        "Q_available_kW": 83.1,
+        "Q_recovered_kW": 5.0,
+        "E_recovered_MWh": 37.3,
+        "efficiency": 0.06,
+        "savings_EUR": 2985.0
+      }
+    ],
+    "economics": [
+      {
+        "stream": "Vapore essiccazione",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 15193.0,
+        "payback_years": 0.6,
+        "npv_EUR": 264883.0,
+        "irr_pct": 163.5
+      },
+      {
+        "stream": "Vapore essiccazione",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 20456.0,
+        "payback_years": 0.9,
+        "npv_EUR": 230079.0,
+        "irr_pct": 110.0
+      },
+      {
+        "stream": "Vapore essiccazione",
+        "tech_id": "orc",
+        "capex_EUR": 16234.0,
+        "payback_years": 1.9,
+        "npv_EUR": 78038.0,
+        "irr_pct": 51.0
+      },
+      {
+        "stream": "Acqua di processo",
+        "tech_id": "scambiatore_liquido_liquido",
+        "capex_EUR": 35246.0,
+        "payback_years": 0.2,
+        "npv_EUR": 1760379.0,
+        "irr_pct": 510.5
+      },
+      {
+        "stream": "Acqua di processo",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "capex_EUR": 114346.0,
+        "payback_years": 0.9,
+        "npv_EUR": 1250669.0,
+        "irr_pct": 114.1
+      },
+      {
+        "stream": "Fumi caldaia",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 13956.0,
+        "payback_years": 0.6,
+        "npv_EUR": 237088.0,
+        "irr_pct": 159.6
+      },
+      {
+        "stream": "Fumi caldaia",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 18759.0,
+        "payback_years": 0.9,
+        "npv_EUR": 205715.0,
+        "irr_pct": 107.6
+      },
+      {
+        "stream": "Fumi caldaia",
+        "tech_id": "orc",
+        "capex_EUR": 18367.0,
+        "payback_years": 1.9,
+        "npv_EUR": 93250.0,
+        "irr_pct": 53.3
+      },
+      {
+        "stream": "Fumi caldaia",
+        "tech_id": "preriscaldamento_aria",
+        "capex_EUR": 1087.0,
+        "payback_years": 0.5,
+        "npv_EUR": 21358.0,
+        "irr_pct": 194.7
+      }
+    ]
+  },
+  "caseificio": {
+    "metadata": {
+      "name": "Caseificio medio",
+      "description": "Caseificio con linea pastorizzazione, produzione vapore, lavaggi CIP.",
+      "T_ambient": 25
+    },
+    "n_streams": 3,
+    "analyses": [
+      {
+        "name": "Vapore flash",
+        "stream_type": "hot_waste",
+        "fluid_type": "fumi_gas_naturale",
+        "T_in": 120,
+        "T_out": 80,
+        "T_mean": 100.0,
+        "Q_kW": 12.3,
+        "E_MWh_anno": 44.3,
+        "Ex_kW": 2.5,
+        "T_class": "media",
+        "quality_ratio": 0.201
+      },
+      {
+        "name": "Acqua da pastorizzazione",
+        "stream_type": "hot_waste",
+        "fluid_type": "acqua",
+        "T_in": 72,
+        "T_out": 40,
+        "T_mean": 56.0,
+        "Q_kW": 160.7,
+        "E_MWh_anno": 482.2,
+        "Ex_kW": 15.1,
+        "T_class": "bassa",
+        "quality_ratio": 0.094
+      },
+      {
+        "name": "Acqua lavaggio CIP",
+        "stream_type": "hot_waste",
+        "fluid_type": "acqua",
+        "T_in": 45,
+        "T_out": 25,
+        "T_mean": 35.0,
+        "Q_kW": 66.9,
+        "E_MWh_anno": 80.3,
+        "Ex_kW": 2.2,
+        "T_class": "bassa",
+        "quality_ratio": 0.032
+      }
+    ],
+    "recommendations": [
+      {
+        "stream": "Vapore flash",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 12.3,
+        "Q_recovered_kW": 8.4,
+        "E_recovered_MWh": 30.1,
+        "efficiency": 0.68,
+        "savings_EUR": 2409.0
+      },
+      {
+        "stream": "Vapore flash",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 12.3,
+        "Q_recovered_kW": 7.6,
+        "E_recovered_MWh": 27.5,
+        "efficiency": 0.62,
+        "savings_EUR": 2197.0
+      },
+      {
+        "stream": "Acqua da pastorizzazione",
+        "tech_id": "scambiatore_liquido_liquido",
+        "Q_available_kW": 160.7,
+        "Q_recovered_kW": 120.5,
+        "E_recovered_MWh": 361.6,
+        "efficiency": 0.75,
+        "savings_EUR": 28929.0
+      },
+      {
+        "stream": "Acqua da pastorizzazione",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "Q_available_kW": 160.7,
+        "Q_recovered_kW": 163.9,
+        "E_recovered_MWh": 491.8,
+        "efficiency": 6.0,
+        "savings_EUR": 22950.0
+      },
+      {
+        "stream": "Acqua lavaggio CIP",
+        "tech_id": "scambiatore_liquido_liquido",
+        "Q_available_kW": 66.9,
+        "Q_recovered_kW": 46.8,
+        "E_recovered_MWh": 56.2,
+        "efficiency": 0.7,
+        "savings_EUR": 4495.0
+      },
+      {
+        "stream": "Acqua lavaggio CIP",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "Q_available_kW": 66.9,
+        "Q_recovered_kW": 68.2,
+        "E_recovered_MWh": 81.9,
+        "efficiency": 5.997,
+        "savings_EUR": 3820.0
+      }
+    ],
+    "economics": [
+      {
+        "stream": "Vapore flash",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 3156.0,
+        "payback_years": 2.0,
+        "npv_EUR": 13134.0,
+        "irr_pct": 47.9
+      },
+      {
+        "stream": "Vapore flash",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 4053.0,
+        "payback_years": 2.9,
+        "npv_EUR": 9943.0,
+        "irr_pct": 32.0
+      },
+      {
+        "stream": "Acqua da pastorizzazione",
+        "tech_id": "scambiatore_liquido_liquido",
+        "capex_EUR": 14548.0,
+        "payback_years": 0.7,
+        "npv_EUR": 202223.0,
+        "irr_pct": 151.4
+      },
+      {
+        "stream": "Acqua da pastorizzazione",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "capex_EUR": 41952.0,
+        "payback_years": 2.7,
+        "npv_EUR": 108759.0,
+        "irr_pct": 35.1
+      },
+      {
+        "stream": "Acqua lavaggio CIP",
+        "tech_id": "scambiatore_liquido_liquido",
+        "capex_EUR": 7157.0,
+        "payback_years": 2.1,
+        "npv_EUR": 24301.0,
+        "irr_pct": 45.7
+      },
+      {
+        "stream": "Acqua lavaggio CIP",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "capex_EUR": 19910.0,
+        "payback_years": 8.6,
+        "npv_EUR": -2987.0,
+        "irr_pct": 2.7
+      }
+    ]
+  },
+  "ceramica": {
+    "metadata": {
+      "name": "Ceramica — piastrelle",
+      "description": "Produzione piastrelle con forno tunnel, essiccatoio a rulli.",
+      "T_ambient": 25
+    },
+    "n_streams": 3,
+    "analyses": [
+      {
+        "name": "Fumi forno cottura",
+        "stream_type": "hot_waste",
+        "fluid_type": "fumi_gas_naturale",
+        "T_in": 400,
+        "T_out": 180,
+        "T_mean": 290.0,
+        "Q_kW": 473.4,
+        "E_MWh_anno": 3749.1,
+        "Ex_kW": 222.8,
+        "T_class": "alta",
+        "quality_ratio": 0.471
+      },
+      {
+        "name": "Aria raffreddamento rapido",
+        "stream_type": "hot_waste",
+        "fluid_type": "aria",
+        "T_in": 250,
+        "T_out": 120,
+        "T_mean": 185.0,
+        "Q_kW": 199.7,
+        "E_MWh_anno": 1581.3,
+        "Ex_kW": 69.7,
+        "T_class": "media",
+        "quality_ratio": 0.349
+      },
+      {
+        "name": "Fumi essiccatoio",
+        "stream_type": "hot_waste",
+        "fluid_type": "fumi_gas_naturale",
+        "T_in": 150,
+        "T_out": 80,
+        "T_mean": 115.0,
+        "Q_kW": 216.0,
+        "E_MWh_anno": 1710.9,
+        "Ex_kW": 50.1,
+        "T_class": "media",
+        "quality_ratio": 0.232
+      }
+    ],
+    "recommendations": [
+      {
+        "stream": "Fumi forno cottura",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 473.4,
+        "Q_recovered_kW": 345.6,
+        "E_recovered_MWh": 2736.8,
+        "efficiency": 0.73,
+        "savings_EUR": 218947.0
+      },
+      {
+        "stream": "Fumi forno cottura",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 473.4,
+        "Q_recovered_kW": 317.2,
+        "E_recovered_MWh": 2511.9,
+        "efficiency": 0.67,
+        "savings_EUR": 200952.0
+      },
+      {
+        "stream": "Fumi forno cottura",
+        "tech_id": "caldaia_recupero",
+        "Q_available_kW": 473.4,
+        "Q_recovered_kW": 311.0,
+        "E_recovered_MWh": 2463.2,
+        "efficiency": 0.657,
+        "savings_EUR": 197053.0
+      },
+      {
+        "stream": "Fumi forno cottura",
+        "tech_id": "orc",
+        "Q_available_kW": 473.4,
+        "Q_recovered_kW": 98.3,
+        "E_recovered_MWh": 778.9,
+        "efficiency": 0.208,
+        "savings_EUR": 155782.0
+      },
+      {
+        "stream": "Fumi forno cottura",
+        "tech_id": "preriscaldamento_aria",
+        "Q_available_kW": 473.4,
+        "Q_recovered_kW": 60.0,
+        "E_recovered_MWh": 474.9,
+        "efficiency": 0.127,
+        "savings_EUR": 37991.0
+      },
+      {
+        "stream": "Aria raffreddamento rapido",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 199.7,
+        "Q_recovered_kW": 145.8,
+        "E_recovered_MWh": 1154.3,
+        "efficiency": 0.73,
+        "savings_EUR": 92347.0
+      },
+      {
+        "stream": "Aria raffreddamento rapido",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 199.7,
+        "Q_recovered_kW": 133.8,
+        "E_recovered_MWh": 1059.5,
+        "efficiency": 0.67,
+        "savings_EUR": 84757.0
+      },
+      {
+        "stream": "Aria raffreddamento rapido",
+        "tech_id": "orc",
+        "Q_available_kW": 199.7,
+        "Q_recovered_kW": 30.4,
+        "E_recovered_MWh": 240.7,
+        "efficiency": 0.152,
+        "savings_EUR": 48148.0
+      },
+      {
+        "stream": "Fumi essiccatoio",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 216.0,
+        "Q_recovered_kW": 146.9,
+        "E_recovered_MWh": 1163.4,
+        "efficiency": 0.68,
+        "savings_EUR": 93071.0
+      },
+      {
+        "stream": "Fumi essiccatoio",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 216.0,
+        "Q_recovered_kW": 133.9,
+        "E_recovered_MWh": 1060.7,
+        "efficiency": 0.62,
+        "savings_EUR": 84859.0
+      },
+      {
+        "stream": "Fumi essiccatoio",
+        "tech_id": "orc",
+        "Q_available_kW": 216.0,
+        "Q_recovered_kW": 21.3,
+        "E_recovered_MWh": 168.6,
+        "efficiency": 0.099,
+        "savings_EUR": 33719.0
+      }
+    ],
+    "economics": [
+      {
+        "stream": "Fumi forno cottura",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 57311.0,
+        "payback_years": 0.4,
+        "npv_EUR": 1591411.0,
+        "irr_pct": 252.7
+      },
+      {
+        "stream": "Fumi forno cottura",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 80197.0,
+        "payback_years": 0.6,
+        "npv_EUR": 1412824.0,
+        "irr_pct": 165.0
+      },
+      {
+        "stream": "Fumi forno cottura",
+        "tech_id": "caldaia_recupero",
+        "capex_EUR": 148013.0,
+        "payback_years": 1.4,
+        "npv_EUR": 1209448.0,
+        "irr_pct": 71.4
+      },
+      {
+        "stream": "Fumi forno cottura",
+        "tech_id": "orc",
+        "capex_EUR": 93656.0,
+        "payback_years": 1.0,
+        "npv_EUR": 1016896.0,
+        "irr_pct": 100.7
+      },
+      {
+        "stream": "Fumi forno cottura",
+        "tech_id": "preriscaldamento_aria",
+        "capex_EUR": 7937.0,
+        "payback_years": 0.3,
+        "npv_EUR": 281017.0,
+        "irr_pct": 340.5
+      },
+      {
+        "stream": "Aria raffreddamento rapido",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 29234.0,
+        "payback_years": 0.5,
+        "npv_EUR": 662456.0,
+        "irr_pct": 208.6
+      },
+      {
+        "stream": "Aria raffreddamento rapido",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 40203.0,
+        "payback_years": 0.7,
+        "npv_EUR": 584855.0,
+        "irr_pct": 138.5
+      },
+      {
+        "stream": "Aria raffreddamento rapido",
+        "tech_id": "orc",
+        "capex_EUR": 38840.0,
+        "payback_years": 1.3,
+        "npv_EUR": 294646.0,
+        "irr_pct": 74.1
+      },
+      {
+        "stream": "Fumi essiccatoio",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 29405.0,
+        "payback_years": 0.5,
+        "npv_EUR": 667751.0,
+        "irr_pct": 209.0
+      },
+      {
+        "stream": "Fumi essiccatoio",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 40227.0,
+        "payback_years": 0.7,
+        "npv_EUR": 585599.0,
+        "irr_pct": 138.6
+      },
+      {
+        "stream": "Fumi essiccatoio",
+        "tech_id": "orc",
+        "capex_EUR": 29744.0,
+        "payback_years": 1.5,
+        "npv_EUR": 201297.0,
+        "irr_pct": 67.3
+      }
+    ]
+  },
+  "chimica": {
+    "metadata": {
+      "name": "Impianto chimico — intermedi organici",
+      "description": "Produzione intermedi chimici con reattori, colonne di distillazione e inceneritore.",
+      "T_ambient": 25
+    },
+    "n_streams": 3,
+    "analyses": [
+      {
+        "name": "Vapore reazione",
+        "stream_type": "hot_waste",
+        "fluid_type": "fumi_gas_naturale",
+        "T_in": 180,
+        "T_out": 100,
+        "T_mean": 140.0,
+        "Q_kW": 66.2,
+        "E_MWh_anno": 437.0,
+        "Ex_kW": 18.4,
+        "T_class": "media",
+        "quality_ratio": 0.278
+      },
+      {
+        "name": "Acqua cooling tower",
+        "stream_type": "hot_waste",
+        "fluid_type": "acqua",
+        "T_in": 40,
+        "T_out": 25,
+        "T_mean": 32.5,
+        "Q_kW": 627.1,
+        "E_MWh_anno": 4966.3,
+        "Ex_kW": 15.4,
+        "T_class": "bassa",
+        "quality_ratio": 0.025
+      },
+      {
+        "name": "Fumi inceneritore",
+        "stream_type": "hot_waste",
+        "fluid_type": "fumi_gas_naturale",
+        "T_in": 600,
+        "T_out": 200,
+        "T_mean": 400.0,
+        "Q_kW": 667.9,
+        "E_MWh_anno": 4408.4,
+        "Ex_kW": 372.1,
+        "T_class": "alta",
+        "quality_ratio": 0.557
+      }
+    ],
+    "recommendations": [
+      {
+        "stream": "Vapore reazione",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 66.2,
+        "Q_recovered_kW": 45.0,
+        "E_recovered_MWh": 297.1,
+        "efficiency": 0.68,
+        "savings_EUR": 23772.0
+      },
+      {
+        "stream": "Vapore reazione",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 66.2,
+        "Q_recovered_kW": 41.1,
+        "E_recovered_MWh": 270.9,
+        "efficiency": 0.62,
+        "savings_EUR": 21674.0
+      },
+      {
+        "stream": "Vapore reazione",
+        "tech_id": "orc",
+        "Q_available_kW": 66.2,
+        "Q_recovered_kW": 7.9,
+        "E_recovered_MWh": 52.4,
+        "efficiency": 0.12,
+        "savings_EUR": 10471.0
+      },
+      {
+        "stream": "Acqua cooling tower",
+        "tech_id": "scambiatore_liquido_liquido",
+        "Q_available_kW": 627.1,
+        "Q_recovered_kW": 438.9,
+        "E_recovered_MWh": 3476.4,
+        "efficiency": 0.7,
+        "savings_EUR": 278111.0
+      },
+      {
+        "stream": "Acqua cooling tower",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "Q_available_kW": 627.1,
+        "Q_recovered_kW": 652.7,
+        "E_recovered_MWh": 5169.6,
+        "efficiency": 5.452,
+        "savings_EUR": 223912.0
+      },
+      {
+        "stream": "Fumi inceneritore",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 667.9,
+        "Q_recovered_kW": 487.6,
+        "E_recovered_MWh": 3218.1,
+        "efficiency": 0.73,
+        "savings_EUR": 257449.0
+      },
+      {
+        "stream": "Fumi inceneritore",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 667.9,
+        "Q_recovered_kW": 447.5,
+        "E_recovered_MWh": 2953.6,
+        "efficiency": 0.67,
+        "savings_EUR": 236289.0
+      },
+      {
+        "stream": "Fumi inceneritore",
+        "tech_id": "caldaia_recupero",
+        "Q_available_kW": 667.9,
+        "Q_recovered_kW": 438.8,
+        "E_recovered_MWh": 2896.3,
+        "efficiency": 0.657,
+        "savings_EUR": 231704.0
+      },
+      {
+        "stream": "Fumi inceneritore",
+        "tech_id": "orc",
+        "Q_available_kW": 667.9,
+        "Q_recovered_kW": 165.2,
+        "E_recovered_MWh": 1090.4,
+        "efficiency": 0.247,
+        "savings_EUR": 218078.0
+      },
+      {
+        "stream": "Fumi inceneritore",
+        "tech_id": "preriscaldamento_aria",
+        "Q_available_kW": 667.9,
+        "Q_recovered_kW": 129.1,
+        "E_recovered_MWh": 852.3,
+        "efficiency": 0.193,
+        "savings_EUR": 68183.0
+      }
+    ],
+    "economics": [
+      {
+        "stream": "Vapore reazione",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 11686.0,
+        "payback_years": 0.7,
+        "npv_EUR": 163322.0,
+        "irr_pct": 133.6
+      },
+      {
+        "stream": "Vapore reazione",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 15637.0,
+        "payback_years": 1.1,
+        "npv_EUR": 140283.0,
+        "irr_pct": 90.3
+      },
+      {
+        "stream": "Vapore reazione",
+        "tech_id": "orc",
+        "capex_EUR": 14136.0,
+        "payback_years": 2.3,
+        "npv_EUR": 52777.0,
+        "irr_pct": 41.9
+      },
+      {
+        "stream": "Acqua cooling tower",
+        "tech_id": "scambiatore_liquido_liquido",
+        "capex_EUR": 38356.0,
+        "payback_years": 0.2,
+        "npv_EUR": 2091714.0,
+        "irr_pct": 556.2
+      },
+      {
+        "stream": "Acqua cooling tower",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "capex_EUR": 135790.0,
+        "payback_years": 0.9,
+        "npv_EUR": 1507425.0,
+        "irr_pct": 115.6
+      },
+      {
+        "stream": "Fumi inceneritore",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 74962.0,
+        "payback_years": 0.4,
+        "npv_EUR": 1858144.0,
+        "irr_pct": 227.0
+      },
+      {
+        "stream": "Fumi inceneritore",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 105615.0,
+        "payback_years": 0.7,
+        "npv_EUR": 1641677.0,
+        "irr_pct": 147.1
+      },
+      {
+        "stream": "Fumi inceneritore",
+        "tech_id": "caldaia_recupero",
+        "capex_EUR": 194942.0,
+        "payback_years": 1.6,
+        "npv_EUR": 1378047.0,
+        "irr_pct": 63.3
+      },
+      {
+        "stream": "Fumi inceneritore",
+        "tech_id": "orc",
+        "capex_EUR": 138238.0,
+        "payback_years": 1.0,
+        "npv_EUR": 1409387.0,
+        "irr_pct": 95.4
+      },
+      {
+        "stream": "Fumi inceneritore",
+        "tech_id": "preriscaldamento_aria",
+        "capex_EUR": 14651.0,
+        "payback_years": 0.3,
+        "npv_EUR": 503718.0,
+        "irr_pct": 331.0
+      }
+    ]
+  },
+  "complesso_multi_stream": {
+    "metadata": {
+      "name": "Complesso industriale multi-stream",
+      "description": "Fabbrica complessa con 6 stream di scarto a diverse temperature. Test stress del tool.",
+      "T_ambient": 25
+    },
+    "n_streams": 6,
+    "analyses": [
+      {
+        "name": "Fumi forno principale",
+        "stream_type": "hot_waste",
+        "fluid_type": "fumi_gas_naturale",
+        "T_in": 450,
+        "T_out": 200,
+        "T_mean": 325.0,
+        "Q_kW": 679.2,
+        "E_MWh_anno": 4074.9,
+        "Ex_kW": 340.6,
+        "T_class": "alta",
+        "quality_ratio": 0.502
+      },
+      {
+        "name": "Fumi caldaia secondaria",
+        "stream_type": "hot_waste",
+        "fluid_type": "fumi_gas_naturale",
+        "T_in": 250,
+        "T_out": 130,
+        "T_mean": 190.0,
+        "Q_kW": 125.7,
+        "E_MWh_anno": 678.6,
+        "Ex_kW": 44.8,
+        "T_class": "media",
+        "quality_ratio": 0.356
+      },
+      {
+        "name": "Aria compressa aftercooler",
+        "stream_type": "hot_waste",
+        "fluid_type": "aria",
+        "T_in": 120,
+        "T_out": 40,
+        "T_mean": 80.0,
+        "Q_kW": 24.2,
+        "E_MWh_anno": 145.5,
+        "Ex_kW": 3.8,
+        "T_class": "media",
+        "quality_ratio": 0.156
+      },
+      {
+        "name": "Acqua raffreddamento processo",
+        "stream_type": "hot_waste",
+        "fluid_type": "acqua",
+        "T_in": 65,
+        "T_out": 35,
+        "T_mean": 50.0,
+        "Q_kW": 376.5,
+        "E_MWh_anno": 2259.0,
+        "Ex_kW": 29.1,
+        "T_class": "bassa",
+        "quality_ratio": 0.077
+      },
+      {
+        "name": "Olio diatermico bypass",
+        "stream_type": "hot_waste",
+        "fluid_type": "olio_diatermico",
+        "T_in": 200,
+        "T_out": 120,
+        "T_mean": 160.0,
+        "Q_kW": 77.7,
+        "E_MWh_anno": 419.6,
+        "Ex_kW": 24.2,
+        "T_class": "media",
+        "quality_ratio": 0.312
+      },
+      {
+        "name": "Acqua lavaggio tiepida",
+        "stream_type": "hot_waste",
+        "fluid_type": "acqua",
+        "T_in": 45,
+        "T_out": 25,
+        "T_mean": 35.0,
+        "Q_kW": 167.2,
+        "E_MWh_anno": 602.0,
+        "Ex_kW": 5.4,
+        "T_class": "bassa",
+        "quality_ratio": 0.032
+      }
+    ],
+    "recommendations": [
+      {
+        "stream": "Fumi forno principale",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 679.2,
+        "Q_recovered_kW": 495.8,
+        "E_recovered_MWh": 2974.7,
+        "efficiency": 0.73,
+        "savings_EUR": 237977.0
+      },
+      {
+        "stream": "Fumi forno principale",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 679.2,
+        "Q_recovered_kW": 455.0,
+        "E_recovered_MWh": 2730.2,
+        "efficiency": 0.67,
+        "savings_EUR": 218417.0
+      },
+      {
+        "stream": "Fumi forno principale",
+        "tech_id": "caldaia_recupero",
+        "Q_available_kW": 679.2,
+        "Q_recovered_kW": 446.2,
+        "E_recovered_MWh": 2677.2,
+        "efficiency": 0.657,
+        "savings_EUR": 214179.0
+      },
+      {
+        "stream": "Fumi forno principale",
+        "tech_id": "orc",
+        "Q_available_kW": 679.2,
+        "Q_recovered_kW": 150.7,
+        "E_recovered_MWh": 904.4,
+        "efficiency": 0.222,
+        "savings_EUR": 180874.0
+      },
+      {
+        "stream": "Fumi forno principale",
+        "tech_id": "preriscaldamento_aria",
+        "Q_available_kW": 679.2,
+        "Q_recovered_kW": 97.3,
+        "E_recovered_MWh": 584.1,
+        "efficiency": 0.143,
+        "savings_EUR": 46726.0
+      },
+      {
+        "stream": "Fumi caldaia secondaria",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 125.7,
+        "Q_recovered_kW": 91.7,
+        "E_recovered_MWh": 495.4,
+        "efficiency": 0.73,
+        "savings_EUR": 39630.0
+      },
+      {
+        "stream": "Fumi caldaia secondaria",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 125.7,
+        "Q_recovered_kW": 84.2,
+        "E_recovered_MWh": 454.7,
+        "efficiency": 0.67,
+        "savings_EUR": 36372.0
+      },
+      {
+        "stream": "Fumi caldaia secondaria",
+        "tech_id": "orc",
+        "Q_available_kW": 125.7,
+        "Q_recovered_kW": 19.5,
+        "E_recovered_MWh": 105.5,
+        "efficiency": 0.155,
+        "savings_EUR": 21098.0
+      },
+      {
+        "stream": "Fumi caldaia secondaria",
+        "tech_id": "preriscaldamento_aria",
+        "Q_available_kW": 125.7,
+        "Q_recovered_kW": 9.6,
+        "E_recovered_MWh": 52.0,
+        "efficiency": 0.077,
+        "savings_EUR": 4162.0
+      },
+      {
+        "stream": "Aria compressa aftercooler",
+        "tech_id": "pompa_calore_aria_acqua",
+        "Q_available_kW": 24.2,
+        "Q_recovered_kW": 22.9,
+        "E_recovered_MWh": 137.4,
+        "efficiency": 10.0,
+        "savings_EUR": 8243.0
+      },
+      {
+        "stream": "Aria compressa aftercooler",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 24.2,
+        "Q_recovered_kW": 16.5,
+        "E_recovered_MWh": 98.9,
+        "efficiency": 0.68,
+        "savings_EUR": 7913.0
+      },
+      {
+        "stream": "Aria compressa aftercooler",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 24.2,
+        "Q_recovered_kW": 15.0,
+        "E_recovered_MWh": 90.2,
+        "efficiency": 0.62,
+        "savings_EUR": 7215.0
+      },
+      {
+        "stream": "Acqua raffreddamento processo",
+        "tech_id": "scambiatore_liquido_liquido",
+        "Q_available_kW": 376.5,
+        "Q_recovered_kW": 282.4,
+        "E_recovered_MWh": 1694.2,
+        "efficiency": 0.75,
+        "savings_EUR": 135539.0
+      },
+      {
+        "stream": "Acqua raffreddamento processo",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "Q_available_kW": 376.5,
+        "Q_recovered_kW": 384.0,
+        "E_recovered_MWh": 2304.2,
+        "efficiency": 6.0,
+        "savings_EUR": 107527.0
+      },
+      {
+        "stream": "Olio diatermico bypass",
+        "tech_id": "scambiatore_liquido_liquido",
+        "Q_available_kW": 77.7,
+        "Q_recovered_kW": 58.3,
+        "E_recovered_MWh": 314.7,
+        "efficiency": 0.75,
+        "savings_EUR": 25174.0
+      },
+      {
+        "stream": "Olio diatermico bypass",
+        "tech_id": "orc",
+        "Q_available_kW": 77.7,
+        "Q_recovered_kW": 10.5,
+        "E_recovered_MWh": 56.7,
+        "efficiency": 0.135,
+        "savings_EUR": 11333.0
+      },
+      {
+        "stream": "Acqua lavaggio tiepida",
+        "tech_id": "scambiatore_liquido_liquido",
+        "Q_available_kW": 167.2,
+        "Q_recovered_kW": 117.1,
+        "E_recovered_MWh": 421.4,
+        "efficiency": 0.7,
+        "savings_EUR": 33713.0
+      },
+      {
+        "stream": "Acqua lavaggio tiepida",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "Q_available_kW": 167.2,
+        "Q_recovered_kW": 170.6,
+        "E_recovered_MWh": 614.1,
+        "efficiency": 5.997,
+        "savings_EUR": 28648.0
+      }
+    ],
+    "economics": [
+      {
+        "stream": "Fumi forno principale",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 75943.0,
+        "payback_years": 0.5,
+        "npv_EUR": 1706091.0,
+        "irr_pct": 206.9
+      },
+      {
+        "stream": "Fumi forno principale",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 107028.0,
+        "payback_years": 0.7,
+        "npv_EUR": 1501222.0,
+        "irr_pct": 134.0
+      },
+      {
+        "stream": "Fumi forno principale",
+        "tech_id": "caldaia_recupero",
+        "capex_EUR": 197567.0,
+        "payback_years": 1.7,
+        "npv_EUR": 1237188.0,
+        "irr_pct": 57.4
+      },
+      {
+        "stream": "Fumi forno principale",
+        "tech_id": "orc",
+        "capex_EUR": 129035.0,
+        "payback_years": 1.2,
+        "npv_EUR": 1140384.0,
+        "irr_pct": 84.3
+      },
+      {
+        "stream": "Fumi forno principale",
+        "tech_id": "preriscaldamento_aria",
+        "capex_EUR": 11685.0,
+        "payback_years": 0.4,
+        "npv_EUR": 342640.0,
+        "irr_pct": 284.2
+      },
+      {
+        "stream": "Fumi caldaia secondaria",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 20361.0,
+        "payback_years": 0.8,
+        "npv_EUR": 270752.0,
+        "irr_pct": 127.7
+      },
+      {
+        "stream": "Fumi caldaia secondaria",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 27755.0,
+        "payback_years": 1.2,
+        "npv_EUR": 232791.0,
+        "irr_pct": 85.2
+      },
+      {
+        "stream": "Fumi caldaia secondaria",
+        "tech_id": "orc",
+        "capex_EUR": 27839.0,
+        "payback_years": 2.3,
+        "npv_EUR": 107623.0,
+        "irr_pct": 43.0
+      },
+      {
+        "stream": "Fumi caldaia secondaria",
+        "tech_id": "preriscaldamento_aria",
+        "capex_EUR": 1832.0,
+        "payback_years": 0.6,
+        "npv_EUR": 29287.0,
+        "irr_pct": 160.8
+      },
+      {
+        "stream": "Aria compressa aftercooler",
+        "tech_id": "pompa_calore_aria_acqua",
+        "capex_EUR": 8590.0,
+        "payback_years": 1.5,
+        "npv_EUR": 49632.0,
+        "irr_pct": 66.0
+      },
+      {
+        "stream": "Aria compressa aftercooler",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 5343.0,
+        "payback_years": 1.0,
+        "npv_EUR": 51853.0,
+        "irr_pct": 96.6
+      },
+      {
+        "stream": "Aria compressa aftercooler",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 6982.0,
+        "payback_years": 1.5,
+        "npv_EUR": 43625.0,
+        "irr_pct": 66.5
+      },
+      {
+        "stream": "Acqua raffreddamento processo",
+        "tech_id": "scambiatore_liquido_liquido",
+        "capex_EUR": 27556.0,
+        "payback_years": 0.3,
+        "npv_EUR": 1006519.0,
+        "irr_pct": 376.8
+      },
+      {
+        "stream": "Acqua raffreddamento processo",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "capex_EUR": 86506.0,
+        "payback_years": 1.2,
+        "npv_EUR": 689149.0,
+        "irr_pct": 86.5
+      },
+      {
+        "stream": "Olio diatermico bypass",
+        "tech_id": "scambiatore_liquido_liquido",
+        "capex_EUR": 8439.0,
+        "payback_years": 0.4,
+        "npv_EUR": 182111.0,
+        "irr_pct": 227.9
+      },
+      {
+        "stream": "Olio diatermico bypass",
+        "tech_id": "orc",
+        "capex_EUR": 17499.0,
+        "payback_years": 2.7,
+        "npv_EUR": 52756.0,
+        "irr_pct": 35.6
+      },
+      {
+        "stream": "Acqua lavaggio tiepida",
+        "tech_id": "scambiatore_liquido_liquido",
+        "capex_EUR": 14239.0,
+        "payback_years": 0.6,
+        "npv_EUR": 239611.0,
+        "irr_pct": 180.6
+      },
+      {
+        "stream": "Acqua lavaggio tiepida",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "capex_EUR": 43406.0,
+        "payback_years": 2.2,
+        "npv_EUR": 150391.0,
+        "irr_pct": 43.8
+      }
+    ]
+  },
+  "data_center": {
+    "metadata": {
+      "name": "Data Center — raffreddamento server",
+      "description": "Data center con sistema di raffreddamento ad acqua. Grande portata, bassa temperatura.",
+      "T_ambient": 25
+    },
+    "n_streams": 1,
+    "analyses": [
+      {
+        "name": "Acqua raffreddamento server",
+        "stream_type": "hot_waste",
+        "fluid_type": "acqua",
+        "T_in": 40,
+        "T_out": 28,
+        "T_mean": 34.0,
+        "Q_kW": 752.4,
+        "E_MWh_anno": 6590.8,
+        "Ex_kW": 22.0,
+        "T_class": "bassa",
+        "quality_ratio": 0.029
+      }
+    ],
+    "recommendations": [
+      {
+        "stream": "Acqua raffreddamento server",
+        "tech_id": "scambiatore_liquido_liquido",
+        "Q_available_kW": 752.4,
+        "Q_recovered_kW": 526.7,
+        "E_recovered_MWh": 4613.6,
+        "efficiency": 0.7,
+        "savings_EUR": 369084.0
+      },
+      {
+        "stream": "Acqua raffreddamento server",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "Q_available_kW": 752.4,
+        "Q_recovered_kW": 773.7,
+        "E_recovered_MWh": 6777.6,
+        "efficiency": 5.766,
+        "savings_EUR": 307122.0
+      }
+    ],
+    "economics": [
+      {
+        "stream": "Acqua raffreddamento server",
+        "tech_id": "scambiatore_liquido_liquido",
+        "capex_EUR": 43978.0,
+        "payback_years": 0.2,
+        "npv_EUR": 2786003.0,
+        "irr_pct": 644.0
+      },
+      {
+        "stream": "Acqua raffreddamento server",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "capex_EUR": 156910.0,
+        "payback_years": 0.7,
+        "npv_EUR": 2115494.0,
+        "irr_pct": 137.6
+      }
+    ]
+  },
+  "fonderia": {
+    "metadata": {
+      "name": "Fonderia di ghisa",
+      "description": "Fonderia con forno a induzione, raffreddamento ad acqua e dispersioni termiche.",
+      "T_ambient": 25
+    },
+    "n_streams": 3,
+    "analyses": [
+      {
+        "name": "Fumi forno fusione",
+        "stream_type": "hot_waste",
+        "fluid_type": "fumi_gas_naturale",
+        "T_in": 500,
+        "T_out": 200,
+        "T_mean": 350.0,
+        "Q_kW": 492.9,
+        "E_MWh_anno": 1971.4,
+        "Ex_kW": 257.0,
+        "T_class": "alta",
+        "quality_ratio": 0.522
+      },
+      {
+        "name": "Acqua raffreddamento",
+        "stream_type": "hot_waste",
+        "fluid_type": "acqua",
+        "T_in": 60,
+        "T_out": 35,
+        "T_mean": 47.5,
+        "Q_kW": 313.7,
+        "E_MWh_anno": 1254.6,
+        "Ex_kW": 22.0,
+        "T_class": "bassa",
+        "quality_ratio": 0.07
+      },
+      {
+        "name": "Irraggiamento forni e siviere",
+        "stream_type": "hot_waste",
+        "fluid_type": "aria",
+        "T_in": 200,
+        "T_out": 80,
+        "T_mean": 140.0,
+        "Q_kW": 97.7,
+        "E_MWh_anno": 390.6,
+        "Ex_kW": 27.2,
+        "T_class": "media",
+        "quality_ratio": 0.278
+      }
+    ],
+    "recommendations": [
+      {
+        "stream": "Fumi forno fusione",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 492.9,
+        "Q_recovered_kW": 359.8,
+        "E_recovered_MWh": 1439.1,
+        "efficiency": 0.73,
+        "savings_EUR": 115130.0
+      },
+      {
+        "stream": "Fumi forno fusione",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 492.9,
+        "Q_recovered_kW": 330.2,
+        "E_recovered_MWh": 1320.8,
+        "efficiency": 0.67,
+        "savings_EUR": 105667.0
+      },
+      {
+        "stream": "Fumi forno fusione",
+        "tech_id": "caldaia_recupero",
+        "Q_available_kW": 492.9,
+        "Q_recovered_kW": 323.8,
+        "E_recovered_MWh": 1295.2,
+        "efficiency": 0.657,
+        "savings_EUR": 103617.0
+      },
+      {
+        "stream": "Fumi forno fusione",
+        "tech_id": "orc",
+        "Q_available_kW": 492.9,
+        "Q_recovered_kW": 113.9,
+        "E_recovered_MWh": 455.6,
+        "efficiency": 0.231,
+        "savings_EUR": 91112.0
+      },
+      {
+        "stream": "Fumi forno fusione",
+        "tech_id": "preriscaldamento_aria",
+        "Q_available_kW": 492.9,
+        "Q_recovered_kW": 78.9,
+        "E_recovered_MWh": 315.4,
+        "efficiency": 0.16,
+        "savings_EUR": 25234.0
+      },
+      {
+        "stream": "Acqua raffreddamento",
+        "tech_id": "scambiatore_liquido_liquido",
+        "Q_available_kW": 313.7,
+        "Q_recovered_kW": 235.2,
+        "E_recovered_MWh": 941.0,
+        "efficiency": 0.75,
+        "savings_EUR": 75278.0
+      },
+      {
+        "stream": "Acqua raffreddamento",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "Q_available_kW": 313.7,
+        "Q_recovered_kW": 319.9,
+        "E_recovered_MWh": 1279.7,
+        "efficiency": 6.0,
+        "savings_EUR": 59720.0
+      },
+      {
+        "stream": "Irraggiamento forni e siviere",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 97.7,
+        "Q_recovered_kW": 66.4,
+        "E_recovered_MWh": 265.6,
+        "efficiency": 0.68,
+        "savings_EUR": 21249.0
+      },
+      {
+        "stream": "Irraggiamento forni e siviere",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 97.7,
+        "Q_recovered_kW": 60.5,
+        "E_recovered_MWh": 242.2,
+        "efficiency": 0.62,
+        "savings_EUR": 19374.0
+      },
+      {
+        "stream": "Irraggiamento forni e siviere",
+        "tech_id": "orc",
+        "Q_available_kW": 97.7,
+        "Q_recovered_kW": 11.7,
+        "E_recovered_MWh": 46.8,
+        "efficiency": 0.12,
+        "savings_EUR": 9360.0
+      }
+    ],
+    "economics": [
+      {
+        "stream": "Fumi forno fusione",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 59140.0,
+        "payback_years": 0.8,
+        "npv_EUR": 786595.0,
+        "irr_pct": 127.7
+      },
+      {
+        "stream": "Fumi forno fusione",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 82816.0,
+        "payback_years": 1.2,
+        "npv_EUR": 672528.0,
+        "irr_pct": 82.9
+      },
+      {
+        "stream": "Fumi forno fusione",
+        "tech_id": "caldaia_recupero",
+        "capex_EUR": 152867.0,
+        "payback_years": 2.8,
+        "npv_EUR": 477724.0,
+        "irr_pct": 33.5
+      },
+      {
+        "stream": "Fumi forno fusione",
+        "tech_id": "orc",
+        "capex_EUR": 104596.0,
+        "payback_years": 1.9,
+        "npv_EUR": 495804.0,
+        "irr_pct": 50.5
+      },
+      {
+        "stream": "Fumi forno fusione",
+        "tech_id": "preriscaldamento_aria",
+        "capex_EUR": 9881.0,
+        "payback_years": 0.6,
+        "npv_EUR": 179488.0,
+        "irr_pct": 181.0
+      },
+      {
+        "stream": "Acqua raffreddamento",
+        "tech_id": "scambiatore_liquido_liquido",
+        "capex_EUR": 24024.0,
+        "payback_years": 0.4,
+        "npv_EUR": 546339.0,
+        "irr_pct": 239.5
+      },
+      {
+        "stream": "Acqua raffreddamento",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "capex_EUR": 74067.0,
+        "payback_years": 1.8,
+        "npv_EUR": 340290.0,
+        "irr_pct": 54.7
+      },
+      {
+        "stream": "Irraggiamento forni e siviere",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 15829.0,
+        "payback_years": 1.1,
+        "npv_EUR": 136667.0,
+        "irr_pct": 87.3
+      },
+      {
+        "stream": "Irraggiamento forni e siviere",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 21306.0,
+        "payback_years": 1.7,
+        "npv_EUR": 112708.0,
+        "irr_pct": 58.0
+      },
+      {
+        "stream": "Irraggiamento forni e siviere",
+        "tech_id": "orc",
+        "capex_EUR": 18978.0,
+        "payback_years": 3.6,
+        "npv_EUR": 34583.0,
+        "irr_pct": 24.6
+      }
+    ]
+  },
+  "tessile": {
+    "metadata": {
+      "name": "Tessile — tintoria e finissaggio",
+      "description": "Tintoria tessile con vasche tintura e stenditrici a vapore.",
+      "T_ambient": 25
+    },
+    "n_streams": 2,
+    "analyses": [
+      {
+        "name": "Acqua tintura",
+        "stream_type": "hot_waste",
+        "fluid_type": "acqua",
+        "T_in": 80,
+        "T_out": 40,
+        "T_mean": 60.0,
+        "Q_kW": 251.3,
+        "E_MWh_anno": 1125.8,
+        "Ex_kW": 26.4,
+        "T_class": "bassa",
+        "quality_ratio": 0.105
+      },
+      {
+        "name": "Vapore esausto stenditrice",
+        "stream_type": "hot_waste",
+        "fluid_type": "fumi_gas_naturale",
+        "T_in": 140,
+        "T_out": 80,
+        "T_mean": 110.0,
+        "Q_kW": 37.0,
+        "E_MWh_anno": 165.7,
+        "Ex_kW": 8.2,
+        "T_class": "media",
+        "quality_ratio": 0.222
+      }
+    ],
+    "recommendations": [
+      {
+        "stream": "Acqua tintura",
+        "tech_id": "scambiatore_liquido_liquido",
+        "Q_available_kW": 251.3,
+        "Q_recovered_kW": 188.5,
+        "E_recovered_MWh": 844.3,
+        "efficiency": 0.75,
+        "savings_EUR": 67545.0
+      },
+      {
+        "stream": "Acqua tintura",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "Q_available_kW": 251.3,
+        "Q_recovered_kW": 237.3,
+        "E_recovered_MWh": 1063.2,
+        "efficiency": 10.0,
+        "savings_EUR": 63793.0
+      },
+      {
+        "stream": "Vapore esausto stenditrice",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 37.0,
+        "Q_recovered_kW": 25.2,
+        "E_recovered_MWh": 112.7,
+        "efficiency": 0.68,
+        "savings_EUR": 9015.0
+      },
+      {
+        "stream": "Vapore esausto stenditrice",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 37.0,
+        "Q_recovered_kW": 22.9,
+        "E_recovered_MWh": 102.7,
+        "efficiency": 0.62,
+        "savings_EUR": 8219.0
+      }
+    ],
+    "economics": [
+      {
+        "stream": "Acqua tintura",
+        "tech_id": "scambiatore_liquido_liquido",
+        "capex_EUR": 20349.0,
+        "payback_years": 0.4,
+        "npv_EUR": 491968.0,
+        "irr_pct": 253.8
+      },
+      {
+        "stream": "Acqua tintura",
+        "tech_id": "pompa_calore_acqua_acqua",
+        "capex_EUR": 57460.0,
+        "payback_years": 1.3,
+        "npv_EUR": 398836.0,
+        "irr_pct": 76.9
+      },
+      {
+        "stream": "Vapore esausto stenditrice",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 7434.0,
+        "payback_years": 1.3,
+        "npv_EUR": 56738.0,
+        "irr_pct": 78.6
+      },
+      {
+        "stream": "Vapore esausto stenditrice",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 9794.0,
+        "payback_years": 1.9,
+        "npv_EUR": 46504.0,
+        "irr_pct": 53.2
+      }
+    ]
+  },
+  "vetreria": {
+    "metadata": {
+      "name": "Vetreria — vetro cavo",
+      "description": "Produzione vetro cavo con forno fusione e aria di raffreddamento.",
+      "T_ambient": 25
+    },
+    "n_streams": 2,
+    "analyses": [
+      {
+        "name": "Fumi forno fusione vetro",
+        "stream_type": "hot_waste",
+        "fluid_type": "fumi_gas_naturale",
+        "T_in": 500,
+        "T_out": 200,
+        "T_mean": 350.0,
+        "Q_kW": 985.7,
+        "E_MWh_anno": 8279.9,
+        "Ex_kW": 514.1,
+        "T_class": "alta",
+        "quality_ratio": 0.522
+      },
+      {
+        "name": "Aria raffreddamento stampi",
+        "stream_type": "hot_waste",
+        "fluid_type": "aria",
+        "T_in": 300,
+        "T_out": 120,
+        "T_mean": 210.0,
+        "Q_kW": 370.5,
+        "E_MWh_anno": 3112.4,
+        "Ex_kW": 141.9,
+        "T_class": "media",
+        "quality_ratio": 0.383
+      }
+    ],
+    "recommendations": [
+      {
+        "stream": "Fumi forno fusione vetro",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 985.7,
+        "Q_recovered_kW": 719.6,
+        "E_recovered_MWh": 6044.3,
+        "efficiency": 0.73,
+        "savings_EUR": 483546.0
+      },
+      {
+        "stream": "Fumi forno fusione vetro",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 985.7,
+        "Q_recovered_kW": 660.4,
+        "E_recovered_MWh": 5547.5,
+        "efficiency": 0.67,
+        "savings_EUR": 443803.0
+      },
+      {
+        "stream": "Fumi forno fusione vetro",
+        "tech_id": "caldaia_recupero",
+        "Q_available_kW": 985.7,
+        "Q_recovered_kW": 647.6,
+        "E_recovered_MWh": 5439.9,
+        "efficiency": 0.657,
+        "savings_EUR": 435192.0
+      },
+      {
+        "stream": "Fumi forno fusione vetro",
+        "tech_id": "orc",
+        "Q_available_kW": 985.7,
+        "Q_recovered_kW": 227.8,
+        "E_recovered_MWh": 1913.4,
+        "efficiency": 0.231,
+        "savings_EUR": 382671.0
+      },
+      {
+        "stream": "Fumi forno fusione vetro",
+        "tech_id": "preriscaldamento_aria",
+        "Q_available_kW": 985.7,
+        "Q_recovered_kW": 157.7,
+        "E_recovered_MWh": 1324.8,
+        "efficiency": 0.16,
+        "savings_EUR": 105983.0
+      },
+      {
+        "stream": "Aria raffreddamento stampi",
+        "tech_id": "economizzatore_gas_liquido",
+        "Q_available_kW": 370.5,
+        "Q_recovered_kW": 270.5,
+        "E_recovered_MWh": 2272.0,
+        "efficiency": 0.73,
+        "savings_EUR": 181763.0
+      },
+      {
+        "stream": "Aria raffreddamento stampi",
+        "tech_id": "recuperatore_gas_gas",
+        "Q_available_kW": 370.5,
+        "Q_recovered_kW": 248.2,
+        "E_recovered_MWh": 2085.3,
+        "efficiency": 0.67,
+        "savings_EUR": 166824.0
+      },
+      {
+        "stream": "Aria raffreddamento stampi",
+        "tech_id": "caldaia_recupero",
+        "Q_available_kW": 370.5,
+        "Q_recovered_kW": 226.8,
+        "E_recovered_MWh": 1904.8,
+        "efficiency": 0.612,
+        "savings_EUR": 152382.0
+      },
+      {
+        "stream": "Aria raffreddamento stampi",
+        "tech_id": "orc",
+        "Q_available_kW": 370.5,
+        "Q_recovered_kW": 62.1,
+        "E_recovered_MWh": 521.8,
+        "efficiency": 0.168,
+        "savings_EUR": 104358.0
+      }
+    ],
+    "economics": [
+      {
+        "stream": "Fumi forno fusione vetro",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 101551.0,
+        "payback_years": 0.3,
+        "npv_EUR": 3557960.0,
+        "irr_pct": 315.4
+      },
+      {
+        "stream": "Fumi forno fusione vetro",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 144190.0,
+        "payback_years": 0.5,
+        "npv_EUR": 3177240.0,
+        "irr_pct": 203.2
+      },
+      {
+        "stream": "Fumi forno fusione vetro",
+        "tech_id": "caldaia_recupero",
+        "capex_EUR": 266156.0,
+        "payback_years": 1.1,
+        "npv_EUR": 2799151.0,
+        "irr_pct": 88.5
+      },
+      {
+        "stream": "Fumi forno fusione vetro",
+        "tech_id": "orc",
+        "capex_EUR": 175908.0,
+        "payback_years": 0.8,
+        "npv_EUR": 2605518.0,
+        "irr_pct": 132.8
+      },
+      {
+        "stream": "Fumi forno fusione vetro",
+        "tech_id": "preriscaldamento_aria",
+        "capex_EUR": 17194.0,
+        "payback_years": 0.2,
+        "npv_EUR": 791644.0,
+        "irr_pct": 438.8
+      },
+      {
+        "stream": "Aria raffreddamento stampi",
+        "tech_id": "economizzatore_gas_liquido",
+        "capex_EUR": 47341.0,
+        "payback_years": 0.4,
+        "npv_EUR": 1321549.0,
+        "irr_pct": 254.0
+      },
+      {
+        "stream": "Aria raffreddamento stampi",
+        "tech_id": "recuperatore_gas_gas",
+        "capex_EUR": 65907.0,
+        "payback_years": 0.6,
+        "npv_EUR": 1174045.0,
+        "irr_pct": 166.7
+      },
+      {
+        "stream": "Aria raffreddamento stampi",
+        "tech_id": "caldaia_recupero",
+        "capex_EUR": 114976.0,
+        "payback_years": 1.4,
+        "npv_EUR": 934184.0,
+        "irr_pct": 71.1
+      },
+      {
+        "stream": "Aria raffreddamento stampi",
+        "tech_id": "orc",
+        "capex_EUR": 66365.0,
+        "payback_years": 1.1,
+        "npv_EUR": 674020.0,
+        "irr_pct": 95.0
+      }
+    ]
+  }
+}
