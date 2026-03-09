@@ -67,28 +67,45 @@ st.markdown("""
         margin-top: 0.75rem;
     }
 
-    /* Metric cards */
+    /* Dark theme base */
+    .stApp {
+        background-color: #0d1117;
+        color: #e6edf3;
+    }
+    .stApp header {
+        background-color: #0d1117 !important;
+    }
+    .stMarkdown, .stMarkdown p, .stMarkdown li, .stMarkdown h1,
+    .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
+        color: #e6edf3 !important;
+    }
+
+    /* Metric cards — dark */
     div[data-testid="stMetric"] {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border: 1px solid #dee2e6;
+        background: linear-gradient(135deg, #161b22 0%, #1c2333 100%);
+        border: 1px solid #30363d;
         border-radius: 12px;
         padding: 1rem 1.25rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        box-shadow: 0 2px 12px rgba(0,0,0,0.3);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
     div[data-testid="stMetric"]:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        box-shadow: 0 4px 20px rgba(255,107,53,0.15);
+        border-color: #ff6b35;
     }
     div[data-testid="stMetric"] label {
         font-weight: 600 !important;
-        color: #495057 !important;
+        color: #8b949e !important;
+    }
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+        color: #f0f6fc !important;
     }
 
-    /* Impact banner */
+    /* Impact banner — dark */
     .impact-banner {
-        background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
-        border-left: 5px solid #ffc107;
+        background: linear-gradient(135deg, #1c1a00 0%, #2a2600 100%);
+        border-left: 5px solid #ff6b35;
         border-radius: 0 12px 12px 0;
         padding: 1.25rem 1.5rem;
         margin: 1rem 0;
@@ -96,26 +113,26 @@ st.markdown("""
     .impact-banner p {
         margin: 0;
         font-size: 1.1rem;
-        color: #856404;
+        color: #ffb088;
     }
 
-    /* Section headers */
+    /* Section headers — dark */
     .section-header {
         display: flex;
         align-items: center;
         gap: 0.75rem;
         padding: 0.5rem 0;
         margin-top: 1.5rem;
-        border-bottom: 2px solid #e9ecef;
+        border-bottom: 2px solid #21262d;
         margin-bottom: 1rem;
     }
     .section-header h2 {
         margin: 0;
         font-weight: 700;
-        color: #1a1a2e;
+        color: #f0f6fc !important;
     }
 
-    /* Temperature class cards */
+    /* Temperature class cards — dark */
     .temp-card {
         border-radius: 12px;
         padding: 1.25rem;
@@ -125,25 +142,70 @@ st.markdown("""
     .temp-card:hover {
         transform: scale(1.02);
     }
-    .temp-alta { background: linear-gradient(135deg, #fee2e2, #fecaca); border: 1px solid #fca5a5; }
-    .temp-media { background: linear-gradient(135deg, #ffedd5, #fed7aa); border: 1px solid #fdba74; }
-    .temp-bassa { background: linear-gradient(135deg, #fef9c3, #fde68a); border: 1px solid #fcd34d; }
-    .temp-card .temp-label { font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
-    .temp-card .temp-value { font-size: 1.5rem; font-weight: 800; color: #1a1a2e; }
-    .temp-card .temp-detail { font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem; }
+    .temp-alta { background: linear-gradient(135deg, #3b1012, #4a1518); border: 1px solid #7f1d1d; }
+    .temp-media { background: linear-gradient(135deg, #3b2508, #4a2e0a); border: 1px solid #92400e; }
+    .temp-bassa { background: linear-gradient(135deg, #3b3508, #4a420a); border: 1px solid #854d0e; }
+    .temp-card .temp-label { font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; color: #e6edf3; }
+    .temp-card .temp-value { font-size: 1.5rem; font-weight: 800; color: #f0f6fc; }
+    .temp-card .temp-detail { font-size: 0.85rem; color: #8b949e; margin-top: 0.25rem; }
 
-    /* Sidebar styling */
+    /* Sidebar — dark */
     section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+        background: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
+        border-right: 1px solid #21262d;
     }
     section[data-testid="stSidebar"] .stButton > button {
         border-radius: 8px;
     }
+    section[data-testid="stSidebar"] .stMarkdown p,
+    section[data-testid="stSidebar"] .stMarkdown h3 {
+        color: #e6edf3 !important;
+    }
 
-    /* Stream expander */
+    /* Expanders — dark */
     .streamlit-expanderHeader {
         font-weight: 600 !important;
         font-size: 1rem !important;
+        color: #e6edf3 !important;
+        background-color: #161b22 !important;
+        border-color: #30363d !important;
+    }
+    details[data-testid="stExpander"] {
+        background-color: #161b22;
+        border: 1px solid #30363d !important;
+        border-radius: 12px !important;
+    }
+
+    /* Tabs — dark */
+    .stTabs [data-baseweb="tab-list"] {
+        background-color: #161b22;
+        border-radius: 8px;
+        padding: 4px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        color: #8b949e !important;
+    }
+    .stTabs [aria-selected="true"] {
+        color: #ff6b35 !important;
+    }
+
+    /* Inputs — dark */
+    .stTextInput > div > div, .stNumberInput > div > div,
+    .stSelectbox > div > div {
+        background-color: #161b22 !important;
+        border-color: #30363d !important;
+        color: #e6edf3 !important;
+    }
+
+    /* Dataframe — dark */
+    .stDataFrame {
+        border: 1px solid #30363d;
+        border-radius: 8px;
+    }
+
+    /* Info/Success/Error boxes — dark */
+    .stAlert {
+        border-radius: 10px !important;
     }
 
     /* Analyze button */
@@ -165,17 +227,102 @@ st.markdown("""
         font-weight: 600;
     }
 
-    /* Footer */
+    /* Footer — dark */
     .footer {
         text-align: center;
-        color: #adb5bd;
+        color: #484f58;
         font-size: 0.8rem;
         padding: 2rem 0 1rem 0;
-        border-top: 1px solid #e9ecef;
+        border-top: 1px solid #21262d;
         margin-top: 3rem;
     }
-    .footer a { color: #6c757d; text-decoration: none; }
-    .footer a:hover { color: #495057; }
+    .footer a { color: #8b949e; text-decoration: none; }
+    .footer a:hover { color: #ff6b35; }
+
+    /* ── ANIMATIONS ── */
+
+    /* Pulsing glow on hero */
+    .hero-container {
+        animation: heroGlow 4s ease-in-out infinite alternate;
+    }
+    @keyframes heroGlow {
+        0% { box-shadow: 0 0 20px rgba(255,107,53,0.05); }
+        100% { box-shadow: 0 0 40px rgba(255,107,53,0.15); }
+    }
+
+    /* Fade-in + slide-up for metric cards */
+    div[data-testid="stMetric"] {
+        animation: slideUp 0.6s ease-out both;
+    }
+    div[data-testid="stMetric"]:nth-child(1) { animation-delay: 0s; }
+    div[data-testid="stMetric"]:nth-child(2) { animation-delay: 0.1s; }
+    div[data-testid="stMetric"]:nth-child(3) { animation-delay: 0.2s; }
+    div[data-testid="stMetric"]:nth-child(4) { animation-delay: 0.3s; }
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Temperature cards — fade in */
+    .temp-card {
+        animation: fadeScale 0.5s ease-out both;
+    }
+    .temp-alta { animation-delay: 0s; }
+    .temp-media { animation-delay: 0.15s; }
+    .temp-bassa { animation-delay: 0.3s; }
+    @keyframes fadeScale {
+        from { opacity: 0; transform: scale(0.92); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Impact banner — slide in from left */
+    .impact-banner {
+        animation: slideRight 0.7s ease-out both;
+        animation-delay: 0.2s;
+    }
+    @keyframes slideRight {
+        from { opacity: 0; transform: translateX(-30px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Badge shimmer effect */
+    .hero-badge {
+        position: relative;
+        overflow: hidden;
+    }
+    .hero-badge::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+        animation: shimmer 3s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+        0% { left: -100%; }
+        50% { left: 100%; }
+        100% { left: 100%; }
+    }
+
+    /* Fire icon pulse in hero */
+    .hero-title {
+        animation: firePulse 2s ease-in-out infinite alternate;
+    }
+    @keyframes firePulse {
+        0% { text-shadow: 0 0 10px rgba(255,107,53,0.3); }
+        100% { text-shadow: 0 0 25px rgba(255,107,53,0.6), 0 0 50px rgba(255,50,0,0.2); }
+    }
+
+    /* Analyze button pulse */
+    .stButton > button[kind="primary"] {
+        animation: btnPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes btnPulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,53,0.4); }
+        50% { box-shadow: 0 0 0 8px rgba(255,107,53,0); }
+    }
 </style>
 """, unsafe_allow_html=True)
 
