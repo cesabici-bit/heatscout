@@ -104,21 +104,7 @@ st.markdown("""
     .stTooltipIcon, small, .stApp small {
         color: #8b949e !important;
     }
-    /* Alert boxes (light background) — dark text */
-    [data-testid="stNotification"],
-    [data-testid="stNotification"] p,
-    [data-testid="stNotification"] span,
-    [data-testid="stNotification"] a,
-    [data-testid="stNotification"] strong,
-    .stAlert, .stAlert p, .stAlert span, .stAlert a, .stAlert strong,
-    .element-container .stSuccess, .element-container .stInfo,
-    .element-container .stWarning, .element-container .stError,
-    div[data-testid="stNotificationContentSuccess"] *,
-    div[data-testid="stNotificationContentInfo"] *,
-    div[data-testid="stNotificationContentWarning"] *,
-    div[data-testid="stNotificationContentError"] * {
-        color: #1a1a2e !important;
-    }
+    /* placeholder — alert box styles moved to end for specificity */
     /* Blockquote border */
     .stMarkdown blockquote {
         border-left-color: #ff6b35 !important;
@@ -393,6 +379,29 @@ st.markdown("""
     @keyframes btnPulse {
         0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,53,0.4); }
         50% { box-shadow: 0 0 0 8px rgba(255,107,53,0); }
+    }
+
+    /* ── ALERT BOXES: dark text on light bg (MUST be last for specificity) ── */
+    .stApp [data-testid="stNotification"],
+    .stApp [data-testid="stNotification"] *,
+    .stApp .stAlert,
+    .stApp .stAlert *,
+    .stApp [data-testid="stNotificationContentSuccess"],
+    .stApp [data-testid="stNotificationContentSuccess"] *,
+    .stApp [data-testid="stNotificationContentInfo"],
+    .stApp [data-testid="stNotificationContentInfo"] *,
+    .stApp [data-testid="stNotificationContentWarning"],
+    .stApp [data-testid="stNotificationContentWarning"] *,
+    .stApp [data-testid="stNotificationContentError"],
+    .stApp [data-testid="stNotificationContentError"] *,
+    .stApp [role="alert"],
+    .stApp [role="alert"] *,
+    .stApp [role="alert"] p,
+    .stApp [role="alert"] span,
+    .stApp [role="alert"] strong,
+    .stApp [role="alert"] a,
+    .stApp [role="alert"] div {
+        color: #1a1a2e !important;
     }
 </style>
 """, unsafe_allow_html=True)
