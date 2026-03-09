@@ -103,8 +103,9 @@ tests/            # 89 test inclusi sanity check fisici
 - 3A.3 DONE: Pre-commit hooks (ruff lint + format, .pre-commit-config.yaml)
 - 4A.1 DONE: Help in-app (tooltips, disclaimer, interpretation guide)
 - 4A.2 DONE: Methodology page (efficiency models, CAPEX table, bibliography)
+- 4B.1 IN PROGRESS: Beta testing issue #1 creata, in attesa feedback utenti
 - Totale: 249 test
-- Prossimo task: 4B.1 (Beta testing)
+- Prossimo task: 4B.2 (Release v1.0, dopo beta feedback)
 
 ## Gotcha
 - CoolProp puo' essere lento alla prima chiamata (caricamento tabelle)

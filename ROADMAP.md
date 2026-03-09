@@ -268,8 +268,9 @@ Ogni task ha:
 
 > Validazione con utenti reali, poi tag v1.0.
 
-### Task 4B.1: Beta testing (3-5 utenti)
+### Task 4B.1: Beta testing (3-5 utenti) 🔄 IN PROGRESS
 
+- **GitHub Issue:** https://github.com/cesabici-bit/heatscout/issues/1
 - **Input:** App live su Streamlit Cloud, documentazione in-app
 - **Output:**
   - 3-5 utenti (ingegneri/energy manager) testano con dati reali
