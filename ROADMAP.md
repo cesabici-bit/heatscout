@@ -1,6 +1,6 @@
 # HeatScout — Roadmap Completa (Fase 3-4)
 
-**Stato attuale:** Fase 1+2 COMPLETE. 163 test, core engine stabile, UI funzionante, PDF report.
+**Stato attuale:** Fase 1+2 COMPLETE + 3A/3B/3F/3C.1 DONE. 186 test, core engine stabile, UI funzionante, PDF report, TEE incentivi.
 **Modello:** Open source, gratuito. Obiettivo: visibilità e credibilità.
 **Data creazione:** 2026-03-09
 
@@ -349,7 +349,7 @@ FASE 4B: Beta & Release      ←── dopo tutto
 | 4 | 3B.1 Streamlit Cloud deploy | 3A.1 |
 | 5 | ~~3F.1 Error handling UI~~ ✅ | nessuna |
 | 6 | ~~3F.2 Integration test~~ ✅ | nessuna |
-| 7 | 3C.1 Certificati Bianchi | nessuna |
+| 7 | ~~3C.1 Certificati Bianchi~~ ✅ | nessuna |
 | 8 | 3C.2 Transizione 5.0 | 3C.1 |
 | 9 | 3D.1 Export Excel | nessuna |
 | 10 | 3D.2 Salva/Carica JSON | nessuna |
