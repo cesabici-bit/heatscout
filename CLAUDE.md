@@ -100,8 +100,9 @@ tests/            # 89 test inclusi sanity check fisici
 - 3E.1 DONE: Energy price sensitivity (±50% sweep, payback/NPV charts)
 - 3E.2 DONE: Tornado chart multi-parameter (±20% on 4 params, sorted by NPV impact)
 - DONE: All economic params user-editable (discount rate, horizon, OPEX/install multipliers)
+- 3A.3 DONE: Pre-commit hooks (ruff lint + format, .pre-commit-config.yaml)
 - Totale: 249 test
-- Prossimo task: 3A.3 (Pre-commit hooks ruff)
+- Prossimo task: 4A.1 (Help in-app tooltips)
 
 ## Gotcha
 - CoolProp puo' essere lento alla prima chiamata (caricamento tabelle)

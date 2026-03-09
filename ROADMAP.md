@@ -48,7 +48,7 @@ Ogni task ha:
   - kaleido su Linux headless → skippare test PDF con `pytest.mark` se necessario
   - CI lenta (CoolProp pesante) → cache pip dependencies
 
-### Task 3A.3: Pre-commit hooks (linting)
+### Task 3A.3: Pre-commit hooks (linting) ✅
 
 - **Input:** CI verde (Task 3A.2)
 - **Output:** `.pre-commit-config.yaml` con ruff (lint + format)
