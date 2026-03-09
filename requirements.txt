@@ -1,3 +1,4 @@
+-e .
 CoolProp>=6.4
 plotly>=5.18
 streamlit>=1.30
