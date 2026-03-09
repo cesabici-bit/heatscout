@@ -10,7 +10,7 @@ Inserisci i flussi termici di scarto del tuo impianto → ottieni in 5 minuti le
 <!-- TODO: aggiungere link demo live dopo deploy su Streamlit Cloud -->
 <!-- [**Prova la demo live →**](https://heatscout.streamlit.app) -->
 
-[![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
+[![CI](https://github.com/cesabici-bit/heatscout/actions/workflows/ci.yml/badge.svg)](https://github.com/cesabici-bit/heatscout/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
