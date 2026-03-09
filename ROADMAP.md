@@ -353,7 +353,7 @@ FASE 4B: Beta & Release      ←── dopo tutto
 | 8 | ~~3C.2 Generic CAPEX incentive~~ ✅ | 3C.1 |
 | 9 | ~~3D.1 Export Excel~~ ✅ | nessuna |
 | 10 | ~~3D.2 Salva/Carica JSON~~ ✅ | nessuna |
-| 11 | 3D.3 Import CSV/Excel | 3D.1 |
+| 11 | ~~3D.3 Import CSV/Excel~~ ✅ | 3D.1 |
 | 12 | 3E.1 Sensitivity prezzo | nessuna |
 | 13 | 3E.2 Tornado chart | 3E.1 |
 | 14 | 4A.1 Help in-app | 3C-3F |

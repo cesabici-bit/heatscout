@@ -96,8 +96,9 @@ tests/            # 89 test inclusi sanity check fisici
 - 3C.2 DONE: Generic CAPEX incentive (international, any tax credit/grant)
 - 3D.1 DONE: Export Excel (3 fogli: Streams, Technologies, Economics + incentivi)
 - 3D.2 DONE: Save/Load analysis JSON (round-trip verified)
-- Totale: 214 test
-- Prossimo task: 3D.3 (Import CSV/Excel)
+- 3D.3 DONE: Import CSV/Excel streams (template + alias columns)
+- Totale: 226 test
+- Prossimo task: 3E.1 (Sensitivity prezzo energia)
 
 ## Gotcha
 - CoolProp puo' essere lento alla prima chiamata (caricamento tabelle)
