@@ -67,7 +67,7 @@ st.markdown("""
         margin-top: 0.75rem;
     }
 
-    /* Dark theme base */
+    /* Dark theme base — force light text everywhere */
     .stApp {
         background-color: #0d1117;
         color: #e6edf3;
@@ -75,8 +75,79 @@ st.markdown("""
     .stApp header {
         background-color: #0d1117 !important;
     }
-    .stMarkdown, .stMarkdown p, .stMarkdown li, .stMarkdown h1,
-    .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
+    /* Global text override — all elements */
+    .stApp, .stApp p, .stApp span, .stApp li, .stApp td, .stApp th,
+    .stApp label, .stApp div, .stApp strong, .stApp em, .stApp a,
+    .stMarkdown, .stMarkdown p, .stMarkdown li, .stMarkdown span,
+    .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5,
+    .stMarkdown strong, .stMarkdown em, .stMarkdown a,
+    .stMarkdown blockquote, .stMarkdown blockquote p,
+    .stMarkdown code, .stMarkdown pre,
+    [data-testid="stText"], [data-testid="stCaptionContainer"],
+    [data-testid="stCaptionContainer"] p,
+    [data-testid="stCaptionContainer"] span {
+        color: #e6edf3 !important;
+    }
+    /* Captions slightly dimmer */
+    [data-testid="stCaptionContainer"] * {
+        color: #8b949e !important;
+    }
+    /* Radio, checkbox, selectbox labels */
+    .stRadio label, .stCheckbox label, .stSelectbox label,
+    .stTextInput label, .stNumberInput label,
+    .stRadio > div > label, .stRadio div[role="radiogroup"] label,
+    [data-baseweb="radio"] span,
+    .stSlider label {
+        color: #e6edf3 !important;
+    }
+    /* Widget help text */
+    .stTooltipIcon, small, .stApp small {
+        color: #8b949e !important;
+    }
+    /* Alert boxes (light background) — dark text */
+    [data-testid="stNotification"],
+    [data-testid="stNotification"] p,
+    [data-testid="stNotification"] span,
+    [data-testid="stNotification"] a,
+    [data-testid="stNotification"] strong,
+    .stAlert, .stAlert p, .stAlert span, .stAlert a, .stAlert strong,
+    .element-container .stSuccess, .element-container .stInfo,
+    .element-container .stWarning, .element-container .stError,
+    div[data-testid="stNotificationContentSuccess"] *,
+    div[data-testid="stNotificationContentInfo"] *,
+    div[data-testid="stNotificationContentWarning"] *,
+    div[data-testid="stNotificationContentError"] * {
+        color: #1a1a2e !important;
+    }
+    /* Blockquote border */
+    .stMarkdown blockquote {
+        border-left-color: #ff6b35 !important;
+    }
+    /* Tab panel text */
+    .stTabs [data-baseweb="tab-panel"] {
+        color: #e6edf3 !important;
+    }
+    .stTabs [data-baseweb="tab-panel"] p,
+    .stTabs [data-baseweb="tab-panel"] span,
+    .stTabs [data-baseweb="tab-panel"] li,
+    .stTabs [data-baseweb="tab-panel"] td {
+        color: #e6edf3 !important;
+    }
+    /* Input text color */
+    .stTextInput input, .stNumberInput input,
+    .stSelectbox [data-baseweb="select"] span,
+    [data-baseweb="select"] .css-1dimb5e-singleValue,
+    [data-baseweb="input"] input {
+        color: #e6edf3 !important;
+    }
+    /* Dataframe text */
+    .stDataFrame td, .stDataFrame th,
+    [data-testid="stDataFrame"] td,
+    [data-testid="stDataFrame"] th {
+        color: #e6edf3 !important;
+    }
+    /* Download button text */
+    .stDownloadButton button {
         color: #e6edf3 !important;
     }
 
