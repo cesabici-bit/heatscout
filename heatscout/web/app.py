@@ -1223,7 +1223,7 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                         fig_npv.update_layout(
                             title="NPV vs Energy Price",
                             xaxis_title="Energy price (€/kWh)",
-                            yaxis_title="NPV 10yr (€)",
+                            yaxis_title=f"NPV {horizon_years}yr (€)",
                             template="plotly_dark",
                             height=350,
                             margin=dict(t=40, b=40),
@@ -1234,6 +1234,57 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                         f"Sensitivity on best project ({best.tech_recommendation.technology.name}) — "
                         f"Energy price ±50% around € {energy_price:.3f}/kWh"
                     )
+
+                    # ── TORNADO CHART ─────────────────────────────────
+                    st.divider()
+                    st.markdown("#### Tornado Chart — NPV Sensitivity (±20%)")
+                    st.caption("One-at-a-time: each parameter varied ±20% while others held constant.")
+
+                    from heatscout.core.sensitivity import tornado_analysis
+
+                    tornado_bars = tornado_analysis(
+                        best, base_price=energy_price,
+                        variation_pct=20.0,
+                        discount_rate=discount_rate, years=horizon_years,
+                    )
+
+                    # Build horizontal bar chart
+                    fig_tornado = go.Figure()
+                    param_names = [b.param_name for b in tornado_bars]
+                    base = tornado_bars[0].base_npv
+
+                    # Low bars (negative impact relative to base)
+                    fig_tornado.add_trace(go.Bar(
+                        y=param_names,
+                        x=[b.npv_low - base for b in tornado_bars],
+                        orientation="h",
+                        name="−20%",
+                        marker_color="#f85149",
+                        customdata=[b.npv_low for b in tornado_bars],
+                        hovertemplate="%{y}: NPV = € %{customdata:,.0f}<extra>−20%</extra>",
+                    ))
+                    # High bars (positive impact relative to base)
+                    fig_tornado.add_trace(go.Bar(
+                        y=param_names,
+                        x=[b.npv_high - base for b in tornado_bars],
+                        orientation="h",
+                        name="+20%",
+                        marker_color="#3fb950",
+                        customdata=[b.npv_high for b in tornado_bars],
+                        hovertemplate="%{y}: NPV = € %{customdata:,.0f}<extra>+20%</extra>",
+                    ))
+
+                    fig_tornado.add_vline(x=0, line_color="#8b949e", line_width=1)
+                    fig_tornado.update_layout(
+                        title=f"NPV Impact (base: € {base:,.0f})",
+                        xaxis_title="ΔNPV from base (€)",
+                        template="plotly_dark",
+                        height=300,
+                        margin=dict(t=40, b=40, l=120),
+                        barmode="overlay",
+                        legend=dict(orientation="h", yanchor="bottom", y=1.02),
+                    )
+                    st.plotly_chart(fig_tornado, use_container_width=True)
 
                 else:
                     st.info("Nessun risultato economico disponibile. Verifica che ci siano stream HOT_WASTE con tecnologie compatibili.")

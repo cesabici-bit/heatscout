@@ -1,6 +1,7 @@
 """Sensitivity analysis: how economic indicators change with parameters.
 
 Module 1: Energy price sensitivity (payback, NPV, IRR vs price).
+Module 2: Tornado chart — one-at-a-time ±20% on multiple parameters.
 """
 
 from __future__ import annotations
@@ -83,3 +84,88 @@ def energy_price_sensitivity(
         ))
 
     return points
+
+
+# ── Module 2: Tornado chart ─────────────────────────────────────────────────
+
+
+@dataclass
+class TornadoBar:
+    """One bar in a tornado chart (one parameter)."""
+
+    param_name: str
+    base_npv: float
+    npv_low: float   # NPV when parameter is at -variation
+    npv_high: float  # NPV when parameter is at +variation
+    swing: float     # |npv_high - npv_low| — used for sorting
+
+
+def tornado_analysis(
+    econ,
+    base_price: float,
+    variation_pct: float = 20.0,
+    discount_rate: float = 0.05,
+    years: int = 10,
+) -> list[TornadoBar]:
+    """One-at-a-time sensitivity: NPV impact of ±variation_pct on key parameters.
+
+    Parameters varied (one at a time, others held at base):
+    - Energy price (scales savings linearly)
+    - CAPEX (scales total_investment_EUR)
+    - Operating hours (scales savings linearly)
+    - Technology efficiency (scales savings linearly)
+
+    Assumption: one-at-a-time (no interactions). Declared in UI.
+
+    Args:
+        econ: Base economic result (needs total_investment_EUR, annual_savings_EUR, opex_EUR_anno)
+        base_price: Base energy price [€/kWh]
+        variation_pct: Variation as % (20 = ±20%)
+        discount_rate: Discount rate for NPV
+        years: Analysis horizon
+
+    Returns:
+        List of TornadoBar sorted by swing (largest impact first)
+    """
+    assert variation_pct > 0, f"Variation must be positive: {variation_pct}"
+
+    capex = econ.total_investment_EUR
+    savings = econ.annual_savings_EUR
+    opex = econ.opex_EUR_anno
+
+    base_npv = calc_npv(capex, savings, opex, discount_rate, years)
+
+    lo = 1 - variation_pct / 100
+    hi = 1 + variation_pct / 100
+
+    bars = []
+
+    # 1. Energy price → scales savings only
+    npv_lo = calc_npv(capex, savings * lo, opex, discount_rate, years)
+    npv_hi = calc_npv(capex, savings * hi, opex, discount_rate, years)
+    bars.append(TornadoBar("Energy price", base_npv, npv_lo, npv_hi,
+                           abs(npv_hi - npv_lo)))
+
+    # 2. CAPEX → scales investment and opex (opex ∝ capex)
+    npv_lo = calc_npv(capex * lo, savings, opex * lo, discount_rate, years)
+    npv_hi = calc_npv(capex * hi, savings, opex * hi, discount_rate, years)
+    # Higher CAPEX → lower NPV, so swap lo/hi for correct bar direction
+    bars.append(TornadoBar("CAPEX", base_npv, npv_hi, npv_lo,
+                           abs(npv_hi - npv_lo)))
+
+    # 3. Operating hours → scales savings AND opex (more hours = more wear)
+    npv_lo = calc_npv(capex, savings * lo, opex * lo, discount_rate, years)
+    npv_hi = calc_npv(capex, savings * hi, opex * hi, discount_rate, years)
+    bars.append(TornadoBar("Operating hours", base_npv, npv_lo, npv_hi,
+                           abs(npv_hi - npv_lo)))
+
+    # 4. Technology efficiency → scales savings only (capex/opex unchanged)
+    npv_lo = calc_npv(capex, savings * lo, opex, discount_rate, years)
+    npv_hi = calc_npv(capex, savings * hi, opex, discount_rate, years)
+    bars.append(TornadoBar("Efficiency", base_npv, npv_lo, npv_hi,
+                           abs(npv_hi - npv_lo)))
+
+    # Sort by swing (most impactful first)
+    bars.sort(key=lambda b: b.swing, reverse=True)
+
+    return bars

@@ -1,11 +1,14 @@
-"""Tests for energy price sensitivity analysis."""
+"""Tests for sensitivity analysis (energy price sweep + tornado chart)."""
 
 import math
 from types import SimpleNamespace
 
 import pytest
 
-from heatscout.core.sensitivity import SensitivityPoint, energy_price_sensitivity
+from heatscout.core.sensitivity import (
+    SensitivityPoint, energy_price_sensitivity,
+    TornadoBar, tornado_analysis,
+)
 
 
 def _make_econ(capex=100_000, savings=25_000, opex=2_000):
@@ -138,3 +141,48 @@ class TestSensitivityEdgeCases:
         pts = energy_price_sensitivity(econ, BASE_PRICE, n_points=5)
         for p in pts:
             assert p.payback_years == float("inf")
+
+
+class TestTornadoAnalysis:
+    """Tornado chart (one-at-a-time sensitivity)."""
+
+    def test_returns_four_bars(self, base_econ):
+        bars = tornado_analysis(base_econ, BASE_PRICE)
+        assert len(bars) == 4
+
+    def test_bars_sorted_by_swing(self, base_econ):
+        bars = tornado_analysis(base_econ, BASE_PRICE)
+        swings = [b.swing for b in bars]
+        assert swings == sorted(swings, reverse=True)
+
+    def test_all_bars_have_nonzero_swing(self, base_econ):
+        bars = tornado_analysis(base_econ, BASE_PRICE)
+        for b in bars:
+            assert b.swing > 0, f"{b.param_name} has zero swing"
+
+    def test_base_npv_consistent(self, base_econ):
+        bars = tornado_analysis(base_econ, BASE_PRICE)
+        # All bars should share the same base NPV
+        base = bars[0].base_npv
+        for b in bars:
+            assert b.base_npv == base
+
+    def test_energy_price_bar_present(self, base_econ):
+        bars = tornado_analysis(base_econ, BASE_PRICE)
+        names = [b.param_name for b in bars]
+        assert "Energy price" in names
+
+    def test_capex_bar_direction(self, base_econ):
+        """Higher CAPEX → lower NPV, so npv_low should be below base."""
+        bars = tornado_analysis(base_econ, BASE_PRICE)
+        capex_bar = next(b for b in bars if b.param_name == "CAPEX")
+        assert capex_bar.npv_low < capex_bar.base_npv
+
+    def test_param_names(self, base_econ):
+        bars = tornado_analysis(base_econ, BASE_PRICE)
+        names = {b.param_name for b in bars}
+        assert names == {"Energy price", "CAPEX", "Operating hours", "Efficiency"}
+
+    def test_rejects_zero_variation(self, base_econ):
+        with pytest.raises(AssertionError, match="positive"):
+            tornado_analysis(base_econ, BASE_PRICE, variation_pct=0.0)
