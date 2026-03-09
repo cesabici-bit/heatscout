@@ -169,7 +169,7 @@ Ogni task ha:
 
 > Feature che rende il tool serio: "cosa succede se cambiano i parametri?"
 
-### Task 3E.1: Sensitivity su prezzo energia
+### Task 3E.1: Sensitivity su prezzo energia ✅
 
 - **Input:** Analisi economica funzionante, UI con risultati
 - **Output:** Nuova sezione UI "Analisi di sensitività" con slider prezzo energia (±50%) e grafico payback vs prezzo
@@ -181,7 +181,7 @@ Ogni task ha:
   - Ricalcolo lento → precalcolare 10-20 punti, non real-time
   - IRR = None per alcuni prezzi → gestire gracefully nel grafico
 
-### Task 3E.2: Tornado chart multi-parametro
+### Task 3E.2: Tornado chart multi-parametro ✅
 
 - **Input:** Task 3E.1 completato
 - **Output:** Tornado chart: variazione NPV al variare ±20% di prezzo energia, CAPEX, ore operative, efficienza

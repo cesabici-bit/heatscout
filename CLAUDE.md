@@ -97,8 +97,11 @@ tests/            # 89 test inclusi sanity check fisici
 - 3D.1 DONE: Export Excel (3 fogli: Streams, Technologies, Economics + incentivi)
 - 3D.2 DONE: Save/Load analysis JSON (round-trip verified)
 - 3D.3 DONE: Import CSV/Excel streams (template + alias columns)
-- Totale: 226 test
-- Prossimo task: 3E.1 (Sensitivity prezzo energia)
+- 3E.1 DONE: Energy price sensitivity (±50% sweep, payback/NPV charts)
+- 3E.2 DONE: Tornado chart multi-parameter (±20% on 4 params, sorted by NPV impact)
+- DONE: All economic params user-editable (discount rate, horizon, OPEX/install multipliers)
+- Totale: 249 test
+- Prossimo task: 3A.3 (Pre-commit hooks ruff)
 
 ## Gotcha
 - CoolProp puo' essere lento alla prima chiamata (caricamento tabelle)
