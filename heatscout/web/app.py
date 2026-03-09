@@ -598,6 +598,45 @@ with st.sidebar:
     st.button("📂 Carica esempio", on_click=_load_selected_example,
               use_container_width=True)
 
+    # Save/Load analysis
+    st.divider()
+    st.markdown("### 💾 Save / Load Analysis")
+    uploaded_json = st.file_uploader(
+        "Load analysis (.json)", type=["json"],
+        help="Upload a previously saved HeatScout analysis file",
+        label_visibility="collapsed",
+    )
+    if uploaded_json is not None:
+        try:
+            from heatscout.report.persistence import load_analysis
+            from heatscout.core.stream import StreamType
+            content = uploaded_json.read().decode("utf-8")
+            loaded_data = load_analysis(content)
+
+            # Map stream dicts to ThermalStream-like objects for the UI
+            restored_streams = []
+            for sd in loaded_data["streams"]:
+                st_type = sd["stream_type"]
+                if isinstance(st_type, str):
+                    st_type = StreamType.HOT_WASTE if "hot" in st_type.lower() else StreamType.COLD_DEMAND
+                restored_streams.append(ThermalStream(
+                    name=sd["name"], fluid_type=sd["fluid_type"],
+                    T_in=sd["T_in"], T_out=sd["T_out"],
+                    mass_flow=sd["mass_flow"],
+                    hours_per_day=sd["hours_per_day"],
+                    days_per_year=sd["days_per_year"],
+                    stream_type=st_type,
+                ))
+
+            st.session_state.n_streams = len(restored_streams)
+            st.session_state.loaded_example = {
+                "streams": restored_streams,
+                "meta": {"name": loaded_data["factory_name"]},
+            }
+            st.success(f"Loaded: {loaded_data['factory_name']} ({len(restored_streams)} streams)")
+        except Exception as e:
+            st.error(f"Error loading file: {e}")
+
     # Sidebar footer
     st.divider()
     st.caption(
@@ -1061,7 +1100,7 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
 
                     st.divider()
 
-                    col_pdf, col_xlsx, col_info = st.columns([2, 2, 3])
+                    col_pdf, col_xlsx, col_json, col_info = st.columns([2, 2, 2, 3])
                     with col_pdf:
                         try:
                             fig_sankey_pdf = create_sankey(hb, factory_name)
@@ -1098,10 +1137,34 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                             )
                         except Exception:
                             st.error("Error generating Excel export.")
+                    with col_json:
+                        from heatscout.report.persistence import save_analysis
+                        inc_params = None
+                        if has_incentives:
+                            inc_params = {
+                                "capex_reduction_pct": capex_riduzione_pct if capex_inc_enabled else 0,
+                                "capex_incentive_name": capex_inc_nome if capex_inc_enabled else "",
+                                "tee_enabled": tee_enabled,
+                            }
+                            if tee_enabled:
+                                inc_params["tee_price"] = tee_prezzo
+                                inc_params["tee_eta_ref"] = tee_eta_rif
+                        json_str = save_analysis(
+                            factory_name, T_ambient, energy_price,
+                            streams_input, inc_params
+                        )
+                        st.download_button(
+                            label="💾 Save Analysis",
+                            data=json_str,
+                            file_name=f"HeatScout_{factory_name.replace(' ', '_')}.json",
+                            mime="application/json",
+                            use_container_width=True,
+                        )
                     with col_info:
                         st.caption(
                             "PDF: executive summary, charts, Sankey diagram. "
-                            "Excel: 3 sheets (Streams, Technologies, Economics) with all data."
+                            "Excel: 3 sheets with all data. "
+                            "JSON: save inputs to reload later."
                         )
                 else:
                     st.info("Nessun risultato da esportare. Esegui prima un'analisi con stream HOT_WASTE.")
