@@ -93,8 +93,9 @@ tests/            # 89 test inclusi sanity check fisici
 - 3F.1 DONE: Error handling UI (5 scenari errore user-friendly, catch-all con link GitHub)
 - 3F.2 DONE: Integration test e2e (5 test: workflow, fonderia, multi-stream, 1kW, 800°C)
 - 3C.1 DONE: Certificati Bianchi TEE (incentives.py, confronto con/senza incentivi in UI)
-- Totale: 186 test
-- Prossimo task: 3C.2 (Transizione 5.0)
+- 3C.2 DONE: Generic CAPEX incentive (international, any tax credit/grant)
+- Totale: 193 test
+- Prossimo task: 3D.1 (Export Excel)
 
 ## Gotcha
 - CoolProp puo' essere lento alla prima chiamata (caricamento tabelle)
