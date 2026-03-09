@@ -12,6 +12,7 @@ from heatscout.knowledge.cost_correlations import (
     estimate_opex,
     estimate_total_investment,
 )
+from heatscout.knowledge.incentives import TEEResult, calc_tee
 
 
 @dataclass
@@ -150,4 +151,89 @@ def economic_analysis(
         irr_pct=round(irr, 1) if irr is not None else None,
         cumulative_cashflows=cumulative,
         horizon_years=years,
+    )
+
+
+@dataclass
+class EconomicComparison:
+    """Confronto economico con e senza Certificati Bianchi."""
+
+    base: EconomicResult  # Senza incentivi
+    tee: TEEResult  # Dettaglio TEE
+    npv_con_tee: float  # NPV con incentivo [€]
+    payback_con_tee: float  # Payback con incentivo [anni]
+    irr_con_tee: float | None  # IRR con incentivo [%]
+    cumulative_con_tee: list[float]  # Cashflow cumulativo con incentivo
+
+
+def economic_analysis_with_tee(
+    econ: EconomicResult,
+    prezzo_tee: float = 250.0,
+    eta_riferimento: float = 0.90,
+    discount_rate: float = 0.05,
+) -> EconomicComparison:
+    """Ricalcola NPV/payback/IRR includendo i ricavi da Certificati Bianchi.
+
+    I TEE durano 7 anni (vita utile recupero calore). Il ricavo annuo si
+    somma al beneficio netto durante quegli anni, poi torna a zero.
+
+    Args:
+        econ: Risultato economico base (senza incentivi)
+        prezzo_tee: Prezzo TEE [€/TEE]
+        eta_riferimento: Rendimento caldaia di riferimento
+        discount_rate: Tasso di sconto per NPV
+
+    Returns:
+        EconomicComparison con dettaglio confronto
+    """
+    rec = econ.tech_recommendation
+    tee_result = calc_tee(rec.E_recovered_MWh, prezzo_tee, eta_riferimento)
+
+    capex = econ.total_investment_EUR
+    savings = econ.annual_savings_EUR
+    opex = econ.opex_EUR_anno
+    years = econ.horizon_years
+    net_base = savings - opex
+
+    # Cashflow annuo: base + ricavo TEE (solo per vita utile TEE = 7 anni)
+    cashflows_con_tee = [-capex]
+    for t in range(1, years + 1):
+        tee_ricavo = tee_result.ricavo_per_anno[t - 1] if t <= tee_result.vita_utile else 0.0
+        cashflows_con_tee.append(net_base + tee_ricavo)
+
+    # NPV con TEE
+    npv_con_tee = float(npf.npv(discount_rate, cashflows_con_tee))
+
+    # Payback con TEE (semplice, usa ricavo medio TEE sui primi anni)
+    # Per coerenza col payback base (non scontato), uso net_base + ricavo_medio
+    net_con_tee_medio = net_base + tee_result.ricavo_medio_anno
+    if net_con_tee_medio > 0:
+        payback_con_tee = capex / net_con_tee_medio
+    else:
+        payback_con_tee = float("inf")
+
+    # IRR con TEE
+    try:
+        irr_val = float(npf.irr(cashflows_con_tee))
+        if irr_val != irr_val or irr_val < -1:
+            irr_con_tee = None
+        else:
+            irr_con_tee = round(irr_val * 100, 1)
+    except Exception:
+        irr_con_tee = None
+
+    # Cashflow cumulativo scontato (per grafico)
+    cumulative = [cashflows_con_tee[0]]
+    for t in range(1, years + 1):
+        cumulative.append(
+            cumulative[-1] + cashflows_con_tee[t] / (1 + discount_rate) ** t
+        )
+
+    return EconomicComparison(
+        base=econ,
+        tee=tee_result,
+        npv_con_tee=round(npv_con_tee, 0),
+        payback_con_tee=round(payback_con_tee, 1),
+        irr_con_tee=irr_con_tee,
+        cumulative_con_tee=cumulative,
     )

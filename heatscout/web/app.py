@@ -119,12 +119,39 @@ st.markdown("""
     .stTabs [data-baseweb="tab-panel"] td {
         color: #e6edf3 !important;
     }
-    /* Input text color */
+    /* Input text color + dark background */
     .stTextInput input, .stNumberInput input,
     .stSelectbox [data-baseweb="select"] span,
     [data-baseweb="select"] .css-1dimb5e-singleValue,
     [data-baseweb="input"] input {
         color: #e6edf3 !important;
+        background-color: #161b22 !important;
+    }
+    /* Select/dropdown containers */
+    [data-baseweb="select"] > div,
+    [data-baseweb="input"] {
+        background-color: #161b22 !important;
+    }
+    /* Number input +/- buttons */
+    .stNumberInput button {
+        color: #e6edf3 !important;
+        background-color: #0d1117 !important;
+        border: 1.5px solid #e6edf3 !important;
+        transition: all 0.2s ease !important;
+    }
+    .stNumberInput button:hover {
+        color: #0d1117 !important;
+        background-color: #e6edf3 !important;
+    }
+    /* Expander header */
+    .streamlit-expanderHeader, [data-testid="stExpander"] summary,
+    [data-testid="stExpander"] summary span {
+        color: #e6edf3 !important;
+        background-color: #161b22 !important;
+    }
+    /* Expander content */
+    [data-testid="stExpander"] [data-testid="stExpanderDetails"] {
+        background-color: #0d1117 !important;
     }
     /* Dataframe text */
     .stDataFrame td, .stDataFrame th,
@@ -132,9 +159,16 @@ st.markdown("""
     [data-testid="stDataFrame"] th {
         color: #e6edf3 !important;
     }
-    /* Download button text */
+    /* Download button — same style as all buttons */
     .stDownloadButton button {
         color: #e6edf3 !important;
+        background-color: #0d1117 !important;
+        border: 1.5px solid #e6edf3 !important;
+        transition: all 0.2s ease !important;
+    }
+    .stDownloadButton button:hover {
+        color: #0d1117 !important;
+        background-color: #e6edf3 !important;
     }
 
     /* Metric cards — dark */
@@ -213,6 +247,14 @@ st.markdown("""
     }
     section[data-testid="stSidebar"] .stButton > button {
         border-radius: 8px;
+        color: #e6edf3 !important;
+        background-color: #0d1117 !important;
+        border: 1.5px solid #e6edf3 !important;
+        transition: all 0.2s ease !important;
+    }
+    section[data-testid="stSidebar"] .stButton > button:hover {
+        color: #0d1117 !important;
+        background-color: #e6edf3 !important;
     }
     section[data-testid="stSidebar"] .stMarkdown p,
     section[data-testid="stSidebar"] .stMarkdown h3 {
@@ -265,7 +307,20 @@ st.markdown("""
         border-radius: 10px !important;
     }
 
-    /* Analyze button */
+    /* All buttons — white border, dark bg, light text; hover inverts */
+    .stButton > button {
+        color: #e6edf3 !important;
+        background-color: #0d1117 !important;
+        border: 1.5px solid #e6edf3 !important;
+        transition: all 0.2s ease !important;
+    }
+    .stButton > button:hover {
+        color: #0d1117 !important;
+        background-color: #e6edf3 !important;
+        border-color: #e6edf3 !important;
+    }
+
+    /* Analyze button — same base + bigger */
     .stButton > button[kind="primary"] {
         border-radius: 12px !important;
         font-size: 1.1rem !important;
@@ -401,7 +456,22 @@ st.markdown("""
     .stApp [role="alert"] strong,
     .stApp [role="alert"] a,
     .stApp [role="alert"] div {
-        color: #1a1a2e !important;
+        color: #e6edf3 !important;
+    }
+
+    /* ── GLOBAL HOVER OVERRIDE — max specificity ── */
+    .stApp .stButton > button:hover,
+    .stApp .stButton > button:focus,
+    .stApp .stButton > button:active,
+    .stApp section[data-testid="stSidebar"] .stButton > button:hover,
+    .stApp section[data-testid="stSidebar"] .stButton > button:focus,
+    .stApp .stDownloadButton button:hover,
+    .stApp .stDownloadButton button:focus,
+    .stApp .stNumberInput button:hover,
+    .stApp .stNumberInput button:focus {
+        color: #0d1117 !important;
+        background-color: #e6edf3 !important;
+        border-color: #e6edf3 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -432,6 +502,27 @@ with st.sidebar:
             "€/kWh", value=0.08, min_value=0.01, max_value=1.0,
             step=0.01, format="%.3f"
         )
+
+    # Certificati Bianchi (TEE)
+    st.divider()
+    st.markdown("### Certificati Bianchi (TEE)")
+    tee_enabled = st.checkbox("Calcola incentivo TEE", value=True,
+                              help="Certificati Bianchi — DM MASE 21/07/2025")
+    if tee_enabled:
+        col_tee1, col_tee2 = st.columns(2)
+        with col_tee1:
+            tee_prezzo = st.number_input(
+                "Prezzo TEE (€/TEE)", value=250.0,
+                min_value=50.0, max_value=500.0, step=10.0,
+                help="Valore indicativo — media GME feb 2026: ~250 €/TEE"
+            )
+        with col_tee2:
+            tee_eta_rif = st.number_input(
+                "Rend. caldaia rif.", value=0.90,
+                min_value=0.50, max_value=1.00, step=0.05, format="%.2f",
+                help="Rendimento della caldaia che il recupero calore sostituisce"
+            )
+        st.caption("Fonte: DM MASE 21/07/2025 — Valore TEE soggetto a variazioni di mercato")
 
     st.divider()
     st.markdown("### 📥 Input Energetico")
@@ -665,7 +756,7 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
 
                 # Pre-calcola tecnologie ed economia
                 from heatscout.core.technology_selector import select_technologies
-                from heatscout.core.economics import economic_analysis
+                from heatscout.core.economics import economic_analysis, economic_analysis_with_tee
                 from heatscout.plotting.comparison_chart import (
                     capex_comparison_chart,
                     payback_comparison_chart,
@@ -687,6 +778,16 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                                                      discount_rate=0.05, years=10)
                             all_econ_results.append(econ)
                             stream_recs[stream.name].append((rec, econ))
+
+                # Calcolo TEE se abilitato
+                all_comparisons = []
+                if tee_enabled and all_econ_results:
+                    for econ in all_econ_results:
+                        comp = economic_analysis_with_tee(
+                            econ, prezzo_tee=tee_prezzo,
+                            eta_riferimento=tee_eta_rif, discount_rate=0.05
+                        )
+                        all_comparisons.append(comp)
 
             # ── Success banner ────────────────────────────────────────────
             st.success(f"Analisi completata per **{summary['n_streams']}** stream — "
@@ -844,6 +945,55 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                         f"**€ {total_savings:,.0f}/anno** con rientro in **{best.payback_years:.1f} anni** "
                         f"e un valore netto a 10 anni di **€ {total_npv:,.0f}**."
                     )
+
+                    # ── SEZIONE CERTIFICATI BIANCHI ──────────────────────
+                    if tee_enabled and all_comparisons:
+                        st.divider()
+                        st.markdown("#### Certificati Bianchi (TEE) — Confronto con incentivi")
+
+                        # Tabella comparativa
+                        comp_rows = []
+                        for comp in all_comparisons:
+                            tech_name = comp.base.tech_recommendation.technology.name
+                            stream_name = comp.base.tech_recommendation.stream_name
+                            tee = comp.tee
+                            ammissibile = "Si" if tee.sopra_soglia else "No (< 10 TEP/a)"
+                            comp_rows.append({
+                                "Stream": stream_name,
+                                "Tecnologia": tech_name,
+                                "TEP/anno": f"{tee.tep_risparmiati_anno:,.1f}",
+                                "Ammissibile": ammissibile,
+                                "Ricavo TEE/anno": f"€ {tee.ricavo_medio_anno:,.0f}",
+                                "Payback base": f"{comp.base.payback_years:.1f} a",
+                                "Payback con TEE": f"{comp.payback_con_tee:.1f} a",
+                                "NPV base": f"€ {comp.base.npv_EUR:,.0f}",
+                                "NPV con TEE": f"€ {comp.npv_con_tee:,.0f}",
+                            })
+
+                        import pandas as pd
+                        st.dataframe(pd.DataFrame(comp_rows), use_container_width=True, hide_index=True)
+
+                        # Metriche aggregate con TEE
+                        total_npv_tee = sum(c.npv_con_tee for c in all_comparisons)
+                        best_comp = min(all_comparisons, key=lambda c: c.payback_con_tee)
+                        total_tee_ricavo = sum(c.tee.ricavo_medio_anno for c in all_comparisons)
+
+                        ct1, ct2, ct3 = st.columns(3)
+                        ct1.metric("Payback con TEE", f"{best_comp.payback_con_tee:.1f} anni",
+                                   delta=f"{best_comp.payback_con_tee - best_comp.base.payback_years:+.1f} anni")
+                        ct2.metric("NPV con TEE", f"€ {total_npv_tee:,.0f}",
+                                   delta=f"€ {total_npv_tee - total_npv:+,.0f}")
+                        ct3.metric("Ricavo TEE/anno", f"€ {total_tee_ricavo:,.0f}")
+
+                        # Nota normativa
+                        from heatscout.knowledge.incentives import TEE_DATA_AGGIORNAMENTO, TEE_SOGLIA_MINIMA_TEP
+                        st.caption(
+                            f"Fonte: DM MASE 21/07/2025 — Progetto a consuntivo — "
+                            f"Soglia minima: {TEE_SOGLIA_MINIMA_TEP:.0f} TEP/anno — "
+                            f"Vita utile incentivo: 7 anni — "
+                            f"Ultimo aggiornamento: {TEE_DATA_AGGIORNAMENTO}"
+                        )
+
                 else:
                     st.info("Nessun risultato economico disponibile. Verifica che ci siano stream HOT_WASTE con tecnologie compatibili.")
 
