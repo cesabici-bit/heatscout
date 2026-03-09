@@ -348,7 +348,7 @@ FASE 4B: Beta & Release      ←── dopo tutto
 | 3 | 3A.3 Pre-commit | 3A.2 |
 | 4 | 3B.1 Streamlit Cloud deploy | 3A.1 |
 | 5 | ~~3F.1 Error handling UI~~ ✅ | nessuna |
-| 6 | 3F.2 Integration test | nessuna |
+| 6 | ~~3F.2 Integration test~~ ✅ | nessuna |
 | 7 | 3C.1 Certificati Bianchi | nessuna |
 | 8 | 3C.2 Transizione 5.0 | 3C.1 |
 | 9 | 3D.1 Export Excel | nessuna |

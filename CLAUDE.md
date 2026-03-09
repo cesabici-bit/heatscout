@@ -75,7 +75,7 @@ tests/            # 89 test inclusi sanity check fisici
 - Fonti: DOE Better Buildings, ETEKINA H2020, CORDIS, ScienceDirect, L&L Engineering
 - Dati in: tests/validation_data/real_case_studies.json
 - Tolleranze: potenza +/-20%, payback +/-50%, savings +/-50%
-- Totale: 163 test
+- Totale: 168 test
 6. **Fail-fast assertions** nel codice di produzione (fluid_properties, stream_analyzer, economics)
 - Show-your-work: calc_thermal_power(stream, detailed=True) ritorna intermedi verificabili
 
@@ -91,7 +91,9 @@ tests/            # 89 test inclusi sanity check fisici
 - 3A.2 DONE: GitHub Actions CI (163 test, verde)
 - 3B.1 DONE: Deploy live https://heatscout.streamlit.app
 - 3F.1 DONE: Error handling UI (5 scenari errore user-friendly, catch-all con link GitHub)
-- Prossimo task: 3F.2 (Integration test end-to-end)
+- 3F.2 DONE: Integration test e2e (5 test: workflow, fonderia, multi-stream, 1kW, 800°C)
+- Totale: 168 test
+- Prossimo task: 3C.1 (Certificati Bianchi TEE)
 
 ## Gotcha
 - CoolProp puo' essere lento alla prima chiamata (caricamento tabelle)
