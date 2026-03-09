@@ -96,6 +96,8 @@ def economic_analysis(
     energy_price_EUR_kWh: float = 0.08,
     discount_rate: float = 0.05,
     years: int = 10,
+    opex_multiplier: float = 1.0,
+    install_multiplier: float = 1.0,
 ) -> EconomicResult:
     """Analisi economica completa per una TechRecommendation.
 
@@ -104,6 +106,8 @@ def economic_analysis(
         energy_price_EUR_kWh: Prezzo energia [€/kWh]
         discount_rate: Tasso di sconto per NPV
         years: Orizzonte temporale [anni]
+        opex_multiplier: Multiplier on default OPEX (1.0 = default from costs.json)
+        install_multiplier: Multiplier on default installation factor (1.0 = default)
 
     Returns:
         EconomicResult con tutti i parametri economici
@@ -114,8 +118,11 @@ def economic_analysis(
     # Costi
     investment = estimate_total_investment(tech_id, Q_kW)
     capex = investment["capex"]
-    total_inv = investment["total_medio"]
-    opex = estimate_opex(tech_id, capex["medio"])
+    # Apply installation multiplier: scale the installation overhead
+    base_inst_factor = investment["installation_factor"]
+    adj_inst_factor = 1.0 + (base_inst_factor - 1.0) * install_multiplier
+    total_inv = round(capex["medio"] * adj_inst_factor, 0)
+    opex = round(estimate_opex(tech_id, capex["medio"]) * opex_multiplier, 0)
 
     # Risparmio: usiamo il risparmio gia calcolato nella raccomandazione
     annual_savings = rec.savings_EUR

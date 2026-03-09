@@ -17,6 +17,10 @@ def save_analysis(
     energy_price: float,
     streams: list[dict],
     incentive_params: dict | None = None,
+    discount_rate: float = 0.05,
+    horizon_years: int = 10,
+    opex_multiplier: float = 1.0,
+    install_multiplier: float = 1.0,
 ) -> str:
     """Serialize analysis inputs to JSON string.
 
@@ -26,6 +30,8 @@ def save_analysis(
         energy_price: Energy price [€/kWh]
         streams: List of stream dicts (same format as streams_input in UI)
         incentive_params: Optional incentive configuration
+        discount_rate: Discount rate for NPV (0-1)
+        horizon_years: Analysis horizon in years
 
     Returns:
         JSON string (indented, human-readable)
@@ -46,6 +52,10 @@ def save_analysis(
         "factory_name": factory_name,
         "T_ambient": T_ambient,
         "energy_price": energy_price,
+        "discount_rate": discount_rate,
+        "horizon_years": horizon_years,
+        "opex_multiplier": opex_multiplier,
+        "install_multiplier": install_multiplier,
         "streams": serialized_streams,
     }
 

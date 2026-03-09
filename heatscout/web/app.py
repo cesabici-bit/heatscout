@@ -500,7 +500,43 @@ with st.sidebar:
     with col_p:
         energy_price = st.number_input(
             "€/kWh", value=0.08, min_value=0.01, max_value=1.0,
-            step=0.01, format="%.3f"
+            step=0.01, format="%.3f",
+            help="Your industrial energy cost per kWh. Check your latest utility bill."
+        )
+
+    col_dr, col_hz = st.columns(2)
+    with col_dr:
+        _dr_default = st.session_state.pop("loaded_discount_rate", 0.05) * 100
+        discount_rate = st.number_input(
+            "Discount rate (%)", value=_dr_default, min_value=0.0, max_value=25.0,
+            step=0.5, format="%.1f",
+            help="WACC or cost of capital. Typical: 3-5% (EU), 5-8% (US/emerging). Used for NPV calculation."
+        ) / 100.0
+    with col_hz:
+        _hz_default = st.session_state.pop("loaded_horizon_years", 10)
+        horizon_years = st.number_input(
+            "Analysis horizon (yr)", value=_hz_default, min_value=3, max_value=30,
+            step=1,
+            help="Economic analysis period. Match to equipment lifetime: HX 15-20yr, heat pump 10-15yr, ORC 15-20yr."
+        )
+
+    # Advanced settings
+    with st.expander("⚙️ Advanced Settings"):
+        st.caption("Adjust cost model parameters. Default values are industry averages from literature.")
+        _opex_default = st.session_state.pop("loaded_opex_multiplier", 1.0)
+        opex_multiplier = st.slider(
+            "OPEX multiplier",
+            min_value=0.5, max_value=2.0, value=_opex_default, step=0.1,
+            help="Scale annual maintenance costs. 1.0 = default from literature. "
+                 "Increase for harsh environments, remote sites. Decrease for in-house maintenance."
+        )
+        _inst_default = st.session_state.pop("loaded_install_multiplier", 1.0)
+        install_multiplier = st.slider(
+            "Installation cost multiplier",
+            min_value=0.5, max_value=2.0, value=_inst_default, step=0.1,
+            help="Scale installation/piping/engineering overhead. 1.0 = default. "
+                 "Increase for brownfield/retrofit, high labor cost countries. "
+                 "Decrease for greenfield, low labor cost regions."
         )
 
     # Incentivi
@@ -633,6 +669,15 @@ with st.sidebar:
                 "streams": restored_streams,
                 "meta": {"name": loaded_data["factory_name"]},
             }
+            # Restore economic parameters (backward compatible with v1.0 files)
+            if "discount_rate" in loaded_data:
+                st.session_state["loaded_discount_rate"] = loaded_data["discount_rate"]
+            if "horizon_years" in loaded_data:
+                st.session_state["loaded_horizon_years"] = loaded_data["horizon_years"]
+            if "opex_multiplier" in loaded_data:
+                st.session_state["loaded_opex_multiplier"] = loaded_data["opex_multiplier"]
+            if "install_multiplier" in loaded_data:
+                st.session_state["loaded_install_multiplier"] = loaded_data["install_multiplier"]
             st.success(f"Loaded: {loaded_data['factory_name']} ({len(restored_streams)} streams)")
         except Exception as e:
             st.error(f"Error loading file: {e}")
@@ -883,7 +928,9 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                         stream_recs[stream.name] = []
                         for rec in recs:
                             econ = economic_analysis(rec, energy_price_EUR_kWh=energy_price,
-                                                     discount_rate=0.05, years=10)
+                                                     discount_rate=discount_rate, years=horizon_years,
+                                                     opex_multiplier=opex_multiplier,
+                                                     install_multiplier=install_multiplier)
                             all_econ_results.append(econ)
                             stream_recs[stream.name].append((rec, econ))
 
@@ -899,7 +946,7 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                             tee_enabled=tee_enabled,
                             prezzo_tee=tee_prezzo if tee_enabled else 250.0,
                             eta_riferimento=tee_eta_rif if tee_enabled else 0.90,
-                            discount_rate=0.05,
+                            discount_rate=discount_rate,
                         )
                         all_summaries.append(summ)
 
@@ -1135,7 +1182,8 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                     import plotly.graph_objects as go
 
                     sens_points = energy_price_sensitivity(
-                        best, base_price=energy_price, n_points=15, range_pct=50.0
+                        best, base_price=energy_price, n_points=15, range_pct=50.0,
+                        discount_rate=discount_rate, years=horizon_years
                     )
                     prices = [p.param_value for p in sens_points]
                     paybacks = [p.payback_years if p.payback_years < 50 else None for p in sens_points]
@@ -1253,7 +1301,11 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                                 inc_params["tee_eta_ref"] = tee_eta_rif
                         json_str = save_analysis(
                             factory_name, T_ambient, energy_price,
-                            streams_input, inc_params
+                            streams_input, inc_params,
+                            discount_rate=discount_rate,
+                            horizon_years=horizon_years,
+                            opex_multiplier=opex_multiplier,
+                            install_multiplier=install_multiplier,
                         )
                         st.download_button(
                             label="💾 Save Analysis",
