@@ -1658,6 +1658,141 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                 "indicando i parametri inseriti."
             )
 
+# ── Methodology ──────────────────────────────────────────────────────────────
+
+st.divider()
+st.markdown("## 📖 Methodology & Sources")
+st.caption(
+    "HeatScout uses published correlations and models. "
+    "All sources are cited below. CAPEX ±30%, savings ±15%."
+)
+
+with st.expander("Efficiency Models"):
+    st.markdown(
+        """**Heat Exchanger Effectiveness (ε)**
+- Gas-gas: ε = 0.62 (range 0.50–0.75)
+- Gas-liquid: ε = 0.68 (range 0.55–0.80)
+- Liquid-liquid: ε = 0.75 (range 0.60–0.85)
+- Adjustments: +0.05 if ΔT > 200°C, −0.05 if ΔT < 30°C
+- *Source: Incropera, Fundamentals of Heat and Mass Transfer, Ch. 11*
+
+**Heat Pump COP**
+- COP = η_Carnot × T_sink / (T_sink − T_source), η_Carnot = 0.45
+- Bounds: 1.5 ≤ COP ≤ 6.0
+- *Source: ASHRAE Handbook, HVAC Systems and Equipment, Ch. 8*
+
+**ORC Electrical Efficiency**
+- η = 0.45 × (1 − T_sink/T_source), bounds: 0–25%
+- *Source: Quoilin et al., Renewable & Sustainable Energy Reviews, 2013*
+
+**Combustion Air Preheating**
+- Savings = (T_air_out − T_air_in) / T_flame × 100%, T_flame = 1800°C
+- *Source: Baukal, Industrial Combustion Pollution and Control, Ch. 6*"""
+    )
+
+with st.expander("CAPEX Correlations"):
+    st.markdown("**General formula:** `CAPEX = a × Q^b` [€], Q in kW")
+    st.markdown("")
+    capex_data = [
+        ["Gas-gas HX", "800", "0.80", "500–1,200", "3%", "1.5", "Thekdi & Belt, ACEEE (2011)"],
+        ["Economizer", "600", "0.78", "400–900", "3%", "1.5", "Cleaver-Brooks + literature"],
+        [
+            "Liquid-liquid HX",
+            "400",
+            "0.75",
+            "250–600",
+            "2%",
+            "1.3",
+            "Alfa Laval + Perry's Handbook",
+        ],
+        ["HRSG", "1,500", "0.80", "1,000–2,000", "4%", "1.8", "Ganapathy (2003)"],
+        [
+            "Heat pump (air)",
+            "600",
+            "0.85",
+            "450–800",
+            "3%",
+            "1.4",
+            "IEA HPT Annex 48",
+        ],
+        [
+            "Heat pump (water)",
+            "550",
+            "0.85",
+            "400–750",
+            "3%",
+            "1.4",
+            "IEA HPT Annex 48",
+        ],
+        ["ORC", "3,000", "0.75", "2,200–4,000", "5%", "1.6", "Quoilin et al. (2013)"],
+        [
+            "Air preheater",
+            "300",
+            "0.80",
+            "200–450",
+            "2%",
+            "1.4",
+            "Baukal (2004)",
+        ],
+    ]
+    st.dataframe(
+        pd.DataFrame(
+            capex_data,
+            columns=["Technology", "a", "b", "a range", "OPEX %", "Install", "Source"],
+        ),
+        use_container_width=True,
+        hide_index=True,
+    )
+
+with st.expander("Technology Selection Criteria"):
+    st.markdown(
+        """Each technology has a valid temperature and power range:
+
+| Technology | T range (°C) | Q range (kW) | Lifetime |
+|---|---|---|---|
+| Gas-gas HX | 80–800 | 10–5,000 | 15 yr |
+| Economizer | 60–600 | 10–5,000 | 15 yr |
+| Liquid-liquid HX | 20–200 | 5–5,000 | 20 yr |
+| HRSG | 200–800 | 100–50,000 | 20 yr |
+| Heat pump (air) | 15–80 | 5–1,000 | 15 yr |
+| Heat pump (water) | 15–90 | 5–2,000 | 15 yr |
+| ORC | 80–500 | 50–10,000 | 20 yr |
+| Air preheater | 150–800 | 10–5,000 | 15 yr |
+
+Technologies outside their valid range are not recommended."""
+    )
+
+with st.expander("Uncertainty & Limitations"):
+    st.markdown(
+        """| Item | Uncertainty | Notes |
+|---|---|---|
+| CAPEX | ±30% | Min/max range on coefficient 'a' |
+| Savings | ±15% | Efficiency model uncertainty |
+| Payback | ±50% | Compounds CAPEX + savings uncertainty |
+| COP / efficiency | Model-dependent | Simplified first-order models |
+
+**Key limitations:**
+- Correlations are from 2003–2026 literature; actual costs depend on market conditions
+- Installation factor is an average — site-specific conditions may vary significantly
+- Heat pump COP assumes ideal Carnot fraction (η=0.45) — actual COP depends on refrigerant and design
+- ORC efficiency is for commercial modules — custom designs may differ
+- This tool is for **screening only** — always commission a detailed feasibility study before investing"""
+    )
+
+with st.expander("Bibliography"):
+    st.markdown(
+        """1. Thekdi, A. & Belt, R. (2011). *Waste Heat Recovery*. ACEEE
+2. Ganapathy, V. (2003). *Waste Heat Boiler Deskbook*. Fairmont Press
+3. Quoilin, S. et al. (2013). *Techno-economic survey of ORC systems*. Ren. & Sust. Energy Rev., 17, 168–186
+4. Incropera, F.P. et al. *Fundamentals of Heat and Mass Transfer*. Ch. 11
+5. ASHRAE (2021). *Handbook: HVAC Systems and Equipment*. Ch. 8
+6. Baukal, C.E. (2004). *Industrial Combustion Pollution and Control*. Ch. 6
+7. Perry's Chemical Engineers' Handbook (8th Ed.). Table 11-13
+8. IEA HPT Annex 48. Industrial Heat Pump Market Survey
+9. ARERA Delibera EEN 3/08 (TEP conversion)
+10. DM MASE 21/07/2025 (White Certificates decree, art. 6–7)"""
+    )
+
 # ── Footer ────────────────────────────────────────────────────────────────────
 
 st.markdown(
