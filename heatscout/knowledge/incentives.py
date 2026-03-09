@@ -1,10 +1,8 @@
-"""Calcolo incentivi italiani per recupero calore industriale.
+"""Calcolo incentivi per recupero calore industriale.
 
-Modulo 1: Certificati Bianchi (TEE — Titoli di Efficienza Energetica)
-Normativa: DM MASE 21/07/2025 (GU n. 211 dell'11/09/2025)
-Tipo progetto: Progetto a Consuntivo (PC)
-Vita utile recupero calore: 7 anni
-Soglia minima: 10 TEP/anno
+Modulo 1: Certificati Bianchi (TEE) — incentivo italiano
+Modulo 2: Riduzione CAPEX generica — qualsiasi incentivo internazionale
+  (tax credit, grant, sussidio: IRA §48C, UK IETF, Transizione 5.0, ecc.)
 """
 
 from __future__ import annotations
@@ -128,4 +126,57 @@ def calc_tee(
         ricavo_medio_anno=round(ricavo_medio, 2),
         prezzo_tee=prezzo_tee,
         vita_utile=vita,
+    )
+
+
+# ── Modulo 2: Riduzione CAPEX generica ──────────────────────────────────────
+# Copre qualsiasi incentivo che riduca il costo di investimento:
+# - Tax credit (IRA §48C USA, Transizione 5.0 Italia, ...)
+# - Grant / sussidi (UK IETF, EU Innovation Fund, ...)
+# - Deduzioni fiscali maggiorate (Iperammortamento Italia 2026, ...)
+
+
+@dataclass
+class CapexIncentiveResult:
+    """Risultato del calcolo incentivo generico su CAPEX."""
+
+    capex_lordo: float  # CAPEX originale [€]
+    riduzione_pct: float  # % di riduzione applicata
+    riduzione_EUR: float  # Importo riduzione [€]
+    capex_netto: float  # CAPEX dopo incentivo [€]
+    nome_incentivo: str  # Nome incentivo (libero)
+
+
+def calc_capex_incentive(
+    capex: float,
+    riduzione_pct: float,
+    nome_incentivo: str = "Tax credit / Grant",
+) -> CapexIncentiveResult:
+    """Calcola la riduzione CAPEX da un incentivo generico.
+
+    Funziona per qualsiasi programma di incentivi che riduca il costo
+    di investimento: tax credit, grant, sussidi, deduzioni fiscali.
+
+    Args:
+        capex: CAPEX originale (investimento totale) [€]
+        riduzione_pct: Percentuale di riduzione [0-100]
+        nome_incentivo: Nome descrittivo dell'incentivo
+
+    Returns:
+        CapexIncentiveResult con CAPEX netto
+    """
+    assert capex >= 0, f"CAPEX negativo: {capex}"
+    assert 0 <= riduzione_pct <= 100, (
+        f"Riduzione % fuori range [0-100]: {riduzione_pct}"
+    )
+
+    riduzione = capex * riduzione_pct / 100
+    netto = capex - riduzione
+
+    return CapexIncentiveResult(
+        capex_lordo=round(capex, 2),
+        riduzione_pct=riduzione_pct,
+        riduzione_EUR=round(riduzione, 2),
+        capex_netto=round(netto, 2),
+        nome_incentivo=nome_incentivo,
     )

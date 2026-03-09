@@ -12,7 +12,10 @@ from heatscout.knowledge.cost_correlations import (
     estimate_opex,
     estimate_total_investment,
 )
-from heatscout.knowledge.incentives import TEEResult, calc_tee
+from heatscout.knowledge.incentives import (
+    TEEResult, calc_tee,
+    CapexIncentiveResult, calc_capex_incentive,
+)
 
 
 @dataclass
@@ -236,4 +239,115 @@ def economic_analysis_with_tee(
         payback_con_tee=round(payback_con_tee, 1),
         irr_con_tee=irr_con_tee,
         cumulative_con_tee=cumulative,
+    )
+
+
+@dataclass
+class IncentiveSummary:
+    """Riepilogo economico con tutti gli incentivi applicati."""
+
+    base: EconomicResult
+    # CAPEX incentive (generico)
+    capex_incentive: CapexIncentiveResult | None
+    npv_con_capex_inc: float | None
+    payback_con_capex_inc: float | None
+    irr_con_capex_inc: float | None
+    # TEE (opzionale, solo Italia)
+    tee: TEEResult | None
+    npv_con_tee: float | None
+    payback_con_tee: float | None
+    # Combinato (CAPEX ridotto + TEE)
+    npv_combinato: float | None
+    payback_combinato: float | None
+
+
+def economic_analysis_with_incentives(
+    econ: EconomicResult,
+    capex_riduzione_pct: float = 0.0,
+    nome_incentivo: str = "Tax credit / Grant",
+    tee_enabled: bool = False,
+    prezzo_tee: float = 250.0,
+    eta_riferimento: float = 0.90,
+    discount_rate: float = 0.05,
+) -> IncentiveSummary:
+    """Ricalcola NPV/payback con incentivi opzionali (CAPEX e/o TEE).
+
+    Args:
+        econ: Risultato economico base
+        capex_riduzione_pct: % riduzione CAPEX da incentivo [0-100]
+        nome_incentivo: Nome dell'incentivo CAPEX
+        tee_enabled: Se True, calcola anche TEE (Italia)
+        prezzo_tee: Prezzo TEE [€/TEE]
+        eta_riferimento: Rendimento caldaia di riferimento
+        discount_rate: Tasso di sconto
+
+    Returns:
+        IncentiveSummary con tutti gli scenari
+    """
+    capex = econ.total_investment_EUR
+    savings = econ.annual_savings_EUR
+    opex = econ.opex_EUR_anno
+    years = econ.horizon_years
+    net_base = savings - opex
+
+    # ── CAPEX incentive ──
+    capex_inc = None
+    npv_capex = None
+    payback_capex = None
+    irr_capex = None
+
+    if capex_riduzione_pct > 0:
+        capex_inc = calc_capex_incentive(capex, capex_riduzione_pct, nome_incentivo)
+        capex_netto = capex_inc.capex_netto
+        npv_capex = round(calc_npv(capex_netto, savings, opex, discount_rate, years), 0)
+        payback_capex = round(calc_payback(capex_netto, savings, opex), 1)
+        irr_capex = calc_irr(capex_netto, savings, opex, years)
+
+    # ── TEE ──
+    tee_result = None
+    npv_tee = None
+    payback_tee = None
+
+    if tee_enabled:
+        rec = econ.tech_recommendation
+        tee_result = calc_tee(rec.E_recovered_MWh, prezzo_tee, eta_riferimento)
+
+        # Cashflow con TEE (CAPEX originale + ricavi TEE)
+        cashflows_tee = [-capex]
+        for t in range(1, years + 1):
+            tee_r = tee_result.ricavo_per_anno[t - 1] if t <= tee_result.vita_utile else 0.0
+            cashflows_tee.append(net_base + tee_r)
+        npv_tee = round(float(npf.npv(discount_rate, cashflows_tee)), 0)
+
+        net_con_tee = net_base + tee_result.ricavo_medio_anno
+        payback_tee = round(capex / net_con_tee if net_con_tee > 0 else float("inf"), 1)
+
+    # ── Combinato (CAPEX ridotto + TEE) ──
+    npv_comb = None
+    payback_comb = None
+
+    if capex_riduzione_pct > 0 and tee_enabled and tee_result is not None:
+        capex_netto = capex_inc.capex_netto
+        cashflows_comb = [-capex_netto]
+        for t in range(1, years + 1):
+            tee_r = tee_result.ricavo_per_anno[t - 1] if t <= tee_result.vita_utile else 0.0
+            cashflows_comb.append(net_base + tee_r)
+        npv_comb = round(float(npf.npv(discount_rate, cashflows_comb)), 0)
+
+        net_con_tee = net_base + tee_result.ricavo_medio_anno
+        payback_comb = round(
+            capex_netto / net_con_tee if net_con_tee > 0 else float("inf"), 1
+        )
+
+    return IncentiveSummary(
+        base=econ,
+        capex_incentive=capex_inc,
+        npv_con_capex_inc=npv_capex,
+        payback_con_capex_inc=payback_capex,
+        irr_con_capex_inc=irr_capex,
+        tee=tee_result,
+        npv_con_tee=npv_tee,
+        payback_con_tee=payback_tee,
+        npv_combinato=npv_comb,
+        payback_combinato=payback_comb,
     )

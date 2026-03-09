@@ -161,8 +161,58 @@ class TestTEEFailFast:
             calc_tee(500.0, prezzo_tee=-10.0)
 
 
-class TestEconomicComparisonWithTEE:
-    """Test integrazione TEE in economics.py."""
+class TestCapexIncentive:
+    """Test modulo incentivo generico CAPEX."""
+
+    def test_riduzione_30_pct(self):
+        """30% di 100k = 30k riduzione, netto = 70k."""
+        from heatscout.knowledge.incentives import calc_capex_incentive
+
+        r = calc_capex_incentive(100_000, 30.0, "IRA §48C")
+        assert r.capex_lordo == 100_000
+        assert abs(r.riduzione_EUR - 30_000) < 0.01
+        assert abs(r.capex_netto - 70_000) < 0.01
+        assert r.nome_incentivo == "IRA §48C"
+
+    def test_riduzione_zero(self):
+        """0% = nessuna riduzione."""
+        from heatscout.knowledge.incentives import calc_capex_incentive
+
+        r = calc_capex_incentive(100_000, 0.0)
+        assert r.capex_netto == r.capex_lordo
+
+    def test_riduzione_100_pct(self):
+        """100% = investimento gratuito."""
+        from heatscout.knowledge.incentives import calc_capex_incentive
+
+        r = calc_capex_incentive(100_000, 100.0)
+        assert r.capex_netto == 0.0
+
+    def test_capex_netto_sempre_minore(self):
+        """CAPEX netto <= CAPEX lordo (SEMPRE)."""
+        from heatscout.knowledge.incentives import calc_capex_incentive
+
+        for pct in [5, 15, 30, 45, 80]:
+            r = calc_capex_incentive(200_000, pct)
+            assert r.capex_netto <= r.capex_lordo
+
+    def test_fail_fast_pct_fuori_range(self):
+        from heatscout.knowledge.incentives import calc_capex_incentive
+
+        with pytest.raises(AssertionError):
+            calc_capex_incentive(100_000, -5.0)
+        with pytest.raises(AssertionError):
+            calc_capex_incentive(100_000, 150.0)
+
+    def test_fail_fast_capex_negativo(self):
+        from heatscout.knowledge.incentives import calc_capex_incentive
+
+        with pytest.raises(AssertionError):
+            calc_capex_incentive(-50_000, 30.0)
+
+
+class TestIncentiveSummary:
+    """Test integrazione incentivi in economics.py."""
 
     @pytest.fixture
     def sample_econ_result(self):
@@ -182,36 +232,53 @@ class TestEconomicComparisonWithTEE:
             stream_type=StreamType.HOT_WASTE,
         )
         recs = select_technologies(stream, energy_price_EUR_kWh=0.08)
-        assert len(recs) > 0, "Nessuna tecnologia trovata per stream di test"
+        assert len(recs) > 0
         return economic_analysis(recs[0], energy_price_EUR_kWh=0.08)
 
-    def test_npv_con_tee_maggiore(self, sample_econ_result):
-        """NPV con incentivo >= NPV senza incentivo (SEMPRE)."""
-        from heatscout.core.economics import economic_analysis_with_tee
+    def test_solo_capex_incentive(self, sample_econ_result):
+        """Con solo CAPEX reduction: NPV migliora, payback scende."""
+        from heatscout.core.economics import economic_analysis_with_incentives
 
-        comp = economic_analysis_with_tee(sample_econ_result)
-        assert comp.npv_con_tee >= comp.base.npv_EUR
+        s = economic_analysis_with_incentives(
+            sample_econ_result, capex_riduzione_pct=30.0
+        )
+        assert s.npv_con_capex_inc > s.base.npv_EUR
+        assert s.payback_con_capex_inc < s.base.payback_years
+        assert s.tee is None  # TEE non abilitato
+        assert s.npv_combinato is None
 
-    def test_payback_con_tee_minore(self, sample_econ_result):
-        """Payback con incentivo <= payback senza incentivo (SEMPRE)."""
-        from heatscout.core.economics import economic_analysis_with_tee
+    def test_solo_tee(self, sample_econ_result):
+        """Con solo TEE: NPV migliora, payback scende."""
+        from heatscout.core.economics import economic_analysis_with_incentives
 
-        comp = economic_analysis_with_tee(sample_econ_result)
-        assert comp.payback_con_tee <= comp.base.payback_years
+        s = economic_analysis_with_incentives(
+            sample_econ_result, tee_enabled=True
+        )
+        assert s.npv_con_tee >= s.base.npv_EUR
+        assert s.payback_con_tee <= s.base.payback_years
+        assert s.capex_incentive is None
+        assert s.npv_combinato is None
 
-    def test_confronto_coerente(self, sample_econ_result):
-        """I dati nel confronto sono coerenti."""
-        from heatscout.core.economics import economic_analysis_with_tee
+    def test_combinato(self, sample_econ_result):
+        """Con entrambi: il combinato è il migliore di tutti."""
+        from heatscout.core.economics import economic_analysis_with_incentives
 
-        comp = economic_analysis_with_tee(sample_econ_result)
+        s = economic_analysis_with_incentives(
+            sample_econ_result, capex_riduzione_pct=30.0, tee_enabled=True
+        )
+        # Combinato >= solo CAPEX
+        assert s.npv_combinato >= s.npv_con_capex_inc
+        # Combinato >= solo TEE
+        assert s.npv_combinato >= s.npv_con_tee
+        # Payback combinato <= base
+        assert s.payback_combinato <= s.base.payback_years
 
-        # TEE result ha 7 anni
-        assert comp.tee.vita_utile == 7
-        assert len(comp.tee.tee_per_anno) == 7
+    def test_nessun_incentivo(self, sample_econ_result):
+        """Senza incentivi: tutti i campi opzionali sono None."""
+        from heatscout.core.economics import economic_analysis_with_incentives
 
-        # Cashflow cumulativo ha years+1 elementi (anno 0 + anni)
-        assert len(comp.cumulative_con_tee) == comp.base.horizon_years + 1
-
-        # IRR con TEE >= IRR base (se entrambi calcolabili)
-        if comp.irr_con_tee is not None and comp.base.irr_pct is not None:
-            assert comp.irr_con_tee >= comp.base.irr_pct
+        s = economic_analysis_with_incentives(sample_econ_result)
+        assert s.capex_incentive is None
+        assert s.npv_con_capex_inc is None
+        assert s.tee is None
+        assert s.npv_combinato is None

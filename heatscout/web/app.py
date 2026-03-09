@@ -503,26 +503,53 @@ with st.sidebar:
             step=0.01, format="%.3f"
         )
 
-    # Certificati Bianchi (TEE)
+    # Incentivi
     st.divider()
-    st.markdown("### Certificati Bianchi (TEE)")
-    tee_enabled = st.checkbox("Calcola incentivo TEE", value=True,
-                              help="Certificati Bianchi — DM MASE 21/07/2025")
+    st.markdown("### Incentives")
+
+    # Incentivo generico CAPEX (internazionale)
+    capex_inc_enabled = st.checkbox(
+        "CAPEX reduction (tax credit / grant)",
+        value=False,
+        help="Any incentive that reduces investment cost: IRA §48C (US), IETF (UK), EU Innovation Fund, etc."
+    )
+    capex_riduzione_pct = 0.0
+    capex_inc_nome = "Tax credit / Grant"
+    if capex_inc_enabled:
+        col_ci1, col_ci2 = st.columns(2)
+        with col_ci1:
+            capex_riduzione_pct = st.number_input(
+                "CAPEX reduction %", value=30.0,
+                min_value=1.0, max_value=100.0, step=5.0,
+                help="Percentage of investment covered by the incentive"
+            )
+        with col_ci2:
+            capex_inc_nome = st.text_input(
+                "Incentive name", value="Tax credit / Grant",
+                help="E.g.: IRA §48C, IETF, Transizione 5.0, EU Innovation Fund"
+            )
+
+    # TEE — incentivo italiano
+    tee_enabled = st.checkbox(
+        "Certificati Bianchi / TEE (Italy)",
+        value=False,
+        help="Italian White Certificates — DM MASE 21/07/2025"
+    )
     if tee_enabled:
         col_tee1, col_tee2 = st.columns(2)
         with col_tee1:
             tee_prezzo = st.number_input(
-                "Prezzo TEE (€/TEE)", value=250.0,
+                "TEE price (€/TEE)", value=250.0,
                 min_value=50.0, max_value=500.0, step=10.0,
-                help="Valore indicativo — media GME feb 2026: ~250 €/TEE"
+                help="Indicative value — GME market avg. ~250 €/TEE"
             )
         with col_tee2:
             tee_eta_rif = st.number_input(
-                "Rend. caldaia rif.", value=0.90,
+                "Ref. boiler eff.", value=0.90,
                 min_value=0.50, max_value=1.00, step=0.05, format="%.2f",
-                help="Rendimento della caldaia che il recupero calore sostituisce"
+                help="Efficiency of the boiler that heat recovery replaces"
             )
-        st.caption("Fonte: DM MASE 21/07/2025 — Valore TEE soggetto a variazioni di mercato")
+        st.caption("Source: DM MASE 21/07/2025 — TEE value subject to market variations")
 
     st.divider()
     st.markdown("### 📥 Input Energetico")
@@ -756,7 +783,7 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
 
                 # Pre-calcola tecnologie ed economia
                 from heatscout.core.technology_selector import select_technologies
-                from heatscout.core.economics import economic_analysis, economic_analysis_with_tee
+                from heatscout.core.economics import economic_analysis, economic_analysis_with_incentives
                 from heatscout.plotting.comparison_chart import (
                     capex_comparison_chart,
                     payback_comparison_chart,
@@ -779,15 +806,21 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                             all_econ_results.append(econ)
                             stream_recs[stream.name].append((rec, econ))
 
-                # Calcolo TEE se abilitato
-                all_comparisons = []
-                if tee_enabled and all_econ_results:
+                # Calcolo incentivi se abilitati
+                all_summaries = []
+                has_incentives = capex_inc_enabled or tee_enabled
+                if has_incentives and all_econ_results:
                     for econ in all_econ_results:
-                        comp = economic_analysis_with_tee(
-                            econ, prezzo_tee=tee_prezzo,
-                            eta_riferimento=tee_eta_rif, discount_rate=0.05
+                        summ = economic_analysis_with_incentives(
+                            econ,
+                            capex_riduzione_pct=capex_riduzione_pct if capex_inc_enabled else 0.0,
+                            nome_incentivo=capex_inc_nome,
+                            tee_enabled=tee_enabled,
+                            prezzo_tee=tee_prezzo if tee_enabled else 250.0,
+                            eta_riferimento=tee_eta_rif if tee_enabled else 0.90,
+                            discount_rate=0.05,
                         )
-                        all_comparisons.append(comp)
+                        all_summaries.append(summ)
 
             # ── Success banner ────────────────────────────────────────────
             st.success(f"Analisi completata per **{summary['n_streams']}** stream — "
@@ -946,53 +979,72 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                         f"e un valore netto a 10 anni di **€ {total_npv:,.0f}**."
                     )
 
-                    # ── SEZIONE CERTIFICATI BIANCHI ──────────────────────
-                    if tee_enabled and all_comparisons:
+                    # ── SEZIONE INCENTIVI ────────────────────────────────
+                    if has_incentives and all_summaries:
                         st.divider()
-                        st.markdown("#### Certificati Bianchi (TEE) — Confronto con incentivi")
-
-                        # Tabella comparativa
-                        comp_rows = []
-                        for comp in all_comparisons:
-                            tech_name = comp.base.tech_recommendation.technology.name
-                            stream_name = comp.base.tech_recommendation.stream_name
-                            tee = comp.tee
-                            ammissibile = "Si" if tee.sopra_soglia else "No (< 10 TEP/a)"
-                            comp_rows.append({
-                                "Stream": stream_name,
-                                "Tecnologia": tech_name,
-                                "TEP/anno": f"{tee.tep_risparmiati_anno:,.1f}",
-                                "Ammissibile": ammissibile,
-                                "Ricavo TEE/anno": f"€ {tee.ricavo_medio_anno:,.0f}",
-                                "Payback base": f"{comp.base.payback_years:.1f} a",
-                                "Payback con TEE": f"{comp.payback_con_tee:.1f} a",
-                                "NPV base": f"€ {comp.base.npv_EUR:,.0f}",
-                                "NPV con TEE": f"€ {comp.npv_con_tee:,.0f}",
-                            })
+                        st.markdown("#### Incentive Comparison")
 
                         import pandas as pd
-                        st.dataframe(pd.DataFrame(comp_rows), use_container_width=True, hide_index=True)
 
-                        # Metriche aggregate con TEE
-                        total_npv_tee = sum(c.npv_con_tee for c in all_comparisons)
-                        best_comp = min(all_comparisons, key=lambda c: c.payback_con_tee)
-                        total_tee_ricavo = sum(c.tee.ricavo_medio_anno for c in all_comparisons)
+                        # Tabella comparativa
+                        inc_rows = []
+                        for s in all_summaries:
+                            tech_name = s.base.tech_recommendation.technology.name
+                            stream_name = s.base.tech_recommendation.stream_name
+                            row = {
+                                "Stream": stream_name,
+                                "Technology": tech_name,
+                                "Payback base": f"{s.base.payback_years:.1f} yr",
+                                "NPV base": f"€ {s.base.npv_EUR:,.0f}",
+                            }
+                            if capex_inc_enabled and s.capex_incentive:
+                                row[f"CAPEX net ({capex_inc_nome})"] = f"€ {s.capex_incentive.capex_netto:,.0f}"
+                                row[f"Payback w/ {capex_inc_nome}"] = f"{s.payback_con_capex_inc:.1f} yr"
+                                row[f"NPV w/ {capex_inc_nome}"] = f"€ {s.npv_con_capex_inc:,.0f}"
+                            if tee_enabled and s.tee:
+                                row["TEP/yr"] = f"{s.tee.tep_risparmiati_anno:,.1f}"
+                                row["TEE eligible"] = "Yes" if s.tee.sopra_soglia else "No (<10 TEP)"
+                                row["Payback w/ TEE"] = f"{s.payback_con_tee:.1f} yr"
+                                row["NPV w/ TEE"] = f"€ {s.npv_con_tee:,.0f}"
+                            if capex_inc_enabled and tee_enabled and s.npv_combinato is not None:
+                                row["Payback combined"] = f"{s.payback_combinato:.1f} yr"
+                                row["NPV combined"] = f"€ {s.npv_combinato:,.0f}"
+                            inc_rows.append(row)
 
-                        ct1, ct2, ct3 = st.columns(3)
-                        ct1.metric("Payback con TEE", f"{best_comp.payback_con_tee:.1f} anni",
-                                   delta=f"{best_comp.payback_con_tee - best_comp.base.payback_years:+.1f} anni")
-                        ct2.metric("NPV con TEE", f"€ {total_npv_tee:,.0f}",
-                                   delta=f"€ {total_npv_tee - total_npv:+,.0f}")
-                        ct3.metric("Ricavo TEE/anno", f"€ {total_tee_ricavo:,.0f}")
+                        st.dataframe(pd.DataFrame(inc_rows), use_container_width=True, hide_index=True)
 
-                        # Nota normativa
-                        from heatscout.knowledge.incentives import TEE_DATA_AGGIORNAMENTO, TEE_SOGLIA_MINIMA_TEP
-                        st.caption(
-                            f"Fonte: DM MASE 21/07/2025 — Progetto a consuntivo — "
-                            f"Soglia minima: {TEE_SOGLIA_MINIMA_TEP:.0f} TEP/anno — "
-                            f"Vita utile incentivo: 7 anni — "
-                            f"Ultimo aggiornamento: {TEE_DATA_AGGIORNAMENTO}"
-                        )
+                        # Metriche aggregate — scenario migliore
+                        # Determina quale scenario incentivo mostrare nelle metriche
+                        if capex_inc_enabled and tee_enabled:
+                            # Combinato
+                            best_s = min(all_summaries, key=lambda s: s.payback_combinato if s.payback_combinato is not None else float("inf"))
+                            total_npv_inc = sum(s.npv_combinato for s in all_summaries if s.npv_combinato is not None)
+                            best_pb = best_s.payback_combinato
+                            label = f"{capex_inc_nome} + TEE"
+                        elif capex_inc_enabled:
+                            best_s = min(all_summaries, key=lambda s: s.payback_con_capex_inc if s.payback_con_capex_inc is not None else float("inf"))
+                            total_npv_inc = sum(s.npv_con_capex_inc for s in all_summaries if s.npv_con_capex_inc is not None)
+                            best_pb = best_s.payback_con_capex_inc
+                            label = capex_inc_nome
+                        else:
+                            best_s = min(all_summaries, key=lambda s: s.payback_con_tee if s.payback_con_tee is not None else float("inf"))
+                            total_npv_inc = sum(s.npv_con_tee for s in all_summaries if s.npv_con_tee is not None)
+                            best_pb = best_s.payback_con_tee
+                            label = "TEE"
+
+                        ct1, ct2 = st.columns(2)
+                        ct1.metric(f"Best payback w/ {label}", f"{best_pb:.1f} yr",
+                                   delta=f"{best_pb - best.payback_years:+.1f} yr")
+                        ct2.metric(f"Total NPV w/ {label}", f"€ {total_npv_inc:,.0f}",
+                                   delta=f"€ {total_npv_inc - total_npv:+,.0f}")
+
+                        # Note
+                        if tee_enabled:
+                            from heatscout.knowledge.incentives import TEE_DATA_AGGIORNAMENTO, TEE_SOGLIA_MINIMA_TEP
+                            st.caption(
+                                f"TEE: DM MASE 21/07/2025 — Min. {TEE_SOGLIA_MINIMA_TEP:.0f} TEP/yr — "
+                                f"7 yr duration — Updated {TEE_DATA_AGGIORNAMENTO}"
+                            )
 
                 else:
                     st.info("Nessun risultato economico disponibile. Verifica che ci siano stream HOT_WASTE con tecnologie compatibili.")
