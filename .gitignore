@@ -16,6 +16,7 @@ env/
 *.pdf
 !docs/*.pdf
 .pytest_cache/
+.hypothesis/
 .coverage
 htmlcov/
 .mypy_cache/
