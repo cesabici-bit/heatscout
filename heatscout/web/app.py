@@ -1127,6 +1127,66 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                                 f"7 yr duration — Updated {TEE_DATA_AGGIORNAMENTO}"
                             )
 
+                    # ── SENSITIVITY ANALYSIS ─────────────────────────────
+                    st.divider()
+                    st.markdown("#### Sensitivity Analysis — Energy Price")
+
+                    from heatscout.core.sensitivity import energy_price_sensitivity
+                    import plotly.graph_objects as go
+
+                    sens_points = energy_price_sensitivity(
+                        best, base_price=energy_price, n_points=15, range_pct=50.0
+                    )
+                    prices = [p.param_value for p in sens_points]
+                    paybacks = [p.payback_years if p.payback_years < 50 else None for p in sens_points]
+                    npvs = [p.npv_EUR for p in sens_points]
+
+                    sc1, sc2 = st.columns(2)
+                    with sc1:
+                        fig_pb = go.Figure()
+                        fig_pb.add_trace(go.Scatter(
+                            x=prices, y=paybacks, mode="lines+markers",
+                            line=dict(color="#ff6b35", width=2),
+                            marker=dict(size=6),
+                        ))
+                        fig_pb.add_vline(x=energy_price, line_dash="dash",
+                                         line_color="#8b949e", annotation_text="current")
+                        fig_pb.update_layout(
+                            title="Payback vs Energy Price",
+                            xaxis_title="Energy price (€/kWh)",
+                            yaxis_title="Payback (years)",
+                            template="plotly_dark",
+                            height=350,
+                            margin=dict(t=40, b=40),
+                        )
+                        st.plotly_chart(fig_pb, use_container_width=True)
+
+                    with sc2:
+                        fig_npv = go.Figure()
+                        fig_npv.add_trace(go.Scatter(
+                            x=prices, y=npvs, mode="lines+markers",
+                            line=dict(color="#58a6ff", width=2),
+                            marker=dict(size=6),
+                            fill="tozeroy", fillcolor="rgba(88,166,255,0.1)",
+                        ))
+                        fig_npv.add_vline(x=energy_price, line_dash="dash",
+                                          line_color="#8b949e", annotation_text="current")
+                        fig_npv.add_hline(y=0, line_dash="dot", line_color="#f85149")
+                        fig_npv.update_layout(
+                            title="NPV vs Energy Price",
+                            xaxis_title="Energy price (€/kWh)",
+                            yaxis_title="NPV 10yr (€)",
+                            template="plotly_dark",
+                            height=350,
+                            margin=dict(t=40, b=40),
+                        )
+                        st.plotly_chart(fig_npv, use_container_width=True)
+
+                    st.caption(
+                        f"Sensitivity on best project ({best.tech_recommendation.technology.name}) — "
+                        f"Energy price ±50% around € {energy_price:.3f}/kWh"
+                    )
+
                 else:
                     st.info("Nessun risultato economico disponibile. Verifica che ci siano stream HOT_WASTE con tecnologie compatibili.")
 
