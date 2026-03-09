@@ -46,44 +46,46 @@ def _write_streams_sheet(writer: pd.ExcelWriter, summary: dict) -> None:
     """Foglio 1: Stream termici."""
     rows = []
     for r in summary["stream_results"]:
-        rows.append({
-            "Name": r["name"],
-            "Type": r["stream_type"],
-            "Fluid": r["fluid_type"],
-            "T_in (°C)": r["T_in"],
-            "T_out (°C)": r["T_out"],
-            "T_mean (°C)": r["T_mean"],
-            "Thermal power (kW)": round(r["Q_kW"], 1),
-            "Annual energy (MWh/yr)": round(r["E_MWh_anno"], 1),
-            "Exergy (kW)": round(r["Ex_kW"], 1),
-            "T class": r["T_class"],
-        })
+        rows.append(
+            {
+                "Name": r["name"],
+                "Type": r["stream_type"],
+                "Fluid": r["fluid_type"],
+                "T_in (°C)": r["T_in"],
+                "T_out (°C)": r["T_out"],
+                "T_mean (°C)": r["T_mean"],
+                "Thermal power (kW)": round(r["Q_kW"], 1),
+                "Annual energy (MWh/yr)": round(r["E_MWh_anno"], 1),
+                "Exergy (kW)": round(r["Ex_kW"], 1),
+                "T class": r["T_class"],
+            }
+        )
 
     df = pd.DataFrame(rows)
     df.to_excel(writer, sheet_name="Streams", index=False)
 
 
-def _write_technologies_sheet(
-    writer: pd.ExcelWriter, econ_results: list[EconomicResult]
-) -> None:
+def _write_technologies_sheet(writer: pd.ExcelWriter, econ_results: list[EconomicResult]) -> None:
     """Foglio 2: Raccomandazioni tecnologiche."""
     rows = []
     for econ in econ_results:
         rec = econ.tech_recommendation
-        rows.append({
-            "Stream": rec.stream_name,
-            "Technology": rec.technology.name,
-            "Q available (kW)": round(rec.Q_available_kW, 1),
-            "Q recovered (kW)": round(rec.Q_recovered_kW, 1),
-            "E recovered (MWh/yr)": round(rec.E_recovered_MWh, 1),
-            "Efficiency": round(rec.efficiency, 3),
-            "CAPEX min (€)": round(econ.capex_min_EUR, 0),
-            "CAPEX (€)": round(econ.capex_EUR, 0),
-            "CAPEX max (€)": round(econ.capex_max_EUR, 0),
-            "Total investment (€)": round(econ.total_investment_EUR, 0),
-            "OPEX (€/yr)": round(econ.opex_EUR_anno, 0),
-            "Annual savings (€/yr)": round(econ.annual_savings_EUR, 0),
-        })
+        rows.append(
+            {
+                "Stream": rec.stream_name,
+                "Technology": rec.technology.name,
+                "Q available (kW)": round(rec.Q_available_kW, 1),
+                "Q recovered (kW)": round(rec.Q_recovered_kW, 1),
+                "E recovered (MWh/yr)": round(rec.E_recovered_MWh, 1),
+                "Efficiency": round(rec.efficiency, 3),
+                "CAPEX min (€)": round(econ.capex_min_EUR, 0),
+                "CAPEX (€)": round(econ.capex_EUR, 0),
+                "CAPEX max (€)": round(econ.capex_max_EUR, 0),
+                "Total investment (€)": round(econ.total_investment_EUR, 0),
+                "OPEX (€/yr)": round(econ.opex_EUR_anno, 0),
+                "Annual savings (€/yr)": round(econ.annual_savings_EUR, 0),
+            }
+        )
 
     df = pd.DataFrame(rows)
     df.to_excel(writer, sheet_name="Technologies", index=False)

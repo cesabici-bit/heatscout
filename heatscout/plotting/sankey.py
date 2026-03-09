@@ -10,11 +10,11 @@ from heatscout.core.heat_balance import FactoryHeatBalance
 def _temperature_color(T_mean: float) -> str:
     """Colore basato sulla temperatura media dello stream."""
     if T_mean > 250:
-        return "rgba(220, 50, 50, 0.7)"   # rosso — alta T
+        return "rgba(220, 50, 50, 0.7)"  # rosso — alta T
     elif T_mean >= 80:
-        return "rgba(240, 140, 40, 0.7)"   # arancione — media T
+        return "rgba(240, 140, 40, 0.7)"  # arancione — media T
     else:
-        return "rgba(240, 200, 50, 0.7)"   # giallo — bassa T
+        return "rgba(240, 200, 50, 0.7)"  # giallo — bassa T
 
 
 def create_sankey(heat_balance: FactoryHeatBalance, factory_name: str = "") -> go.Figure:
@@ -35,9 +35,7 @@ def create_sankey(heat_balance: FactoryHeatBalance, factory_name: str = "") -> g
         Plotly Figure con Sankey interattivo
     """
     summary = heat_balance.summary()
-    stream_results = [
-        r for r in summary["stream_results"] if r["stream_type"] == "hot_waste"
-    ]
+    stream_results = [r for r in summary["stream_results"] if r["stream_type"] == "hot_waste"]
 
     if not stream_results:
         fig = go.Figure()
@@ -70,7 +68,7 @@ def create_sankey(heat_balance: FactoryHeatBalance, factory_name: str = "") -> g
     labels = ["Input Energia", "Processo Utile"]
     node_colors = [
         "rgba(100, 100, 200, 0.8)",  # Input: blu
-        "rgba(60, 180, 75, 0.8)",     # Utile: verde
+        "rgba(60, 180, 75, 0.8)",  # Utile: verde
     ]
 
     for r in stream_results:
@@ -111,7 +109,7 @@ def create_sankey(heat_balance: FactoryHeatBalance, factory_name: str = "") -> g
     # ── Etichette personalizzate ─────────────────────────────────────────
     custom_labels = [f"{labels[0]}<br>{energy_input_kW:,.0f} kW"]
     custom_labels.append(
-        f"{labels[1]}<br>{useful_kW:,.0f} kW ({useful_kW/energy_input_kW*100:.0f}%)"
+        f"{labels[1]}<br>{useful_kW:,.0f} kW ({useful_kW / energy_input_kW * 100:.0f}%)"
     )
     for r in stream_results:
         pct = r["Q_kW"] / energy_input_kW * 100
@@ -123,22 +121,26 @@ def create_sankey(heat_balance: FactoryHeatBalance, factory_name: str = "") -> g
     # ── Creazione figura ─────────────────────────────────────────────────
     title = factory_name or heat_balance.factory_name or "Bilancio Termico"
 
-    fig = go.Figure(data=[go.Sankey(
-        arrangement="snap",
-        node=dict(
-            pad=20,
-            thickness=30,
-            line=dict(color="black", width=0.5),
-            label=custom_labels,
-            color=node_colors,
-        ),
-        link=dict(
-            source=sources,
-            target=targets,
-            value=values,
-            color=link_colors,
-        ),
-    )])
+    fig = go.Figure(
+        data=[
+            go.Sankey(
+                arrangement="snap",
+                node=dict(
+                    pad=20,
+                    thickness=30,
+                    line=dict(color="black", width=0.5),
+                    label=custom_labels,
+                    color=node_colors,
+                ),
+                link=dict(
+                    source=sources,
+                    target=targets,
+                    value=values,
+                    color=link_colors,
+                ),
+            )
+        ]
+    )
 
     fig.update_layout(
         title=dict(

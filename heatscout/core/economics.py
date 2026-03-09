@@ -8,13 +8,14 @@ import numpy_financial as npf
 
 from heatscout.core.technology_selector import TechRecommendation
 from heatscout.knowledge.cost_correlations import (
-    estimate_capex,
     estimate_opex,
     estimate_total_investment,
 )
 from heatscout.knowledge.incentives import (
-    TEEResult, calc_tee,
-    CapexIncentiveResult, calc_capex_incentive,
+    CapexIncentiveResult,
+    TEEResult,
+    calc_capex_incentive,
+    calc_tee,
 )
 
 
@@ -37,8 +38,12 @@ class EconomicResult:
     horizon_years: int
 
 
-def calc_annual_savings(Q_recovered_kW: float, hours_per_day: float,
-                        days_per_year: float, energy_price_EUR_kWh: float) -> float:
+def calc_annual_savings(
+    Q_recovered_kW: float,
+    hours_per_day: float,
+    days_per_year: float,
+    energy_price_EUR_kWh: float,
+) -> float:
     """Calcola risparmio annuo [EUR/anno].
 
     savings = Q_recovered × ore/giorno × giorni/anno × prezzo_energia
@@ -61,8 +66,13 @@ def calc_payback(capex: float, annual_savings: float, opex: float) -> float:
     return capex / net
 
 
-def calc_npv(capex: float, annual_savings: float, opex: float,
-             discount_rate: float = 0.05, years: int = 10) -> float:
+def calc_npv(
+    capex: float,
+    annual_savings: float,
+    opex: float,
+    discount_rate: float = 0.05,
+    years: int = 10,
+) -> float:
     """Calcola NPV (Net Present Value) [EUR].
 
     NPV = -CAPEX + Σ (savings - opex) / (1+r)^t per t=1..years
@@ -72,8 +82,7 @@ def calc_npv(capex: float, annual_savings: float, opex: float,
     return float(npf.npv(discount_rate, cashflows))
 
 
-def calc_irr(capex: float, annual_savings: float, opex: float,
-             years: int = 10) -> float | None:
+def calc_irr(capex: float, annual_savings: float, opex: float, years: int = 10) -> float | None:
     """Calcola IRR (Internal Rate of Return) [%].
 
     Ritorna None se IRR non è calcolabile (cashflow sempre negativo).
@@ -142,8 +151,8 @@ def economic_analysis(
     # (payback semplice non sconta, NPV sì — divergenza leggera è ok)
     if payback < years * 0.5 and npv < -total_inv * 0.1:
         assert False, (
-            f"Inconsistenza: payback={payback:.1f}yr << horizon/2={years/2}yr "
-            f"ma NPV={npv:.0f} molto negativo (>{total_inv*0.1:.0f}). "
+            f"Inconsistenza: payback={payback:.1f}yr << horizon/2={years / 2}yr "
+            f"ma NPV={npv:.0f} molto negativo (>{total_inv * 0.1:.0f}). "
             f"capex={total_inv:.0f}, savings={annual_savings:.0f}, opex={opex:.0f}"
         )
 
@@ -235,9 +244,7 @@ def economic_analysis_with_tee(
     # Cashflow cumulativo scontato (per grafico)
     cumulative = [cashflows_con_tee[0]]
     for t in range(1, years + 1):
-        cumulative.append(
-            cumulative[-1] + cashflows_con_tee[t] / (1 + discount_rate) ** t
-        )
+        cumulative.append(cumulative[-1] + cashflows_con_tee[t] / (1 + discount_rate) ** t)
 
     return EconomicComparison(
         base=econ,
@@ -342,9 +349,7 @@ def economic_analysis_with_incentives(
         npv_comb = round(float(npf.npv(discount_rate, cashflows_comb)), 0)
 
         net_con_tee = net_base + tee_result.ricavo_medio_anno
-        payback_comb = round(
-            capex_netto / net_con_tee if net_con_tee > 0 else float("inf"), 1
-        )
+        payback_comb = round(capex_netto / net_con_tee if net_con_tee > 0 else float("inf"), 1)
 
     return IncentiveSummary(
         base=econ,

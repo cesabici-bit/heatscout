@@ -7,14 +7,11 @@ Fonte normativa: DM MASE 21/07/2025
 import pytest
 
 from heatscout.knowledge.incentives import (
-    TEP_PER_MWH_THERMAL,
-    TEE_VITA_UTILE_ANNI,
     TEE_K_PRIMA_META,
     TEE_K_SECONDA_META,
-    TEE_SOGLIA_MINIMA_TEP,
-    ETA_CALDAIA_RIFERIMENTO,
+    TEE_VITA_UTILE_ANNI,
+    TEP_PER_MWH_THERMAL,
     calc_tee,
-    TEEResult,
 )
 
 
@@ -217,9 +214,9 @@ class TestIncentiveSummary:
     @pytest.fixture
     def sample_econ_result(self):
         """Crea un EconomicResult di esempio per test."""
-        from heatscout.core.stream import ThermalStream, StreamType
-        from heatscout.core.technology_selector import select_technologies
         from heatscout.core.economics import economic_analysis
+        from heatscout.core.stream import StreamType, ThermalStream
+        from heatscout.core.technology_selector import select_technologies
 
         stream = ThermalStream(
             name="Fumi forno",
@@ -239,9 +236,7 @@ class TestIncentiveSummary:
         """Con solo CAPEX reduction: NPV migliora, payback scende."""
         from heatscout.core.economics import economic_analysis_with_incentives
 
-        s = economic_analysis_with_incentives(
-            sample_econ_result, capex_riduzione_pct=30.0
-        )
+        s = economic_analysis_with_incentives(sample_econ_result, capex_riduzione_pct=30.0)
         assert s.npv_con_capex_inc > s.base.npv_EUR
         assert s.payback_con_capex_inc < s.base.payback_years
         assert s.tee is None  # TEE non abilitato
@@ -251,9 +246,7 @@ class TestIncentiveSummary:
         """Con solo TEE: NPV migliora, payback scende."""
         from heatscout.core.economics import economic_analysis_with_incentives
 
-        s = economic_analysis_with_incentives(
-            sample_econ_result, tee_enabled=True
-        )
+        s = economic_analysis_with_incentives(sample_econ_result, tee_enabled=True)
         assert s.npv_con_tee >= s.base.npv_EUR
         assert s.payback_con_tee <= s.base.payback_years
         assert s.capex_incentive is None

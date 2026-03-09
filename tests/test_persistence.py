@@ -4,11 +4,11 @@ Round-trip: save → load → same inputs.
 """
 
 import json
+
 import pytest
 
-from heatscout.report.persistence import save_analysis, load_analysis, SCHEMA_VERSION
 from heatscout.core.stream import StreamType
-
+from heatscout.report.persistence import SCHEMA_VERSION, load_analysis, save_analysis
 
 SAMPLE_STREAMS = [
     {
@@ -120,23 +120,31 @@ class TestLoadAnalysis:
 
     def test_empty_streams(self):
         with pytest.raises(ValueError, match="non-empty"):
-            load_analysis(json.dumps({
-                "version": "1.0",
-                "factory_name": "X",
-                "T_ambient": 25,
-                "energy_price": 0.08,
-                "streams": [],
-            }))
+            load_analysis(
+                json.dumps(
+                    {
+                        "version": "1.0",
+                        "factory_name": "X",
+                        "T_ambient": 25,
+                        "energy_price": 0.08,
+                        "streams": [],
+                    }
+                )
+            )
 
     def test_stream_missing_field(self):
         with pytest.raises(ValueError, match="missing fields"):
-            load_analysis(json.dumps({
-                "version": "1.0",
-                "factory_name": "X",
-                "T_ambient": 25,
-                "energy_price": 0.08,
-                "streams": [{"name": "S1"}],
-            }))
+            load_analysis(
+                json.dumps(
+                    {
+                        "version": "1.0",
+                        "factory_name": "X",
+                        "T_ambient": 25,
+                        "energy_price": 0.08,
+                        "streams": [{"name": "S1"}],
+                    }
+                )
+            )
 
 
 class TestRoundTripReproducibility:
@@ -144,10 +152,6 @@ class TestRoundTripReproducibility:
 
     def test_analysis_reproducible(self):
         """save → load → re-analyze → same NPV/payback."""
-        from heatscout.core.stream import ThermalStream
-        from heatscout.core.heat_balance import FactoryHeatBalance
-        from heatscout.core.technology_selector import select_technologies
-        from heatscout.core.economics import economic_analysis
 
         # Prima analisi
         streams = SAMPLE_STREAMS[:1]  # solo primo stream
@@ -166,10 +170,9 @@ class TestRoundTripReproducibility:
 
 def _analyze(stream_dicts):
     """Helper: analizza una lista di stream dict, ritorna EconomicResult."""
-    from heatscout.core.stream import ThermalStream, StreamType
-    from heatscout.core.heat_balance import FactoryHeatBalance
-    from heatscout.core.technology_selector import select_technologies
     from heatscout.core.economics import economic_analysis
+    from heatscout.core.stream import StreamType, ThermalStream
+    from heatscout.core.technology_selector import select_technologies
 
     results = []
     for sd in stream_dicts:
@@ -179,8 +182,10 @@ def _analyze(stream_dicts):
         if st_type != StreamType.HOT_WASTE:
             continue
         stream = ThermalStream(
-            name=sd["name"], fluid_type=sd["fluid_type"],
-            T_in=sd["T_in"], T_out=sd["T_out"],
+            name=sd["name"],
+            fluid_type=sd["fluid_type"],
+            T_in=sd["T_in"],
+            T_out=sd["T_out"],
             mass_flow=sd["mass_flow"],
             hours_per_day=sd["hours_per_day"],
             days_per_year=sd["days_per_year"],

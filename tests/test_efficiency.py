@@ -1,7 +1,5 @@
 """Test per modelli di efficienza delle tecnologie."""
 
-import pytest
-
 from heatscout.knowledge.efficiency_models import (
     he_effectiveness,
     heat_pump_cop,

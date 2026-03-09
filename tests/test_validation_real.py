@@ -21,10 +21,10 @@ from __future__ import annotations
 
 import pytest
 
-from heatscout.core.stream import StreamType, ThermalStream
-from heatscout.core.stream_analyzer import calc_thermal_power, calc_annual_energy
-from heatscout.core.technology_selector import select_technologies
 from heatscout.core.economics import economic_analysis
+from heatscout.core.stream import StreamType, ThermalStream
+from heatscout.core.stream_analyzer import calc_annual_energy, calc_thermal_power
+from heatscout.core.technology_selector import select_technologies
 
 
 class TestValidationFonderia:
@@ -59,9 +59,14 @@ class TestValidationFonderia:
         """A 760C deve raccomandare almeno un recuperatore gas-gas."""
         recs = select_technologies(stream)
         tech_ids = [r.technology.id for r in recs]
-        assert any(t in tech_ids for t in [
-            "recuperatore_gas_gas", "caldaia_recupero", "economizzatore_gas_liquido"
-        ]), f"Nessun HX trovato per 760C. Tecnologie: {tech_ids}"
+        assert any(
+            t in tech_ids
+            for t in [
+                "recuperatore_gas_gas",
+                "caldaia_recupero",
+                "economizzatore_gas_liquido",
+            ]
+        ), f"Nessun HX trovato per 760C. Tecnologie: {tech_ids}"
 
     def test_payback_plausible(self, stream):
         """Payback reale: 2.4-4.1 anni. HeatScout deve dare 1-8 anni."""
@@ -69,8 +74,9 @@ class TestValidationFonderia:
         # Prendi la prima raccomandazione (massimo savings)
         if recs:
             econ = economic_analysis(recs[0])
-            assert 0.5 < econ.payback_years < 10, \
+            assert 0.5 < econ.payback_years < 10, (
                 f"Payback={econ.payback_years}yr, atteso 1-8yr (Waupaca: 2.4-4.1yr)"
+            )
 
 
 class TestValidationCeramica:
@@ -133,8 +139,9 @@ class TestValidationBirrificio:
         """Per acqua 100->60C deve raccomandare scambiatore liquido-liquido."""
         recs = select_technologies(stream_boiling)
         tech_ids = [r.technology.id for r in recs]
-        assert "scambiatore_liquido_liquido" in tech_ids, \
+        assert "scambiatore_liquido_liquido" in tech_ids, (
             f"Scambiatore L-L non trovato. Tecnologie: {tech_ids}"
+        )
 
     def test_payback_plausible_small_brewery(self, stream_boiling):
         """Payback reale: 2-3 anni. HeatScout deve dare 1-6 anni."""
@@ -142,8 +149,9 @@ class TestValidationBirrificio:
         hx_recs = [r for r in recs if r.technology.id == "scambiatore_liquido_liquido"]
         if hx_recs:
             econ = economic_analysis(hx_recs[0])
-            assert 0.5 < econ.payback_years < 8, \
+            assert 0.5 < econ.payback_years < 8, (
                 f"Payback={econ.payback_years}yr, atteso 1-6yr (brewery real: 2-3yr)"
+            )
 
 
 class TestValidationTessile:
@@ -185,8 +193,9 @@ class TestValidationTessile:
         hx_recs = [r for r in recs if "scambiatore" in r.technology.id]
         if hx_recs:
             econ = economic_analysis(hx_recs[0])
-            assert econ.payback_years < 3, \
+            assert econ.payback_years < 3, (
                 f"Payback={econ.payback_years}yr, atteso <3yr (real: <0.5yr)"
+            )
 
 
 class TestValidationDataCenter:
@@ -214,8 +223,9 @@ class TestValidationDataCenter:
         """Per acqua a 35C medio deve raccomandare pompa di calore."""
         recs = select_technologies(stream)
         tech_ids = [r.technology.id for r in recs]
-        assert any("pompa_calore" in t for t in tech_ids), \
+        assert any("pompa_calore" in t for t in tech_ids), (
             f"Nessuna pompa di calore per DC. Tecnologie: {tech_ids}"
+        )
 
     def test_payback_plausible_dc(self, stream):
         """Payback reale: 3.05yr. HeatScout deve dare 1-8yr."""
@@ -223,8 +233,9 @@ class TestValidationDataCenter:
         hp_recs = [r for r in recs if "pompa_calore" in r.technology.id]
         if hp_recs:
             econ = economic_analysis(hp_recs[0])
-            assert 0.5 < econ.payback_years < 10, \
+            assert 0.5 < econ.payback_years < 10, (
                 f"Payback={econ.payback_years}yr, atteso 1-8yr (real: 3.05yr)"
+            )
 
 
 class TestValidationChimicaElectroplating:
@@ -252,5 +263,6 @@ class TestValidationChimicaElectroplating:
         """Per acqua bassa T deve raccomandare pompa di calore."""
         recs = select_technologies(stream)
         tech_ids = [r.technology.id for r in recs]
-        assert any("pompa_calore" in t for t in tech_ids), \
+        assert any("pompa_calore" in t for t in tech_ids), (
             f"Nessuna pompa di calore. Tecnologie: {tech_ids}"
+        )

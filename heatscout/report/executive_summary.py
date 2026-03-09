@@ -49,7 +49,11 @@ def generate_executive_summary(
 
     # Breakdown per classe
     by_class = summary["by_temperature_class"]
-    for cls, label in [("alta", "Alta T (>250°C)"), ("media", "Media T (80-250°C)"), ("bassa", "Bassa T (<80°C)")]:
+    for cls, label in [
+        ("alta", "Alta T (>250°C)"),
+        ("media", "Media T (80-250°C)"),
+        ("bassa", "Bassa T (<80°C)"),
+    ]:
         data = by_class[cls]
         if data["count"] > 0:
             lines.append(
@@ -73,12 +77,9 @@ def generate_executive_summary(
             f"con un payback di {best.payback_years:.1f} anni."
         )
         lines.append("")
-        lines.append(
-            f"  - Investimento: EUR {best.total_investment_EUR:,.0f}")
-        lines.append(
-            f"  - Risparmio annuo: EUR {best.annual_savings_EUR:,.0f}")
-        lines.append(
-            f"  - NPV a {best.horizon_years} anni: EUR {best.npv_EUR:,.0f}")
+        lines.append(f"  - Investimento: EUR {best.total_investment_EUR:,.0f}")
+        lines.append(f"  - Risparmio annuo: EUR {best.annual_savings_EUR:,.0f}")
+        lines.append(f"  - NPV a {best.horizon_years} anni: EUR {best.npv_EUR:,.0f}")
         if best.irr_pct:
             lines.append(f"  - IRR: {best.irr_pct:.1f}%")
         lines.append("")
@@ -95,9 +96,7 @@ def generate_executive_summary(
         cost_10y = cost_waste * 10
         lines.append("COSTO DEL NON-INTERVENTO")
         lines.append("-" * 40)
-        lines.append(
-            f"NON intervenire costa EUR {cost_10y:,.0f} in 10 anni di energia sprecata."
-        )
+        lines.append(f"NON intervenire costa EUR {cost_10y:,.0f} in 10 anni di energia sprecata.")
         lines.append("")
 
     lines.append("NOTA: Le stime hanno un'incertezza indicativa di +/-30% sul CAPEX")

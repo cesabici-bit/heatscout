@@ -3,14 +3,18 @@
 Verifica che il file generato sia valido e contenga i dati attesi.
 """
 
-import pytest
-import pandas as pd
 from io import BytesIO
 
-from heatscout.core.stream import ThermalStream, StreamType
+import pandas as pd
+import pytest
+
+from heatscout.core.economics import (
+    economic_analysis,
+    economic_analysis_with_incentives,
+)
 from heatscout.core.heat_balance import FactoryHeatBalance
+from heatscout.core.stream import StreamType, ThermalStream
 from heatscout.core.technology_selector import select_technologies
-from heatscout.core.economics import economic_analysis, economic_analysis_with_incentives
 from heatscout.report.excel_export import export_to_excel
 
 
@@ -18,22 +22,30 @@ from heatscout.report.excel_export import export_to_excel
 def fonderia_data():
     """Setup completo esempio fonderia: summary, econ_results, incentive_summaries."""
     hb = FactoryHeatBalance(factory_name="Fonderia Test", T_ambient=25.0)
-    hb.add_stream(ThermalStream(
-        name="Fumi forno",
-        fluid_type="fumi_gas_naturale",
-        T_in=400.0, T_out=180.0,
-        mass_flow=2.0,
-        hours_per_day=16.0, days_per_year=300.0,
-        stream_type=StreamType.HOT_WASTE,
-    ))
-    hb.add_stream(ThermalStream(
-        name="Acqua raffreddamento",
-        fluid_type="acqua",
-        T_in=60.0, T_out=35.0,
-        mass_flow=1.5,
-        hours_per_day=16.0, days_per_year=300.0,
-        stream_type=StreamType.HOT_WASTE,
-    ))
+    hb.add_stream(
+        ThermalStream(
+            name="Fumi forno",
+            fluid_type="fumi_gas_naturale",
+            T_in=400.0,
+            T_out=180.0,
+            mass_flow=2.0,
+            hours_per_day=16.0,
+            days_per_year=300.0,
+            stream_type=StreamType.HOT_WASTE,
+        )
+    )
+    hb.add_stream(
+        ThermalStream(
+            name="Acqua raffreddamento",
+            fluid_type="acqua",
+            T_in=60.0,
+            T_out=35.0,
+            mass_flow=1.5,
+            hours_per_day=16.0,
+            days_per_year=300.0,
+            stream_type=StreamType.HOT_WASTE,
+        )
+    )
     hb.calculate()
     summary = hb.summary()
 
@@ -50,8 +62,11 @@ def fonderia_data():
     summaries = []
     for econ in econ_results:
         s = economic_analysis_with_incentives(
-            econ, capex_riduzione_pct=30.0, nome_incentivo="Test Grant",
-            tee_enabled=True, prezzo_tee=250.0,
+            econ,
+            capex_riduzione_pct=30.0,
+            nome_incentivo="Test Grant",
+            tee_enabled=True,
+            prezzo_tee=250.0,
         )
         summaries.append(s)
 

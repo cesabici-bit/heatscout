@@ -16,12 +16,14 @@ def list_examples() -> list[dict]:
     for p in sorted(EXAMPLES_DIR.glob("*.json")):
         with open(p, encoding="utf-8") as f:
             data = json.load(f)
-        examples.append({
-            "id": p.stem,
-            "name": data["name"],
-            "description": data.get("description", ""),
-            "n_streams": len(data["streams"]),
-        })
+        examples.append(
+            {
+                "id": p.stem,
+                "name": data["name"],
+                "description": data.get("description", ""),
+                "n_streams": len(data["streams"]),
+            }
+        )
     return examples
 
 
@@ -37,9 +39,7 @@ def load_example(name: str) -> tuple[list[ThermalStream], dict]:
     path = EXAMPLES_DIR / f"{name}.json"
     if not path.exists():
         available = [p.stem for p in EXAMPLES_DIR.glob("*.json")]
-        raise FileNotFoundError(
-            f"Esempio '{name}' non trovato. Disponibili: {available}"
-        )
+        raise FileNotFoundError(f"Esempio '{name}' non trovato. Disponibili: {available}")
 
     with open(path, encoding="utf-8") as f:
         data = json.load(f)

@@ -102,9 +102,12 @@ def orc_efficiency(T_source: float, T_sink: float = 30.0, eta_fraction: float = 
     return max(0.0, min(0.25, eta_orc))
 
 
-def preheating_savings(T_exhaust: float, T_air_in: float = 20.0,
-                       T_air_out: float | None = None,
-                       effectiveness: float = 0.60) -> float:
+def preheating_savings(
+    T_exhaust: float,
+    T_air_in: float = 20.0,
+    T_air_out: float | None = None,
+    effectiveness: float = 0.60,
+) -> float:
     """Percentuale di risparmio combustibile dal pre-riscaldamento aria.
 
     L'aria comburente viene pre-riscaldata dai fumi, riducendo il

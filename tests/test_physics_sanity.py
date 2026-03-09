@@ -10,19 +10,20 @@ NON solo che il codice funzioni. Servono per catturare:
 Ogni test ha un VALORE DI RIFERIMENTO MANUALE calcolato con fonti esterne.
 """
 
-import pytest
+from heatscout.core.fluid_properties import get_cp, get_density
+from heatscout.core.heat_balance import FactoryHeatBalance
 from heatscout.core.stream import StreamType, ThermalStream
 from heatscout.core.stream_analyzer import (
-    calc_thermal_power, calc_annual_energy, calc_exergy, classify_temperature
+    calc_annual_energy,
+    calc_exergy,
+    calc_thermal_power,
 )
-from heatscout.core.fluid_properties import get_cp, get_density, get_properties
-from heatscout.core.heat_balance import FactoryHeatBalance
-
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # CHECKPOINT 1: Proprietà fluidi — confronto con valori tabulati
 # Fonte: Engineering Toolbox, Perry's Chemical Engineers' Handbook
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestFluidPropertiesSanity:
     """Verifica cp e densità contro valori noti da letteratura."""
@@ -70,12 +71,18 @@ class TestFluidPropertiesSanity:
     def test_cp_always_positive(self):
         """cp deve essere SEMPRE positivo per qualsiasi fluido/temperatura."""
         test_cases = [
-            ("acqua", 10), ("acqua", 90),
-            ("aria", 20), ("aria", 600),
-            ("fumi_gas_naturale", 100), ("fumi_gas_naturale", 800),
-            ("olio_diatermico", 50), ("olio_diatermico", 300),
-            ("azoto", 20), ("azoto", 500),
-            ("co2", 20), ("co2", 400),
+            ("acqua", 10),
+            ("acqua", 90),
+            ("aria", 20),
+            ("aria", 600),
+            ("fumi_gas_naturale", 100),
+            ("fumi_gas_naturale", 800),
+            ("olio_diatermico", 50),
+            ("olio_diatermico", 300),
+            ("azoto", 20),
+            ("azoto", 500),
+            ("co2", 20),
+            ("co2", 400),
         ]
         for fluid, T in test_cases:
             cp = get_cp(fluid, T)
@@ -84,8 +91,12 @@ class TestFluidPropertiesSanity:
     def test_cp_reasonable_range(self):
         """cp per tutti i fluidi deve stare in un range ragionevole (0.5 - 5 kJ/kgK)."""
         test_cases = [
-            ("acqua", 50), ("aria", 200), ("fumi_gas_naturale", 400),
-            ("olio_diatermico", 200), ("azoto", 300), ("co2", 200),
+            ("acqua", 50),
+            ("aria", 200),
+            ("fumi_gas_naturale", 400),
+            ("olio_diatermico", 200),
+            ("azoto", 300),
+            ("co2", 200),
         ]
         for fluid, T in test_cases:
             cp = get_cp(fluid, T)
@@ -95,6 +106,7 @@ class TestFluidPropertiesSanity:
 # ═══════════════════════════════════════════════════════════════════════════════
 # CHECKPOINT 2: Potenza termica — calcoli manuali verificabili
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestThermalPowerSanity:
     """Verifica potenza termica contro calcoli manuali."""
@@ -129,7 +141,7 @@ class TestThermalPowerSanity:
         s2 = ThermalStream("test2", "acqua", 90, 60, 2.0, 8, 250, StreamType.HOT_WASTE)
         Q1 = calc_thermal_power(s1)
         Q2 = calc_thermal_power(s2)
-        assert abs(Q2 / Q1 - 2.0) < 0.001, f"Q2/Q1 = {Q2/Q1:.4f}, atteso 2.0"
+        assert abs(Q2 / Q1 - 2.0) < 0.001, f"Q2/Q1 = {Q2 / Q1:.4f}, atteso 2.0"
 
     def test_power_proportional_to_delta_T(self):
         """INVARIANTE: Q approssimativamente proporzionale a deltaT (se cp ≈ costante)."""
@@ -157,6 +169,7 @@ class TestThermalPowerSanity:
 # ═══════════════════════════════════════════════════════════════════════════════
 # CHECKPOINT 3: Exergia — leggi della termodinamica
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 class TestExergySanity:
     """Verifica che l'exergia rispetti i vincoli termodinamici."""
@@ -206,6 +219,7 @@ class TestExergySanity:
 # CHECKPOINT 4: Energia annuale — ordini di grandezza
 # ═══════════════════════════════════════════════════════════════════════════════
 
+
 class TestAnnualEnergySanity:
     """Verifica che le energie annuali siano nell'ordine di grandezza giusto."""
 
@@ -230,13 +244,16 @@ class TestAnnualEnergySanity:
 # CHECKPOINT 5: Heat Balance — conservazione dell'energia
 # ═══════════════════════════════════════════════════════════════════════════════
 
+
 class TestHeatBalanceSanity:
     """Verifica conservazione energia nel bilancio."""
 
     def test_sum_equals_total(self):
         """La somma delle Q per stream deve uguale al totale."""
         hb = FactoryHeatBalance("Test", 25)
-        hb.add_stream(ThermalStream("S1", "fumi_gas_naturale", 500, 200, 1.0, 16, 250, StreamType.HOT_WASTE))
+        hb.add_stream(
+            ThermalStream("S1", "fumi_gas_naturale", 500, 200, 1.0, 16, 250, StreamType.HOT_WASTE)
+        )
         hb.add_stream(ThermalStream("S2", "acqua", 60, 30, 2.0, 16, 250, StreamType.HOT_WASTE))
         hb.add_stream(ThermalStream("S3", "aria", 150, 80, 0.5, 16, 250, StreamType.HOT_WASTE))
 
@@ -247,7 +264,9 @@ class TestHeatBalanceSanity:
     def test_class_percentages_sum_to_100(self):
         """Le percentuali per classe T devono sommare a ~100%."""
         hb = FactoryHeatBalance("Test", 25)
-        hb.add_stream(ThermalStream("S1", "fumi_gas_naturale", 500, 200, 1.0, 16, 250, StreamType.HOT_WASTE))
+        hb.add_stream(
+            ThermalStream("S1", "fumi_gas_naturale", 500, 200, 1.0, 16, 250, StreamType.HOT_WASTE)
+        )
         hb.add_stream(ThermalStream("S2", "acqua", 60, 30, 2.0, 16, 250, StreamType.HOT_WASTE))
         hb.add_stream(ThermalStream("S3", "aria", 150, 80, 0.5, 16, 250, StreamType.HOT_WASTE))
 

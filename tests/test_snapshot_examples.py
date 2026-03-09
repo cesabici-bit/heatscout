@@ -15,16 +15,24 @@ from pathlib import Path
 
 import pytest
 
+from heatscout.core.economics import economic_analysis
 from heatscout.core.examples import load_example
 from heatscout.core.stream_analyzer import analyze_stream
 from heatscout.core.technology_selector import select_technologies
-from heatscout.core.economics import economic_analysis
 
 SNAPSHOTS_PATH = Path(__file__).parent / "snapshots" / "golden_examples.json"
 
 EXAMPLES = [
-    "birrificio", "cartiera", "caseificio", "ceramica", "chimica",
-    "complesso_multi_stream", "data_center", "fonderia", "tessile", "vetreria",
+    "birrificio",
+    "cartiera",
+    "caseificio",
+    "ceramica",
+    "chimica",
+    "complesso_multi_stream",
+    "data_center",
+    "fonderia",
+    "tessile",
+    "vetreria",
 ]
 
 # Tolleranza relativa per confronti numerici (0.1% — cattura regressioni
@@ -47,8 +55,9 @@ def _assert_close(actual, expected, label: str):
     if expected == 0:
         assert actual == pytest.approx(0, abs=0.1), f"{label}: expected~0, got {actual}"
     else:
-        assert actual == pytest.approx(expected, rel=REL_TOL), \
+        assert actual == pytest.approx(expected, rel=REL_TOL), (
             f"{label}: expected={expected}, actual={actual}"
+        )
 
 
 @pytest.mark.parametrize("example_id", EXAMPLES)
@@ -88,8 +97,9 @@ class TestSnapshotRecommendations:
         for s in streams:
             actual_recs.extend(select_technologies(s))
 
-        assert len(actual_recs) == len(expected_recs), \
+        assert len(actual_recs) == len(expected_recs), (
             f"{example_id}: expected {len(expected_recs)} recs, got {len(actual_recs)}"
+        )
 
     def test_recommendation_values(self, example_id, golden_data):
         streams, _ = load_example(example_id)
@@ -120,8 +130,9 @@ class TestSnapshotEconomics:
             for r in recs:
                 actual_econs.append(economic_analysis(r))
 
-        assert len(actual_econs) == len(expected_econs), \
+        assert len(actual_econs) == len(expected_econs), (
             f"{example_id}: expected {len(expected_econs)} econ results"
+        )
 
         for i, (act, exp) in enumerate(zip(actual_econs, expected_econs)):
             label = f"{example_id}/econ[{i}]/{exp['tech_id']}"

@@ -24,9 +24,7 @@ def get_fluid_info(fluid_id: str) -> dict:
     """Ritorna le informazioni di un fluido dal database."""
     db = _load_fluids_db()
     if fluid_id not in db:
-        raise ValueError(
-            f"Fluido '{fluid_id}' non trovato. Disponibili: {list(db.keys())}"
-        )
+        raise ValueError(f"Fluido '{fluid_id}' non trovato. Disponibili: {list(db.keys())}")
     return db[fluid_id]
 
 

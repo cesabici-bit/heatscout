@@ -7,19 +7,17 @@ della fisica siano SEMPRE rispettate, indipendentemente dall'input.
 from __future__ import annotations
 
 import pytest
-
-from hypothesis import given, settings, assume
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
+from heatscout.core.economics import calc_irr, calc_npv, calc_payback
 from heatscout.core.stream import StreamType, ThermalStream
 from heatscout.core.stream_analyzer import (
-    calc_thermal_power,
     calc_annual_energy,
     calc_exergy,
+    calc_thermal_power,
     classify_temperature,
 )
-from heatscout.core.economics import calc_payback, calc_npv, calc_irr
-
 
 # ── Strategie per generare input validi ──────────────────────────────────────
 
@@ -49,8 +47,8 @@ def hot_waste_stream(draw):
 
 # ── Test invarianti termodinamiche ───────────────────────────────────────────
 
-class TestThermalPowerProperties:
 
+class TestThermalPowerProperties:
     @given(stream=hot_waste_stream())
     @settings(max_examples=200)
     def test_power_always_positive(self, stream):
@@ -94,8 +92,8 @@ class TestThermalPowerProperties:
 
 # ── Test invarianti economiche ───────────────────────────────────────────────
 
-class TestEconomicProperties:
 
+class TestEconomicProperties:
     @given(
         capex=st.floats(min_value=100, max_value=1e8, allow_nan=False, allow_infinity=False),
         savings=st.floats(min_value=100, max_value=1e7, allow_nan=False, allow_infinity=False),
@@ -147,8 +145,8 @@ class TestEconomicProperties:
 
 # ── Test classificazione temperatura ─────────────────────────────────────────
 
-class TestTemperatureClassification:
 
+class TestTemperatureClassification:
     @given(T=st.floats(min_value=251, max_value=2000, allow_nan=False, allow_infinity=False))
     def test_high_temp(self, T):
         assert classify_temperature(T) == "alta"

@@ -38,28 +38,30 @@ def generate_template() -> bytes:
     Returns:
         UTF-8 encoded CSV bytes with BOM for Excel compatibility.
     """
-    df = pd.DataFrame([
-        {
-            "name": "Flue gas furnace",
-            "fluid_type": "fumi_gas_naturale",
-            "T_in": 400.0,
-            "T_out": 180.0,
-            "mass_flow": 2.0,
-            "hours_per_day": 16.0,
-            "days_per_year": 300.0,
-            "stream_type": "hot_waste",
-        },
-        {
-            "name": "Cooling water",
-            "fluid_type": "acqua",
-            "T_in": 60.0,
-            "T_out": 35.0,
-            "mass_flow": 1.5,
-            "hours_per_day": 16.0,
-            "days_per_year": 300.0,
-            "stream_type": "hot_waste",
-        },
-    ])
+    df = pd.DataFrame(
+        [
+            {
+                "name": "Flue gas furnace",
+                "fluid_type": "fumi_gas_naturale",
+                "T_in": 400.0,
+                "T_out": 180.0,
+                "mass_flow": 2.0,
+                "hours_per_day": 16.0,
+                "days_per_year": 300.0,
+                "stream_type": "hot_waste",
+            },
+            {
+                "name": "Cooling water",
+                "fluid_type": "acqua",
+                "T_in": 60.0,
+                "T_out": 35.0,
+                "mass_flow": 1.5,
+                "hours_per_day": 16.0,
+                "days_per_year": 300.0,
+                "stream_type": "hot_waste",
+            },
+        ]
+    )
     # BOM for Excel to recognize UTF-8
     return b"\xef\xbb\xbf" + df.to_csv(index=False).encode("utf-8")
 
@@ -109,30 +111,37 @@ def import_streams(file_bytes: bytes, filename: str) -> list[dict]:
     df = df.rename(columns=col_map)
 
     # Check required columns
-    required = {"name", "fluid_type", "T_in", "T_out", "mass_flow",
-                "hours_per_day", "days_per_year", "stream_type"}
+    required = {
+        "name",
+        "fluid_type",
+        "T_in",
+        "T_out",
+        "mass_flow",
+        "hours_per_day",
+        "days_per_year",
+        "stream_type",
+    }
     missing = required - set(df.columns)
     if missing:
-        raise ValueError(
-            f"Missing required columns: {missing}. "
-            f"Available: {list(df.columns)}"
-        )
+        raise ValueError(f"Missing required columns: {missing}. Available: {list(df.columns)}")
 
     # Convert to list of dicts
     streams = []
     for idx, row in df.iterrows():
         try:
             st_type = str(row["stream_type"]).strip().lower()
-            streams.append({
-                "name": str(row["name"]).strip(),
-                "fluid_type": str(row["fluid_type"]).strip(),
-                "T_in": float(row["T_in"]),
-                "T_out": float(row["T_out"]),
-                "mass_flow": float(row["mass_flow"]),
-                "hours_per_day": float(row["hours_per_day"]),
-                "days_per_year": float(row["days_per_year"]),
-                "stream_type": st_type,
-            })
+            streams.append(
+                {
+                    "name": str(row["name"]).strip(),
+                    "fluid_type": str(row["fluid_type"]).strip(),
+                    "T_in": float(row["T_in"]),
+                    "T_out": float(row["T_out"]),
+                    "mass_flow": float(row["mass_flow"]),
+                    "hours_per_day": float(row["hours_per_day"]),
+                    "days_per_year": float(row["days_per_year"]),
+                    "stream_type": st_type,
+                }
+            )
         except (ValueError, TypeError) as e:
             raise ValueError(f"Row {idx + 2}: invalid data — {e}") from e
 

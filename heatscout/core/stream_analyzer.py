@@ -44,7 +44,7 @@ def calc_thermal_power(stream: ThermalStream, detailed: bool = False) -> float |
                 "cp_mean_kJ_kgK": round(cp_mean, 4),
                 "mass_flow_kg_s": stream.mass_flow,
                 "formula": "Q = m_dot × cp_mean × |T_in - T_out|",
-            }
+            },
         }
     return Q
 

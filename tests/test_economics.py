@@ -2,19 +2,16 @@
 
 import pytest
 
-from heatscout.core.stream import StreamType, ThermalStream
-from heatscout.core.technology_selector import select_technologies
 from heatscout.core.economics import (
-    calc_annual_savings,
-    calc_payback,
-    calc_npv,
     calc_irr,
+    calc_npv,
+    calc_payback,
     economic_analysis,
 )
+from heatscout.core.stream import StreamType, ThermalStream
+from heatscout.core.technology_selector import select_technologies
 from heatscout.knowledge.cost_correlations import (
     estimate_capex,
-    estimate_opex,
-    estimate_total_investment,
 )
 
 
@@ -95,9 +92,7 @@ class TestCalcIRR:
 class TestEconomicAnalysisIntegration:
     def test_full_economic_analysis(self):
         """Test end-to-end: stream → tecnologie → economia."""
-        s = ThermalStream(
-            "Fumi", "fumi_gas_naturale", 400, 180, 1.5, 16, 250, StreamType.HOT_WASTE
-        )
+        s = ThermalStream("Fumi", "fumi_gas_naturale", 400, 180, 1.5, 16, 250, StreamType.HOT_WASTE)
         recs = select_technologies(s, energy_price_EUR_kWh=0.08)
         assert len(recs) > 0
 
@@ -109,9 +104,7 @@ class TestEconomicAnalysisIntegration:
 
     def test_payback_heat_pump_50kw(self):
         """Payback pompa di calore ~50 kW: 3-8 anni."""
-        s = ThermalStream(
-            "Acqua", "acqua", 55, 30, 0.5, 16, 250, StreamType.HOT_WASTE
-        )
+        s = ThermalStream("Acqua", "acqua", 55, 30, 0.5, 16, 250, StreamType.HOT_WASTE)
         recs = select_technologies(s, energy_price_EUR_kWh=0.08)
         hp_recs = [r for r in recs if r.is_heat_pump]
         if hp_recs:
@@ -120,9 +113,7 @@ class TestEconomicAnalysisIntegration:
 
     def test_npv_consistent_with_payback(self):
         """Se payback < horizon, NPV deve essere > 0."""
-        s = ThermalStream(
-            "Fumi", "fumi_gas_naturale", 300, 150, 1.0, 16, 250, StreamType.HOT_WASTE
-        )
+        s = ThermalStream("Fumi", "fumi_gas_naturale", 300, 150, 1.0, 16, 250, StreamType.HOT_WASTE)
         recs = select_technologies(s, energy_price_EUR_kWh=0.08)
         for rec in recs[:3]:  # Top 3
             result = economic_analysis(rec, energy_price_EUR_kWh=0.08, years=15)

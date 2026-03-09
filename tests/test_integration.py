@@ -6,19 +6,16 @@ technology selection -> economic analysis. Nessuna eccezione non gestita.
 
 from __future__ import annotations
 
-import pytest
-
-from heatscout.core.stream import StreamType, ThermalStream
-from heatscout.core.heat_balance import FactoryHeatBalance
-from heatscout.core.technology_selector import select_technologies
 from heatscout.core.economics import economic_analysis
 from heatscout.core.examples import load_example
-from heatscout.report.executive_summary import generate_executive_summary
+from heatscout.core.heat_balance import FactoryHeatBalance
+from heatscout.core.stream import StreamType, ThermalStream
+from heatscout.core.technology_selector import select_technologies
 from heatscout.plotting.sankey import create_sankey
+from heatscout.report.executive_summary import generate_executive_summary
 
 
-def _run_full_workflow(streams, factory_name="Test", T_ambient=25.0,
-                       energy_price=0.08):
+def _run_full_workflow(streams, factory_name="Test", T_ambient=25.0, energy_price=0.08):
     """Esegue il workflow completo e ritorna (summary, econ_results, hb)."""
     hb = FactoryHeatBalance(factory_name=factory_name, T_ambient=T_ambient)
     for s in streams:
@@ -34,8 +31,9 @@ def _run_full_workflow(streams, factory_name="Test", T_ambient=25.0,
             continue
         recs = select_technologies(stream, energy_price_EUR_kWh=energy_price)
         for rec in recs:
-            econ = economic_analysis(rec, energy_price_EUR_kWh=energy_price,
-                                     discount_rate=0.05, years=10)
+            econ = economic_analysis(
+                rec, energy_price_EUR_kWh=energy_price, discount_rate=0.05, years=10
+            )
             all_econ.append(econ)
 
     return summary, all_econ, hb
@@ -48,9 +46,11 @@ class TestWorkflowCompleto:
         stream = ThermalStream(
             name="Fumi test",
             fluid_type="fumi_gas_naturale",
-            T_in=400, T_out=150,
+            T_in=400,
+            T_out=150,
             mass_flow=2.0,
-            hours_per_day=16, days_per_year=250,
+            hours_per_day=16,
+            days_per_year=250,
             stream_type=StreamType.HOT_WASTE,
         )
         summary, econ_results, hb = _run_full_workflow([stream])
@@ -113,33 +113,53 @@ class TestMultiStream:
     def test_five_streams_pipeline(self):
         streams = [
             ThermalStream(
-                name="Fumi forno", fluid_type="fumi_gas_naturale",
-                T_in=500, T_out=200, mass_flow=1.5,
-                hours_per_day=16, days_per_year=250,
+                name="Fumi forno",
+                fluid_type="fumi_gas_naturale",
+                T_in=500,
+                T_out=200,
+                mass_flow=1.5,
+                hours_per_day=16,
+                days_per_year=250,
                 stream_type=StreamType.HOT_WASTE,
             ),
             ThermalStream(
-                name="Acqua raffreddamento", fluid_type="acqua",
-                T_in=60, T_out=30, mass_flow=3.0,
-                hours_per_day=16, days_per_year=250,
+                name="Acqua raffreddamento",
+                fluid_type="acqua",
+                T_in=60,
+                T_out=30,
+                mass_flow=3.0,
+                hours_per_day=16,
+                days_per_year=250,
                 stream_type=StreamType.HOT_WASTE,
             ),
             ThermalStream(
-                name="Aria compressa", fluid_type="aria",
-                T_in=120, T_out=40, mass_flow=0.5,
-                hours_per_day=16, days_per_year=250,
+                name="Aria compressa",
+                fluid_type="aria",
+                T_in=120,
+                T_out=40,
+                mass_flow=0.5,
+                hours_per_day=16,
+                days_per_year=250,
                 stream_type=StreamType.HOT_WASTE,
             ),
             ThermalStream(
-                name="Olio diatermico", fluid_type="olio_diatermico",
-                T_in=250, T_out=150, mass_flow=1.0,
-                hours_per_day=16, days_per_year=250,
+                name="Olio diatermico",
+                fluid_type="olio_diatermico",
+                T_in=250,
+                T_out=150,
+                mass_flow=1.0,
+                hours_per_day=16,
+                days_per_year=250,
                 stream_type=StreamType.HOT_WASTE,
             ),
             ThermalStream(
-                name="Riscaldamento processo", fluid_type="acqua",
-                T_in=20, T_out=60, mass_flow=2.0,
-                hours_per_day=16, days_per_year=250,
+                name="Riscaldamento processo",
+                fluid_type="acqua",
+                T_in=20,
+                T_out=60,
+                mass_flow=2.0,
+                hours_per_day=16,
+                days_per_year=250,
                 stream_type=StreamType.COLD_DEMAND,
             ),
         ]
@@ -163,9 +183,13 @@ class TestEdgeCaseSmallPower:
 
     def test_tiny_stream_no_crash(self):
         stream = ThermalStream(
-            name="Micro stream", fluid_type="acqua",
-            T_in=50, T_out=40, mass_flow=0.025,
-            hours_per_day=8, days_per_year=200,
+            name="Micro stream",
+            fluid_type="acqua",
+            T_in=50,
+            T_out=40,
+            mass_flow=0.025,
+            hours_per_day=8,
+            days_per_year=200,
             stream_type=StreamType.HOT_WASTE,
         )
         summary, econ_results, _ = _run_full_workflow([stream])
@@ -180,9 +204,13 @@ class TestEdgeCaseHighTemp:
 
     def test_800C_stream_no_crash(self):
         stream = ThermalStream(
-            name="Fumi altissima T", fluid_type="fumi_gas_naturale",
-            T_in=800, T_out=200, mass_flow=2.0,
-            hours_per_day=16, days_per_year=250,
+            name="Fumi altissima T",
+            fluid_type="fumi_gas_naturale",
+            T_in=800,
+            T_out=200,
+            mass_flow=2.0,
+            hours_per_day=16,
+            days_per_year=250,
             stream_type=StreamType.HOT_WASTE,
         )
         summary, econ_results, _ = _run_full_workflow([stream])

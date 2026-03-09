@@ -1,13 +1,12 @@
 """Tests for sensitivity analysis (energy price sweep + tornado chart)."""
 
-import math
 from types import SimpleNamespace
 
 import pytest
 
 from heatscout.core.sensitivity import (
-    SensitivityPoint, energy_price_sensitivity,
-    TornadoBar, tornado_analysis,
+    energy_price_sensitivity,
+    tornado_analysis,
 )
 
 
@@ -48,7 +47,7 @@ class TestEnergyPriceSensitivity:
         for i in range(1, len(paybacks)):
             assert paybacks[i] <= paybacks[i - 1], (
                 f"Payback not monotonically decreasing: "
-                f"price {pts[i].param_value} has payback {paybacks[i]} > {paybacks[i-1]}"
+                f"price {pts[i].param_value} has payback {paybacks[i]} > {paybacks[i - 1]}"
             )
 
     def test_monotonic_npv_increasing(self, base_econ):
@@ -58,14 +57,12 @@ class TestEnergyPriceSensitivity:
         for i in range(1, len(npvs)):
             assert npvs[i] >= npvs[i - 1], (
                 f"NPV not monotonically increasing: "
-                f"price {pts[i].param_value} has NPV {npvs[i]} < {npvs[i-1]}"
+                f"price {pts[i].param_value} has NPV {npvs[i]} < {npvs[i - 1]}"
             )
 
     def test_near_zero_price_infinite_payback(self, base_econ):
         """When price → 0, savings → 0, payback → infinity."""
-        pts = energy_price_sensitivity(
-            base_econ, BASE_PRICE, n_points=11, range_pct=99.0
-        )
+        pts = energy_price_sensitivity(base_econ, BASE_PRICE, n_points=11, range_pct=99.0)
         # First point is near-zero price
         assert pts[0].param_value < 0.005
         assert pts[0].payback_years == float("inf")
@@ -73,9 +70,7 @@ class TestEnergyPriceSensitivity:
     def test_double_price_halves_payback(self, base_econ):
         """At 2× price, payback ≈ half (since savings ∝ price, opex constant)."""
         # Use range that includes both 1× and 2× base price
-        pts = energy_price_sensitivity(
-            base_econ, BASE_PRICE, n_points=101, range_pct=100.0
-        )
+        pts = energy_price_sensitivity(base_econ, BASE_PRICE, n_points=101, range_pct=100.0)
         # Find points closest to 1× and 2× base price
         base_pt = min(pts, key=lambda p: abs(p.param_value - BASE_PRICE))
         double_pt = min(pts, key=lambda p: abs(p.param_value - 2 * BASE_PRICE))
@@ -116,9 +111,7 @@ class TestSensitivityEdgeCases:
         assert len(pts) == 3
 
     def test_narrow_range(self, base_econ):
-        pts = energy_price_sensitivity(
-            base_econ, BASE_PRICE, n_points=5, range_pct=5.0
-        )
+        pts = energy_price_sensitivity(base_econ, BASE_PRICE, n_points=5, range_pct=5.0)
         prices = [p.param_value for p in pts]
         assert min(prices) >= BASE_PRICE * 0.94
         assert max(prices) <= BASE_PRICE * 1.06

@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
 
 
 class StreamType(str, Enum):
@@ -53,18 +52,12 @@ class ThermalStream:
 
         # Temperatura minima: zero assoluto
         if self.T_in <= -273.15:
-            raise ValueError(
-                f"T_in={self.T_in}°C è sotto lo zero assoluto (-273.15°C)"
-            )
+            raise ValueError(f"T_in={self.T_in}°C è sotto lo zero assoluto (-273.15°C)")
         if self.T_out <= -273.15:
-            raise ValueError(
-                f"T_out={self.T_out}°C è sotto lo zero assoluto (-273.15°C)"
-            )
+            raise ValueError(f"T_out={self.T_out}°C è sotto lo zero assoluto (-273.15°C)")
 
         if self.T_in == self.T_out:
-            raise ValueError(
-                f"T_in e T_out sono uguali ({self.T_in}°C): nessun scambio termico"
-            )
+            raise ValueError(f"T_in e T_out sono uguali ({self.T_in}°C): nessun scambio termico")
 
         # Per hot_waste: T_in > T_out (il fluido si raffredda)
         if self.stream_type == StreamType.HOT_WASTE and self.T_in < self.T_out:
@@ -82,14 +75,10 @@ class ThermalStream:
             raise ValueError(f"mass_flow={self.mass_flow} kg/s deve essere > 0")
 
         if not (0 < self.hours_per_day <= 24):
-            raise ValueError(
-                f"hours_per_day={self.hours_per_day} deve essere tra 0 e 24"
-            )
+            raise ValueError(f"hours_per_day={self.hours_per_day} deve essere tra 0 e 24")
 
         if not (0 < self.days_per_year <= 366):
-            raise ValueError(
-                f"days_per_year={self.days_per_year} deve essere tra 0 e 366"
-            )
+            raise ValueError(f"days_per_year={self.days_per_year} deve essere tra 0 e 366")
 
         if self.pressure <= 0:
             raise ValueError(f"pressure={self.pressure} Pa deve essere > 0")

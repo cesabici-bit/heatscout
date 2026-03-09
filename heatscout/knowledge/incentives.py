@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-
 # --- Costanti normative ---
 
 # Conversione: 1 TEP = 11.628 MWh → 1 MWh = 0.08600 TEP
@@ -84,12 +83,8 @@ def calc_tee(
 
     Fonte: DM MASE 21/07/2025, art. 6-7
     """
-    assert E_recovered_MWh_anno >= 0, (
-        f"Energia recuperata negativa: {E_recovered_MWh_anno}"
-    )
-    assert 0.5 <= eta_riferimento <= 1.0, (
-        f"Rendimento riferimento fuori range: {eta_riferimento}"
-    )
+    assert E_recovered_MWh_anno >= 0, f"Energia recuperata negativa: {E_recovered_MWh_anno}"
+    assert 0.5 <= eta_riferimento <= 1.0, f"Rendimento riferimento fuori range: {eta_riferimento}"
     assert prezzo_tee > 0, f"Prezzo TEE non valido: {prezzo_tee}"
 
     # Conversione energia termica → energia primaria risparmiata → TEP
@@ -166,9 +161,7 @@ def calc_capex_incentive(
         CapexIncentiveResult con CAPEX netto
     """
     assert capex >= 0, f"CAPEX negativo: {capex}"
-    assert 0 <= riduzione_pct <= 100, (
-        f"Riduzione % fuori range [0-100]: {riduzione_pct}"
-    )
+    assert 0 <= riduzione_pct <= 100, f"Riduzione % fuori range [0-100]: {riduzione_pct}"
 
     riduzione = capex * riduzione_pct / 100
     netto = capex - riduzione

@@ -58,18 +58,20 @@ def load_technologies() -> list[Technology]:
 
     techs = []
     for t in data["technologies"]:
-        techs.append(Technology(
-            id=t["id"],
-            name=t["name"],
-            description=t["description"],
-            T_min=t["T_min"],
-            T_max=t["T_max"],
-            Q_min=t["Q_min"],
-            Q_max=t["Q_max"],
-            efficiency_range=tuple(t["efficiency_range"]),
-            lifetime_years=t["lifetime_years"],
-            applicable_fluids=t.get("applicable_fluids", []),
-            pros=t.get("pros", []),
-            cons=t.get("cons", []),
-        ))
+        techs.append(
+            Technology(
+                id=t["id"],
+                name=t["name"],
+                description=t["description"],
+                T_min=t["T_min"],
+                T_max=t["T_max"],
+                Q_min=t["Q_min"],
+                Q_max=t["Q_max"],
+                efficiency_range=tuple(t["efficiency_range"]),
+                lifetime_years=t["lifetime_years"],
+                applicable_fluids=t.get("applicable_fluids", []),
+                pros=t.get("pros", []),
+                cons=t.get("cons", []),
+            )
+        )
     return techs

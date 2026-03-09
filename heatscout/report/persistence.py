@@ -93,11 +93,19 @@ def load_analysis(json_str: str) -> dict:
     if not isinstance(data["streams"], list) or len(data["streams"]) == 0:
         raise ValueError("'streams' must be a non-empty list")
 
-    stream_fields = {"name", "fluid_type", "T_in", "T_out", "mass_flow",
-                     "hours_per_day", "days_per_year", "stream_type"}
+    stream_fields = {
+        "name",
+        "fluid_type",
+        "T_in",
+        "T_out",
+        "mass_flow",
+        "hours_per_day",
+        "days_per_year",
+        "stream_type",
+    }
     for i, s in enumerate(data["streams"]):
         missing_s = stream_fields - set(s.keys())
         if missing_s:
-            raise ValueError(f"Stream {i+1} missing fields: {missing_s}")
+            raise ValueError(f"Stream {i + 1} missing fields: {missing_s}")
 
     return data

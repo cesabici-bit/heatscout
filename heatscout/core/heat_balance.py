@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-
 from heatscout.core.stream import StreamType, ThermalStream
 from heatscout.core.stream_analyzer import analyze_stream, calc_thermal_power
 
@@ -51,7 +49,9 @@ class FactoryHeatBalance:
         }
 
         if unit not in conversions:
-            raise ValueError(f"Unità '{unit}' non supportata. Disponibili: {list(conversions.keys())}")
+            raise ValueError(
+                f"Unità '{unit}' non supportata. Disponibili: {list(conversions.keys())}"
+            )
 
         conv = conversions[unit]
         factor = conv.get(fuel_type, conv.get("_any"))
@@ -71,14 +71,13 @@ class FactoryHeatBalance:
         In realtà è più complesso, ma serve come stima di primo livello.
         """
         total_waste_kW = sum(
-            calc_thermal_power(s) for s in self._streams
-            if s.stream_type == StreamType.HOT_WASTE
+            calc_thermal_power(s) for s in self._streams if s.stream_type == StreamType.HOT_WASTE
         )
         if total_waste_kW > 0 and 0 < efficiency < 1:
             self._energy_input_kW = total_waste_kW / (1.0 - efficiency)
         else:
             self._energy_input_kW = None
-        self._energy_input_source = f"Stimato (efficienza={efficiency*100:.0f}%)"
+        self._energy_input_source = f"Stimato (efficienza={efficiency * 100:.0f}%)"
         self._results = None
 
     def calculate(self) -> list[dict]:
@@ -87,9 +86,7 @@ class FactoryHeatBalance:
         Returns:
             Lista di dict con risultati per ogni stream
         """
-        self._results = [
-            analyze_stream(s, self.T_ambient) for s in self._streams
-        ]
+        self._results = [analyze_stream(s, self.T_ambient) for s in self._streams]
         return self._results
 
     def summary(self) -> dict:
@@ -127,7 +124,8 @@ class FactoryHeatBalance:
                 "E_MWh_anno": sum(r["E_MWh_anno"] for r in streams),
                 "pct_of_waste": (
                     sum(r["Q_kW"] for r in streams) / total_waste_kW * 100
-                    if total_waste_kW > 0 else 0
+                    if total_waste_kW > 0
+                    else 0
                 ),
             }
 
@@ -150,9 +148,7 @@ class FactoryHeatBalance:
 
         # Percentuale di scarto rispetto all'input (se disponibile)
         if self._energy_input_kW and self._energy_input_kW > 0:
-            summary["waste_pct_of_input"] = round(
-                total_waste_kW / self._energy_input_kW * 100, 1
-            )
+            summary["waste_pct_of_input"] = round(total_waste_kW / self._energy_input_kW * 100, 1)
         else:
             summary["waste_pct_of_input"] = None
 

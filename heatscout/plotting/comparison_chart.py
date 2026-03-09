@@ -15,18 +15,20 @@ def capex_comparison_chart(results: list[EconomicResult]) -> go.Figure:
     capex_max = [r.capex_max_EUR for r in results]
 
     fig = go.Figure()
-    fig.add_trace(go.Bar(
-        x=names,
-        y=capex_mid,
-        name="CAPEX medio",
-        marker_color="steelblue",
-        error_y=dict(
-            type="data",
-            symmetric=False,
-            array=[mx - mid for mx, mid in zip(capex_max, capex_mid)],
-            arrayminus=[mid - mn for mid, mn in zip(capex_mid, capex_min)],
-        ),
-    ))
+    fig.add_trace(
+        go.Bar(
+            x=names,
+            y=capex_mid,
+            name="CAPEX medio",
+            marker_color="steelblue",
+            error_y=dict(
+                type="data",
+                symmetric=False,
+                array=[mx - mid for mx, mid in zip(capex_max, capex_mid)],
+                arrayminus=[mid - mn for mid, mn in zip(capex_mid, capex_min)],
+            ),
+        )
+    )
     fig.update_layout(
         title="Confronto CAPEX per tecnologia",
         yaxis_title="CAPEX (EUR)",
@@ -44,13 +46,15 @@ def payback_comparison_chart(results: list[EconomicResult]) -> go.Figure:
     colors = ["green" if p < 5 else "orange" if p < 8 else "red" for p in payback]
 
     fig = go.Figure()
-    fig.add_trace(go.Bar(
-        x=names,
-        y=payback,
-        marker_color=colors,
-        text=[f"{p:.1f} anni" for p in payback],
-        textposition="outside",
-    ))
+    fig.add_trace(
+        go.Bar(
+            x=names,
+            y=payback,
+            marker_color=colors,
+            text=[f"{p:.1f} anni" for p in payback],
+            textposition="outside",
+        )
+    )
     fig.update_layout(
         title="Confronto Payback per tecnologia",
         yaxis_title="Payback (anni)",
@@ -58,8 +62,13 @@ def payback_comparison_chart(results: list[EconomicResult]) -> go.Figure:
         height=400,
     )
     # Linea soglia a 5 anni
-    fig.add_hline(y=5, line_dash="dash", line_color="gray",
-                  annotation_text="Soglia 5 anni", annotation_position="top right")
+    fig.add_hline(
+        y=5,
+        line_dash="dash",
+        line_color="gray",
+        annotation_text="Soglia 5 anni",
+        annotation_position="top right",
+    )
     return fig
 
 
@@ -71,13 +80,15 @@ def npv_comparison_chart(results: list[EconomicResult]) -> go.Figure:
     colors = ["green" if n > 0 else "red" for n in npv]
 
     fig = go.Figure()
-    fig.add_trace(go.Bar(
-        x=names,
-        y=npv,
-        marker_color=colors,
-        text=[f"€ {n:,.0f}" for n in npv],
-        textposition="outside",
-    ))
+    fig.add_trace(
+        go.Bar(
+            x=names,
+            y=npv,
+            marker_color=colors,
+            text=[f"€ {n:,.0f}" for n in npv],
+            textposition="outside",
+        )
+    )
     fig.update_layout(
         title=f"NPV a {results[0].horizon_years} anni per tecnologia" if results else "NPV",
         yaxis_title="NPV (EUR)",
@@ -93,15 +104,17 @@ def cumulative_cashflow_chart(result: EconomicResult) -> go.Figure:
     years = list(range(len(result.cumulative_cashflows)))
 
     fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=years,
-        y=result.cumulative_cashflows,
-        mode="lines+markers",
-        name="Cashflow cumulativo",
-        line=dict(color="steelblue", width=2),
-        fill="tozeroy",
-        fillcolor="rgba(70, 130, 180, 0.1)",
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x=years,
+            y=result.cumulative_cashflows,
+            mode="lines+markers",
+            name="Cashflow cumulativo",
+            line=dict(color="steelblue", width=2),
+            fill="tozeroy",
+            fillcolor="rgba(70, 130, 180, 0.1)",
+        )
+    )
     fig.add_hline(y=0, line_color="black", line_width=1, line_dash="dash")
 
     tech_name = result.tech_recommendation.technology.name
@@ -129,13 +142,18 @@ def do_nothing_comparison(results: list[EconomicResult], years: int = 10) -> go.
     cost_doing = best.total_investment_EUR - (best.net_annual_benefit_EUR * years)
 
     fig = go.Figure()
-    fig.add_trace(go.Bar(
-        x=["Non intervenire", f"Investire ({best.tech_recommendation.technology.name})"],
-        y=[cost_nothing, max(cost_doing, 0)],
-        marker_color=["red", "green"],
-        text=[f"€ {cost_nothing:,.0f}", f"€ {max(cost_doing, 0):,.0f}"],
-        textposition="outside",
-    ))
+    fig.add_trace(
+        go.Bar(
+            x=[
+                "Non intervenire",
+                f"Investire ({best.tech_recommendation.technology.name})",
+            ],
+            y=[cost_nothing, max(cost_doing, 0)],
+            marker_color=["red", "green"],
+            text=[f"€ {cost_nothing:,.0f}", f"€ {max(cost_doing, 0):,.0f}"],
+            textposition="outside",
+        )
+    )
     fig.update_layout(
         title=f"Costo a {years} anni: fare vs non fare",
         yaxis_title="Costo netto (EUR)",

@@ -14,14 +14,22 @@ from pathlib import Path
 # Aggiungi root al path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from heatscout.core.economics import economic_analysis
 from heatscout.core.examples import load_example
 from heatscout.core.stream_analyzer import analyze_stream
 from heatscout.core.technology_selector import select_technologies
-from heatscout.core.economics import economic_analysis
 
 EXAMPLES = [
-    "birrificio", "cartiera", "caseificio", "ceramica", "chimica",
-    "complesso_multi_stream", "data_center", "fonderia", "tessile", "vetreria",
+    "birrificio",
+    "cartiera",
+    "caseificio",
+    "ceramica",
+    "chimica",
+    "complesso_multi_stream",
+    "data_center",
+    "fonderia",
+    "tessile",
+    "vetreria",
 ]
 
 SNAPSHOTS_PATH = Path(__file__).parent / "snapshots" / "golden_examples.json"
@@ -43,24 +51,28 @@ def generate_snapshots() -> dict:
             snapshot["analyses"].append(analyze_stream(s, T_amb))
             recs = select_technologies(s)
             for r in recs:
-                snapshot["recommendations"].append({
-                    "stream": r.stream_name,
-                    "tech_id": r.technology.id,
-                    "Q_available_kW": r.Q_available_kW,
-                    "Q_recovered_kW": r.Q_recovered_kW,
-                    "E_recovered_MWh": r.E_recovered_MWh,
-                    "efficiency": r.efficiency,
-                    "savings_EUR": r.savings_EUR,
-                })
+                snapshot["recommendations"].append(
+                    {
+                        "stream": r.stream_name,
+                        "tech_id": r.technology.id,
+                        "Q_available_kW": r.Q_available_kW,
+                        "Q_recovered_kW": r.Q_recovered_kW,
+                        "E_recovered_MWh": r.E_recovered_MWh,
+                        "efficiency": r.efficiency,
+                        "savings_EUR": r.savings_EUR,
+                    }
+                )
                 econ = economic_analysis(r)
-                snapshot["economics"].append({
-                    "stream": r.stream_name,
-                    "tech_id": r.technology.id,
-                    "capex_EUR": econ.capex_EUR,
-                    "payback_years": econ.payback_years,
-                    "npv_EUR": econ.npv_EUR,
-                    "irr_pct": econ.irr_pct,
-                })
+                snapshot["economics"].append(
+                    {
+                        "stream": r.stream_name,
+                        "tech_id": r.technology.id,
+                        "capex_EUR": econ.capex_EUR,
+                        "payback_years": econ.payback_years,
+                        "npv_EUR": econ.npv_EUR,
+                        "irr_pct": econ.irr_pct,
+                    }
+                )
         all_snapshots[ex_id] = snapshot
     return all_snapshots
 

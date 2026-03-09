@@ -96,36 +96,42 @@ class TestFactoryHeatBalance:
         """Crea una fabbrica di test con 3 stream (alta/media/bassa T)."""
         hb = FactoryHeatBalance(factory_name="Test Factory", T_ambient=25)
 
-        hb.add_stream(ThermalStream(
-            name="Fumi forno",
-            fluid_type="fumi_gas_naturale",
-            T_in=500,
-            T_out=200,
-            mass_flow=1.0,
-            hours_per_day=16,
-            days_per_year=250,
-            stream_type=StreamType.HOT_WASTE,
-        ))
-        hb.add_stream(ThermalStream(
-            name="Vapore flash",
-            fluid_type="aria",
-            T_in=150,
-            T_out=80,
-            mass_flow=0.5,
-            hours_per_day=16,
-            days_per_year=250,
-            stream_type=StreamType.HOT_WASTE,
-        ))
-        hb.add_stream(ThermalStream(
-            name="Acqua raffreddam.",
-            fluid_type="acqua",
-            T_in=55,
-            T_out=30,
-            mass_flow=2.0,
-            hours_per_day=16,
-            days_per_year=250,
-            stream_type=StreamType.HOT_WASTE,
-        ))
+        hb.add_stream(
+            ThermalStream(
+                name="Fumi forno",
+                fluid_type="fumi_gas_naturale",
+                T_in=500,
+                T_out=200,
+                mass_flow=1.0,
+                hours_per_day=16,
+                days_per_year=250,
+                stream_type=StreamType.HOT_WASTE,
+            )
+        )
+        hb.add_stream(
+            ThermalStream(
+                name="Vapore flash",
+                fluid_type="aria",
+                T_in=150,
+                T_out=80,
+                mass_flow=0.5,
+                hours_per_day=16,
+                days_per_year=250,
+                stream_type=StreamType.HOT_WASTE,
+            )
+        )
+        hb.add_stream(
+            ThermalStream(
+                name="Acqua raffreddam.",
+                fluid_type="acqua",
+                T_in=55,
+                T_out=30,
+                mass_flow=2.0,
+                hours_per_day=16,
+                days_per_year=250,
+                stream_type=StreamType.HOT_WASTE,
+            )
+        )
         return hb
 
     def test_calculate_returns_results(self):

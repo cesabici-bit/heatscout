@@ -1,7 +1,5 @@
 """Test per stream_analyzer: potenza termica e energia annuale."""
 
-import pytest
-
 from heatscout.core.stream import StreamType, ThermalStream
 from heatscout.core.stream_analyzer import calc_annual_energy, calc_thermal_power
 
