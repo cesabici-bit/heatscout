@@ -890,6 +890,8 @@ for i in range(st.session_state.n_streams):
                 ),
                 index=default_type_idx,
                 key=f"type_{i}",
+                help="HOT_WASTE: heat you want to recover (T_in > T_out). "
+                "COLD_DEMAND: process that needs heat (T_in < T_out).",
             )
         with col2:
             T_in = st.number_input(
@@ -899,6 +901,7 @@ for i in range(st.session_state.n_streams):
                 max_value=1500.0,
                 step=10.0,
                 key=f"Tin_{i}",
+                help="Temperature at the source (before cooling/heating).",
             )
             T_out = st.number_input(
                 "T uscita (°C)",
@@ -907,6 +910,7 @@ for i in range(st.session_state.n_streams):
                 max_value=1500.0,
                 step=10.0,
                 key=f"Tout_{i}",
+                help="Temperature after heat exchange. For HOT_WASTE: T_out < T_in.",
             )
         with col3:
             mass_flow = st.number_input(
@@ -916,6 +920,7 @@ for i in range(st.session_state.n_streams):
                 max_value=1000.0,
                 step=0.1,
                 key=f"mflow_{i}",
+                help="Mass flow rate of the fluid in kg/s. Check process data or flow meters.",
             )
             hours = st.number_input(
                 "Ore/giorno",
@@ -924,6 +929,7 @@ for i in range(st.session_state.n_streams):
                 max_value=24.0,
                 step=0.5,
                 key=f"hours_{i}",
+                help="Average operating hours per day when this stream is active.",
             )
             days = st.number_input(
                 "Giorni/anno",
@@ -1203,6 +1209,12 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
             # ── TAB ECONOMIA ──────────────────────────────────────────────
             with tab_economia:
                 if all_econ_results:
+                    # Disclaimer — always visible before results
+                    st.warning(
+                        "**Screening-level analysis** — CAPEX ±30%, savings ±15%. "
+                        "Not a substitute for detailed engineering study. "
+                        "Use these results to prioritize options, then commission a feasibility study."
+                    )
                     best = min(all_econ_results, key=lambda e: e.payback_years)
                     total_capex = sum(e.total_investment_EUR for e in all_econ_results)
                     total_savings = sum(e.annual_savings_EUR for e in all_econ_results)
@@ -1253,8 +1265,21 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                     st.markdown(
                         f"> **Riepilogo:** Investendo **€ {total_capex:,.0f}** si ottiene un risparmio di "
                         f"**€ {total_savings:,.0f}/anno** con rientro in **{best.payback_years:.1f} anni** "
-                        f"e un valore netto a 10 anni di **€ {total_npv:,.0f}**."
+                        f"e un valore netto a {horizon_years} anni di **€ {total_npv:,.0f}**."
                     )
+
+                    with st.expander("ℹ️ How to interpret these results"):
+                        st.markdown(
+                            "- **Payback**: years to recover the investment from energy savings. "
+                            "Shorter is better; <3 yr is excellent, 3-5 yr is good, >7 yr needs careful evaluation.\n"
+                            "- **NPV** (Net Present Value): total value of the project over the analysis horizon, "
+                            "discounted at your cost of capital. Positive = profitable.\n"
+                            "- **IRR** (Internal Rate of Return): the discount rate that makes NPV = 0. "
+                            "Higher is better; compare with your WACC.\n"
+                            "- **CAPEX range**: ±30% uncertainty is normal for screening-level estimates. "
+                            "The actual cost depends on site-specific engineering.\n"
+                            "- **Savings**: estimated ±15%. Actual savings depend on real operating conditions."
+                        )
 
                     # ── SEZIONE INCENTIVI ────────────────────────────────
                     if has_incentives and all_summaries:
