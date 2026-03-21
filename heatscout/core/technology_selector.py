@@ -1,4 +1,4 @@
-"""Algoritmo di selezione tecnologie di recupero calore."""
+"""Heat recovery technology selection algorithm."""
 
 from __future__ import annotations
 
@@ -17,27 +17,27 @@ from heatscout.knowledge.tech_database import Technology, load_technologies
 
 @dataclass
 class TechRecommendation:
-    """Raccomandazione di una tecnologia per uno stream specifico."""
+    """Recommendation of a technology for a specific stream."""
 
     technology: Technology
     stream_name: str
-    Q_available_kW: float  # Potenza termica dello stream
-    Q_recovered_kW: float  # Potenza recuperabile con questa tecnologia
-    E_recovered_MWh: float  # Energia recuperabile annua
-    efficiency: float  # Efficienza/COP della tecnologia
-    savings_EUR: float  # Risparmio annuo stimato
-    is_heat_pump: bool = False  # True se è pompa di calore (COP > 1)
+    Q_available_kW: float  # Thermal power of the stream
+    Q_recovered_kW: float  # Recoverable power with this technology
+    E_recovered_MWh: float  # Annual recoverable energy
+    efficiency: float  # Technology efficiency/COP
+    savings_EUR: float  # Estimated annual savings
+    is_heat_pump: bool = False  # True if heat pump (COP > 1)
 
     @property
     def recovery_fraction(self) -> float:
-        """Frazione del calore recuperato rispetto al disponibile."""
+        """Fraction of recovered heat relative to available."""
         if self.Q_available_kW <= 0:
             return 0
         return self.Q_recovered_kW / self.Q_available_kW
 
 
 def _calc_efficiency_for_tech(tech: Technology, stream: ThermalStream) -> float:
-    """Calcola l'efficienza specifica della tecnologia per lo stream dato."""
+    """Calculate the specific efficiency of the technology for the given stream."""
 
     if tech.id == "recuperatore_gas_gas":
         return he_effectiveness(stream.T_in, 20, "gas_gas")
@@ -72,15 +72,15 @@ def select_technologies(
     energy_price_EUR_kWh: float = 0.08,
     T_sink: float = 60.0,
 ) -> list[TechRecommendation]:
-    """Seleziona tecnologie compatibili per uno stream, ordinate per risparmio.
+    """Select compatible technologies for a stream, sorted by savings.
 
     Args:
-        stream: ThermalStream da analizzare
-        energy_price_EUR_kWh: Prezzo dell'energia termica [€/kWh]
-        T_sink: Temperatura di utilizzo del calore recuperato [°C]
+        stream: ThermalStream to analyze
+        energy_price_EUR_kWh: Thermal energy price [€/kWh]
+        T_sink: Temperature of recovered heat usage [°C]
 
     Returns:
-        Lista di TechRecommendation ordinate per savings_EUR decrescente
+        List of TechRecommendation sorted by savings_EUR descending
     """
     Q_kW = calc_thermal_power(stream)
     technologies = load_technologies()
@@ -88,19 +88,19 @@ def select_technologies(
     recommendations = []
 
     for tech in technologies:
-        # Check compatibilità
+        # Check compatibility
         if not tech.is_compatible(stream.T_mean, Q_kW, stream.fluid_type):
             continue
 
-        # Calcola efficienza specifica
+        # Calculate specific efficiency
         eff = _calc_efficiency_for_tech(tech, stream)
         is_hp = tech.id in ("pompa_calore_aria_acqua", "pompa_calore_acqua_acqua")
         is_orc = tech.id == "orc"
 
         if is_hp:
-            # Per pompe di calore: Q_recuperato = Q_disponibile (al COP dato)
-            # Il risparmio è sul calore prodotto: Q_out = Q_source + W_el
-            # dove W_el = Q_out / COP. Risparmio = Q_out - W_el (costo)
+            # For heat pumps: Q_recovered = Q_available (at given COP)
+            # Savings are on heat produced: Q_out = Q_source + W_el
+            # where W_el = Q_out / COP. Savings = Q_out - W_el (cost)
             cop = eff
             Q_source = Q_kW * 0.85  # 85% del calore disponibile catturato
             Q_out = Q_source * cop / (cop - 1)  # Calore utile prodotto
@@ -114,13 +114,13 @@ def select_technologies(
                 Q_recovered * energy_price_EUR_kWh - W_el_kW * elec_price
             ) * stream.annual_hours
         elif is_orc:
-            # ORC produce elettricità
+            # ORC produces electricity
             Q_recovered = Q_kW * eff  # kW elettrici
             E_recovered = Q_recovered * stream.annual_hours / 1000  # MWh elettrici
             elec_price = energy_price_EUR_kWh * 2.5
             savings = E_recovered * 1000 * elec_price  # Valore elettricità prodotta
         else:
-            # Scambiatori: recupero diretto
+            # Heat exchangers: direct recovery
             Q_recovered = Q_kW * eff
             E_recovered = Q_recovered * stream.annual_hours / 1000
             savings = E_recovered * 1000 * energy_price_EUR_kWh
@@ -141,6 +141,6 @@ def select_technologies(
             )
         )
 
-    # Ordina per risparmio decrescente
+    # Sort by savings descending
     recommendations.sort(key=lambda r: r.savings_EUR, reverse=True)
     return recommendations

@@ -1,4 +1,4 @@
-"""Analisi economica: risparmio, payback, NPV, IRR."""
+"""Economic analysis: savings, payback, NPV, IRR."""
 
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ from heatscout.knowledge.incentives import (
 
 @dataclass
 class EconomicResult:
-    """Risultato dell'analisi economica per una raccomandazione tecnologica."""
+    """Economic analysis result for a technology recommendation."""
 
     tech_recommendation: TechRecommendation
     capex_EUR: float
@@ -44,18 +44,18 @@ def calc_annual_savings(
     days_per_year: float,
     energy_price_EUR_kWh: float,
 ) -> float:
-    """Calcola risparmio annuo [EUR/anno].
+    """Calculate annual savings [EUR/year].
 
-    savings = Q_recovered × ore/giorno × giorni/anno × prezzo_energia
+    savings = Q_recovered × hours/day × days/year × energy_price
     """
     return Q_recovered_kW * hours_per_day * days_per_year * energy_price_EUR_kWh
 
 
 def calc_payback(capex: float, annual_savings: float, opex: float) -> float:
-    """Calcola payback semplice [anni].
+    """Calculate simple payback [years].
 
     payback = CAPEX / (savings - OPEX)
-    Se net benefit ≤ 0, ritorna inf.
+    Returns inf if net benefit <= 0.
     """
     assert capex >= 0, f"CAPEX negativo: {capex}"
     assert annual_savings >= 0, f"Savings negativo: {annual_savings}"
@@ -73,7 +73,7 @@ def calc_npv(
     discount_rate: float = 0.05,
     years: int = 10,
 ) -> float:
-    """Calcola NPV (Net Present Value) [EUR].
+    """Calculate NPV (Net Present Value) [EUR].
 
     NPV = -CAPEX + Σ (savings - opex) / (1+r)^t per t=1..years
     """
@@ -83,9 +83,9 @@ def calc_npv(
 
 
 def calc_irr(capex: float, annual_savings: float, opex: float, years: int = 10) -> float | None:
-    """Calcola IRR (Internal Rate of Return) [%].
+    """Calculate IRR (Internal Rate of Return) [%].
 
-    Ritorna None se IRR non è calcolabile (cashflow sempre negativo).
+    Returns None if IRR is not computable (always negative cashflow).
     """
     net_annual = annual_savings - opex
     if net_annual <= 0:
@@ -108,23 +108,23 @@ def economic_analysis(
     opex_multiplier: float = 1.0,
     install_multiplier: float = 1.0,
 ) -> EconomicResult:
-    """Analisi economica completa per una TechRecommendation.
+    """Full economic analysis for a TechRecommendation.
 
     Args:
-        rec: Raccomandazione tecnologica
-        energy_price_EUR_kWh: Prezzo energia [€/kWh]
-        discount_rate: Tasso di sconto per NPV
-        years: Orizzonte temporale [anni]
+        rec: Technology recommendation
+        energy_price_EUR_kWh: Energy price [€/kWh]
+        discount_rate: Discount rate for NPV
+        years: Time horizon [years]
         opex_multiplier: Multiplier on default OPEX (1.0 = default from costs.json)
         install_multiplier: Multiplier on default installation factor (1.0 = default)
 
     Returns:
-        EconomicResult con tutti i parametri economici
+        EconomicResult with all economic parameters
     """
     tech_id = rec.technology.id
     Q_kW = rec.Q_recovered_kW
 
-    # Costi
+    # Costs
     investment = estimate_total_investment(tech_id, Q_kW)
     capex = investment["capex"]
     # Apply installation multiplier: scale the installation overhead
@@ -133,22 +133,22 @@ def economic_analysis(
     total_inv = round(capex["medio"] * adj_inst_factor, 0)
     opex = round(estimate_opex(tech_id, capex["medio"]) * opex_multiplier, 0)
 
-    # Risparmio: usiamo il risparmio gia calcolato nella raccomandazione
+    # Savings: use the savings already calculated in the recommendation
     annual_savings = rec.savings_EUR
 
-    # Calcoli economici
+    # Economic calculations
     net_annual = annual_savings - opex
     payback = calc_payback(total_inv, annual_savings, opex)
     npv = calc_npv(total_inv, annual_savings, opex, discount_rate, years)
     irr = calc_irr(total_inv, annual_savings, opex, years)
 
-    # Cashflow cumulativo per grafici
+    # Cumulative cashflow for charts
     cumulative = [-total_inv]
     for t in range(1, years + 1):
         cumulative.append(cumulative[-1] + net_annual / (1 + discount_rate) ** t)
 
-    # Fail-fast: payback corto ma NPV molto negativo = probabile errore
-    # (payback semplice non sconta, NPV sì — divergenza leggera è ok)
+    # Fail-fast: short payback but very negative NPV = probable error
+    # (simple payback doesn't discount, NPV does — slight divergence is ok)
     if payback < years * 0.5 and npv < -total_inv * 0.1:
         assert False, (
             f"Inconsistenza: payback={payback:.1f}yr << horizon/2={years / 2}yr "
@@ -175,14 +175,14 @@ def economic_analysis(
 
 @dataclass
 class EconomicComparison:
-    """Confronto economico con e senza Certificati Bianchi."""
+    """Economic comparison with and without White Certificates (TEE)."""
 
-    base: EconomicResult  # Senza incentivi
-    tee: TEEResult  # Dettaglio TEE
-    npv_con_tee: float  # NPV con incentivo [€]
-    payback_con_tee: float  # Payback con incentivo [anni]
-    irr_con_tee: float | None  # IRR con incentivo [%]
-    cumulative_con_tee: list[float]  # Cashflow cumulativo con incentivo
+    base: EconomicResult  # Without incentives
+    tee: TEEResult  # TEE detail
+    npv_con_tee: float  # NPV with incentive [€]
+    payback_con_tee: float  # Payback with incentive [years]
+    irr_con_tee: float | None  # IRR with incentive [%]
+    cumulative_con_tee: list[float]  # Cumulative cashflow with incentive
 
 
 def economic_analysis_with_tee(
@@ -191,19 +191,19 @@ def economic_analysis_with_tee(
     eta_riferimento: float = 0.90,
     discount_rate: float = 0.05,
 ) -> EconomicComparison:
-    """Ricalcola NPV/payback/IRR includendo i ricavi da Certificati Bianchi.
+    """Recalculate NPV/payback/IRR including White Certificates (TEE) revenue.
 
-    I TEE durano 7 anni (vita utile recupero calore). Il ricavo annuo si
-    somma al beneficio netto durante quegli anni, poi torna a zero.
+    TEE last 7 years (heat recovery useful life). Annual revenue is added
+    to net benefit during those years, then drops to zero.
 
     Args:
-        econ: Risultato economico base (senza incentivi)
-        prezzo_tee: Prezzo TEE [€/TEE]
-        eta_riferimento: Rendimento caldaia di riferimento
-        discount_rate: Tasso di sconto per NPV
+        econ: Base economic result (without incentives)
+        prezzo_tee: TEE price [€/TEE]
+        eta_riferimento: Reference boiler efficiency
+        discount_rate: Discount rate for NPV
 
     Returns:
-        EconomicComparison con dettaglio confronto
+        EconomicComparison with comparison details
     """
     rec = econ.tech_recommendation
     tee_result = calc_tee(rec.E_recovered_MWh, prezzo_tee, eta_riferimento)
@@ -214,24 +214,24 @@ def economic_analysis_with_tee(
     years = econ.horizon_years
     net_base = savings - opex
 
-    # Cashflow annuo: base + ricavo TEE (solo per vita utile TEE = 7 anni)
+    # Annual cashflow: base + TEE revenue (only for TEE useful life = 7 years)
     cashflows_con_tee = [-capex]
     for t in range(1, years + 1):
         tee_ricavo = tee_result.ricavo_per_anno[t - 1] if t <= tee_result.vita_utile else 0.0
         cashflows_con_tee.append(net_base + tee_ricavo)
 
-    # NPV con TEE
+    # NPV with TEE
     npv_con_tee = float(npf.npv(discount_rate, cashflows_con_tee))
 
-    # Payback con TEE (semplice, usa ricavo medio TEE sui primi anni)
-    # Per coerenza col payback base (non scontato), uso net_base + ricavo_medio
+    # Payback with TEE (simple, uses average TEE revenue over first years)
+    # For consistency with base payback (undiscounted), use net_base + average_revenue
     net_con_tee_medio = net_base + tee_result.ricavo_medio_anno
     if net_con_tee_medio > 0:
         payback_con_tee = capex / net_con_tee_medio
     else:
         payback_con_tee = float("inf")
 
-    # IRR con TEE
+    # IRR with TEE
     try:
         irr_val = float(npf.irr(cashflows_con_tee))
         if irr_val != irr_val or irr_val < -1:
@@ -241,7 +241,7 @@ def economic_analysis_with_tee(
     except Exception:
         irr_con_tee = None
 
-    # Cashflow cumulativo scontato (per grafico)
+    # Discounted cumulative cashflow (for chart)
     cumulative = [cashflows_con_tee[0]]
     for t in range(1, years + 1):
         cumulative.append(cumulative[-1] + cashflows_con_tee[t] / (1 + discount_rate) ** t)
@@ -258,19 +258,19 @@ def economic_analysis_with_tee(
 
 @dataclass
 class IncentiveSummary:
-    """Riepilogo economico con tutti gli incentivi applicati."""
+    """Economic summary with all incentives applied."""
 
     base: EconomicResult
-    # CAPEX incentive (generico)
+    # CAPEX incentive (generic)
     capex_incentive: CapexIncentiveResult | None
     npv_con_capex_inc: float | None
     payback_con_capex_inc: float | None
     irr_con_capex_inc: float | None
-    # TEE (opzionale, solo Italia)
+    # TEE (optional, Italy only)
     tee: TEEResult | None
     npv_con_tee: float | None
     payback_con_tee: float | None
-    # Combinato (CAPEX ridotto + TEE)
+    # Combined (reduced CAPEX + TEE)
     npv_combinato: float | None
     payback_combinato: float | None
 
@@ -284,19 +284,19 @@ def economic_analysis_with_incentives(
     eta_riferimento: float = 0.90,
     discount_rate: float = 0.05,
 ) -> IncentiveSummary:
-    """Ricalcola NPV/payback con incentivi opzionali (CAPEX e/o TEE).
+    """Recalculate NPV/payback with optional incentives (CAPEX and/or TEE).
 
     Args:
-        econ: Risultato economico base
-        capex_riduzione_pct: % riduzione CAPEX da incentivo [0-100]
-        nome_incentivo: Nome dell'incentivo CAPEX
-        tee_enabled: Se True, calcola anche TEE (Italia)
-        prezzo_tee: Prezzo TEE [€/TEE]
-        eta_riferimento: Rendimento caldaia di riferimento
-        discount_rate: Tasso di sconto
+        econ: Base economic result
+        capex_riduzione_pct: CAPEX reduction % from incentive [0-100]
+        nome_incentivo: CAPEX incentive name
+        tee_enabled: If True, also calculate TEE (Italy)
+        prezzo_tee: TEE price [€/TEE]
+        eta_riferimento: Reference boiler efficiency
+        discount_rate: Discount rate
 
     Returns:
-        IncentiveSummary con tutti gli scenari
+        IncentiveSummary with all scenarios
     """
     capex = econ.total_investment_EUR
     savings = econ.annual_savings_EUR
@@ -304,7 +304,7 @@ def economic_analysis_with_incentives(
     years = econ.horizon_years
     net_base = savings - opex
 
-    # ── CAPEX incentive ──
+    # ── CAPEX incentive (generic) ──
     capex_inc = None
     npv_capex = None
     payback_capex = None
@@ -336,7 +336,7 @@ def economic_analysis_with_incentives(
         net_con_tee = net_base + tee_result.ricavo_medio_anno
         payback_tee = round(capex / net_con_tee if net_con_tee > 0 else float("inf"), 1)
 
-    # ── Combinato (CAPEX ridotto + TEE) ──
+    # ── Combined (reduced CAPEX + TEE) ──
     npv_comb = None
     payback_comb = None
 

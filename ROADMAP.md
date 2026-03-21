@@ -1,377 +1,377 @@
-# HeatScout — Roadmap Completa (Fase 3-4)
+# HeatScout — Full Roadmap (Phase 3-4)
 
-**Stato attuale:** Fase 1+2 COMPLETE + 3A/3B/3F/3C.1 DONE. 186 test, core engine stabile, UI funzionante, PDF report, TEE incentivi.
-**Modello:** Open source, gratuito. Obiettivo: visibilità e credibilità.
-**Data creazione:** 2026-03-09
-
----
-
-## Legenda
-
-Ogni task ha:
-- **Input:** cosa deve esistere prima di iniziare
-- **Output:** cosa esiste dopo il completamento
-- **Pass/Fail:** criterio oggettivo e verificabile
-- **Pre-mortem:** come può fallire e come mitigare
+**Current status:** Phase 1+2 COMPLETE + 3A/3B/3F/3C.1 DONE. 186 tests, stable core engine, working UI, PDF report, TEE incentives.
+**Model:** Open source, free. Goal: visibility and credibility.
+**Created:** 2026-03-09
 
 ---
 
-## FASE 3A — GitHub Pubblico & CI
+## Legend
 
-> Il repo è il biglietto da visita. Deve fare buona impressione dal primo secondo.
+Each task has:
+- **Input:** what must exist before starting
+- **Output:** what exists after completion
+- **Pass/Fail:** objective, verifiable criterion
+- **Pre-mortem:** how it can fail and how to mitigate
 
-### Task 3A.1: Repository GitHub pubblico
+---
 
-- **Input:** Progetto locale con 163 test passing, pyproject.toml
+## PHASE 3A — Public GitHub & CI
+
+> The repo is the business card. It must make a good impression from the first second.
+
+### Task 3A.1: Public GitHub repository
+
+- **Input:** Local project with 163 passing tests, pyproject.toml
 - **Output:**
-  - Repo GitHub pubblico con LICENSE (MIT o Apache 2.0)
-  - README.md riscritto per GitHub: hero description, screenshot/GIF dell'UI, quick start, badge CI, link demo live
-  - `.gitignore` completo (no __pycache__, .egg-info, .env, IDE files)
-  - CONTRIBUTING.md base (come contribuire, come aprire issue)
+  - Public GitHub repo with LICENSE (MIT or Apache 2.0)
+  - README.md rewritten for GitHub: hero description, screenshot/GIF of UI, quick start, CI badge, live demo link
+  - Complete `.gitignore` (no __pycache__, .egg-info, .env, IDE files)
+  - Basic CONTRIBUTING.md (how to contribute, how to open issues)
 - **Pass/Fail:**
-  - Un visitatore capisce cosa fa HeatScout in 10 secondi leggendo il README
-  - Screenshot dell'UI visibile sopra il fold
-  - Licenza open source presente
-  - Nessun file inutile nel repo (no cache, no build artifacts)
+  - A visitor understands what HeatScout does in 10 seconds from the README
+  - UI screenshot visible above the fold
+  - Open source license present
+  - No unnecessary files in repo (no cache, no build artifacts)
 - **Pre-mortem:**
-  - README troppo lungo/tecnico → max 100 righe, visuale, non murale di testo
-  - Screenshot datato → generarlo dall'app attuale con esempio "fonderia"
-  - Credenziali/path locali nel codice → grep per "cesab", "C:\Users", path assoluti prima del push
+  - README too long/technical → max 100 lines, visual, not a wall of text
+  - Outdated screenshot → generate from current app with "foundry" example
+  - Credentials/local paths in code → grep for "cesab", "C:\Users", absolute paths before push
 
 ### Task 3A.2: GitHub Actions CI
 
-- **Input:** Repo GitHub pubblico (Task 3A.1)
-- **Output:** `.github/workflows/ci.yml` che esegue `pytest tests/ -v` su ogni push/PR
-- **Pass/Fail:** Badge CI verde nel README. Un test rotto blocca il merge.
+- **Input:** Public GitHub repo (Task 3A.1)
+- **Output:** `.github/workflows/ci.yml` running `pytest tests/ -v` on every push/PR
+- **Pass/Fail:** Green CI badge in README. A broken test blocks merge.
 - **Pre-mortem:**
-  - CoolProp wheel non disponibile per runner GitHub → testare `pip install CoolProp` su ubuntu-latest, fallback a conda se fallisce
-  - kaleido su Linux headless → skippare test PDF con `pytest.mark` se necessario
-  - CI lenta (CoolProp pesante) → cache pip dependencies
+  - CoolProp wheel not available for GitHub runner → test `pip install CoolProp` on ubuntu-latest, fallback to conda if it fails
+  - kaleido on headless Linux → skip PDF tests with `pytest.mark` if needed
+  - Slow CI (CoolProp is heavy) → cache pip dependencies
 
 ### Task 3A.3: Pre-commit hooks (linting) ✅
 
-- **Input:** CI verde (Task 3A.2)
-- **Output:** `.pre-commit-config.yaml` con ruff (lint + format)
-- **Pass/Fail:** `pre-commit run --all-files` passa senza errori
+- **Input:** Green CI (Task 3A.2)
+- **Output:** `.pre-commit-config.yaml` with ruff (lint + format)
+- **Pass/Fail:** `pre-commit run --all-files` passes without errors
 - **Pre-mortem:**
-  - Ruff segnala troppi warning → configurare `ruff.toml` con regole progressive, fixare il grosso prima di attivare
-  - Rallenta il commit loop → regole minime, no docstring enforcement
+  - Ruff flags too many warnings → configure `ruff.toml` with progressive rules, fix the bulk before enabling
+  - Slows down the commit loop → minimal rules, no docstring enforcement
 
 ---
 
-## FASE 3B — Deploy Pubblico
+## PHASE 3B — Public Deploy
 
-> L'app deve essere provabile da chiunque con un click, senza installare nulla.
+> The app must be testable by anyone with one click, without installing anything.
 
-### Task 3B.1: Deploy su Streamlit Community Cloud
+### Task 3B.1: Deploy on Streamlit Community Cloud
 
-- **Input:** Repo GitHub pubblico con app funzionante
+- **Input:** Public GitHub repo with working app
 - **Output:**
-  - App live su URL pubblico (es. heatscout.streamlit.app)
-  - Link alla demo nel README
-  - `requirements.txt` verificato per Streamlit Cloud (compatibilità dipendenze)
+  - Live app on public URL (e.g. heatscout.streamlit.app)
+  - Demo link in README
+  - `requirements.txt` verified for Streamlit Cloud (dependency compatibility)
 - **Pass/Fail:**
-  - URL accessibile da browser senza login
-  - Esempio "fonderia" funziona end-to-end (analisi + PDF download)
-  - Tempo di caricamento iniziale < 30 secondi
+  - URL accessible from browser without login
+  - "Foundry" example works end-to-end (analysis + PDF download)
+  - Initial load time < 30 seconds
 - **Pre-mortem:**
-  - CoolProp non installa su Streamlit Cloud → verificare compatibilità, eventualmente `packages.txt` con dipendenze sistema
-  - Memoria limitata (1GB su free tier) → verificare che 10 stream non sfori
-  - App va in sleep dopo inattività → accettabile per free tier, documentare nel README
-  - kaleido per PDF images → potrebbe fallire, avere fallback testuale
+  - CoolProp doesn't install on Streamlit Cloud → verify compatibility, possibly `packages.txt` with system dependencies
+  - Limited memory (1GB on free tier) → verify that 10 streams don't exceed it
+  - App goes to sleep after inactivity → acceptable for free tier, document in README
+  - kaleido for PDF images → might fail, have text fallback
 
 ---
 
-## FASE 3C — Incentivi Italiani (feature differenziante)
+## PHASE 3C — Italian Incentives (differentiating feature)
 
-> Nessun tool gratuito calcola l'impatto degli incentivi italiani sul recupero calore. Questo è il differenziatore.
+> No free tool calculates the impact of Italian incentives on heat recovery. This is the differentiator.
 
-### Task 3C.1: Modulo Certificati Bianchi (TEE)
+### Task 3C.1: White Certificates (TEE) module
 
-- **Input:** economics.py con NPV/payback funzionanti, dati dal decreto TEE 2025-2030
+- **Input:** economics.py with working NPV/payback, data from TEE decree 2025-2030
 - **Output:**
-  - Nuovo modulo `knowledge/incentives.py` con calcolo TEE: energia risparmiata (TEP) × valore TEE (€/TEE) × durata incentivo
-  - Integrazione in economics.py: NPV e payback ricalcolati CON e SENZA incentivo
-  - UI mostra entrambi gli scenari (tabella: "senza incentivi" vs "con Certificati Bianchi")
+  - New module `knowledge/incentives.py` with TEE calculation: energy saved (TEP) × TEE value (€/TEE) × incentive duration
+  - Integration in economics.py: NPV and payback recalculated WITH and WITHOUT incentive
+  - UI shows both scenarios (table: "without incentives" vs "with White Certificates")
 - **Pass/Fail:**
-  - TEP calcolati coerenti con fattori di conversione ARERA
-  - NPV con incentivo > NPV senza incentivo (sempre)
-  - Payback con incentivo < payback senza incentivo (sempre)
-  - Test: `test_incentives.py` con 3+ esempi verificati manualmente
-  - Fonti normative citate nel codice e nella UI
+  - TEP calculated consistently with ARERA conversion factors
+  - NPV with incentive > NPV without incentive (always)
+  - Payback with incentive < payback without incentive (always)
+  - Test: `test_incentives.py` with 3+ manually verified examples
+  - Regulatory sources cited in code and UI
 - **Pre-mortem:**
-  - Decreto TEE 2025-2030 complesso, con categorie e vita utile variabile → semplificare al caso "recupero calore" specifico, non generalizzare
-  - Valore TEE variabile nel tempo (mercato GME) → usare valore medio recente con nota "valore indicativo"
-  - Normativa cambia → dichiarare data ultimo aggiornamento nella UI
+  - TEE decree 2025-2030 is complex, with variable categories and useful life → simplify to the "heat recovery" specific case, don't generalize
+  - TEE market value varies over time (GME market) → use recent average value with note "indicative value"
+  - Regulations change → declare last update date in UI
 
-### Task 3C.2: Modulo Transizione 5.0
+### Task 3C.2: Transizione 5.0
 
-- **Input:** Task 3C.1 completato (struttura incentives.py già esistente)
+- **Input:** Task 3C.1 completed (incentives.py structure already exists)
 - **Output:**
-  - Calcolo tax credit Transizione 5.0: % credito d'imposta su CAPEX (scaglioni per dimensione investimento)
-  - Aggiunta alla tabella comparativa: terza colonna "con Transizione 5.0"
+  - Tax credit calculation Transizione 5.0: % tax credit on CAPEX (tiers by investment size)
+  - Added to comparison table: third column "with Transizione 5.0"
 - **Pass/Fail:**
-  - Aliquote corrette per scaglione (verificare vs MIMIT)
-  - CAPEX effettivo ridotto del credito d'imposta
-  - Test: verifica che CAPEX netto < CAPEX lordo
+  - Correct rates per tier (verify vs MIMIT)
+  - Effective CAPEX reduced by tax credit
+  - Test: verify that net CAPEX < gross CAPEX
 - **Pre-mortem:**
-  - Transizione 5.0 ha requisiti di ammissibilità complessi (riduzione consumo ≥3%) → semplificare: mostrare il beneficio SE ammissibile, con nota sui requisiti
-  - Fondi esauriti / scadenza → mostrare data validità e nota "verificare disponibilità"
+  - Transizione 5.0 has complex eligibility requirements (consumption reduction ≥3%) → simplify: show benefit IF eligible, with note on requirements
+  - Funds exhausted / expiry → show validity date and note "check availability"
 
 ---
 
-## FASE 3D — Export & Persistenza
+## PHASE 3D — Export & Persistence
 
-> Gli utenti devono poter portare fuori i risultati e salvare il lavoro.
+> Users must be able to export results and save their work.
 
-### Task 3D.1: Export Excel dei risultati
+### Task 3D.1: Excel export of results
 
-- **Input:** Analisi completata in UI
-- **Output:** Bottone "Scarica Excel" → .xlsx con 3 fogli: Stream, Tecnologie, Economia (incluso confronto con/senza incentivi)
+- **Input:** Completed analysis in UI
+- **Output:** "Download Excel" button → .xlsx with 3 sheets: Streams, Technologies, Economics (including with/without incentive comparison)
 - **Pass/Fail:**
-  - File .xlsx si apre in Excel/LibreOffice senza errori
-  - Contiene tutti i dati visibili nelle tabelle UI (stessi numeri, stesse unità)
-  - Test: `test_export.py` genera xlsx da esempio "fonderia", verifica colonne e valori
+  - .xlsx file opens in Excel/LibreOffice without errors
+  - Contains all data visible in UI tables (same numbers, same units)
+  - Test: `test_export.py` generates xlsx from "foundry" example, verifies columns and values
 - **Pre-mortem:**
-  - openpyxl come nuova dipendenza → aggiungere a pyproject.toml e requirements.txt
-  - Formattazione numeri → usare formato internazionale (punto decimale), l'utente può convertire in Excel
+  - openpyxl as new dependency → add to pyproject.toml and requirements.txt
+  - Number formatting → use international format (decimal point), user can convert in Excel
 
-### Task 3D.2: Salva/Carica analisi (JSON)
+### Task 3D.2: Save/Load analysis (JSON)
 
-- **Input:** UI funzionante con stream input
+- **Input:** Working UI with stream input
 - **Output:**
-  - Bottone "Salva analisi" → scarica .json con tutti gli input
-  - Bottone "Carica analisi" → upload .json ripristina gli input
+  - "Save analysis" button → downloads .json with all inputs
+  - "Load analysis" button → uploads .json restoring inputs
 - **Pass/Fail:**
-  - Round-trip: salva → carica → riesegui → stessi risultati (±0.01%)
-  - File .json leggibile (indented, nomi campi chiari)
-  - Versione schema inclusa (`"version": "1.0"`)
-  - Test: `test_persistence.py` round-trip su 3 esempi
+  - Round-trip: save → load → re-run → same results (±0.01%)
+  - .json file is readable (indented, clear field names)
+  - Schema version included (`"version": "1.0"`)
+  - Test: `test_persistence.py` round-trip on 3 examples
 - **Pre-mortem:**
-  - Schema JSON non documentato → includere campo version per compatibilità futura
-  - Fluidi custom non serializzabili → verificare tutti i campi ThermalStream JSON-safe
+  - Undocumented JSON schema → include version field for future compatibility
+  - Custom fluids not serializable → verify all ThermalStream fields are JSON-safe
 
-### Task 3D.3: Import stream da CSV/Excel
+### Task 3D.3: Import streams from CSV/Excel
 
-- **Input:** Task 3D.1 completato (formato Excel definito)
-- **Output:** Upload file in sidebar → popola gli stream nell'UI
+- **Input:** Task 3D.1 completed (Excel format defined)
+- **Output:** File upload in sidebar → populates streams in UI
 - **Pass/Fail:**
-  - Upload di un file esportato ricrea gli stessi stream
-  - File malformato → errore chiaro, non crash
-  - Template scaricabile disponibile
+  - Uploading an exported file recreates the same streams
+  - Malformed file → clear error, no crash
+  - Downloadable template available
 - **Pre-mortem:**
-  - Encoding CSV da Excel italiano (Latin-1) → forzare UTF-8 con BOM
-  - File enorme → limitare a 50 stream con messaggio chiaro
+  - CSV encoding from Italian Excel (Latin-1) → force UTF-8 with BOM
+  - Huge file → limit to 50 streams with clear message
 
 ---
 
-## FASE 3E — Analisi di Sensitività
+## PHASE 3E — Sensitivity Analysis
 
-> Feature che rende il tool serio: "cosa succede se cambiano i parametri?"
+> Feature that makes the tool serious: "what happens if parameters change?"
 
-### Task 3E.1: Sensitivity su prezzo energia ✅
+### Task 3E.1: Energy price sensitivity ✅
 
-- **Input:** Analisi economica funzionante, UI con risultati
-- **Output:** Nuova sezione UI "Analisi di sensitività" con slider prezzo energia (±50%) e grafico payback vs prezzo
+- **Input:** Working economic analysis, UI with results
+- **Output:** New UI section "Sensitivity Analysis" with energy price slider (±50%) and payback vs price chart
 - **Pass/Fail:**
-  - Curva monotona decrescente (payback scende quando prezzo sale)
-  - Prezzo 0 → payback infinito; prezzo 2x → payback ~dimezzato
-  - Test: `test_sensitivity.py` verifica monotonia e casi limite
+  - Monotonically decreasing curve (payback drops when price rises)
+  - Price 0 → infinite payback; price 2x → payback ~halved
+  - Test: `test_sensitivity.py` verifies monotonicity and edge cases
 - **Pre-mortem:**
-  - Ricalcolo lento → precalcolare 10-20 punti, non real-time
-  - IRR = None per alcuni prezzi → gestire gracefully nel grafico
+  - Slow recalculation → precompute 10-20 points, not real-time
+  - IRR = None for some prices → handle gracefully in chart
 
-### Task 3E.2: Tornado chart multi-parametro ✅
+### Task 3E.2: Multi-parameter tornado chart ✅
 
-- **Input:** Task 3E.1 completato
-- **Output:** Tornado chart: variazione NPV al variare ±20% di prezzo energia, CAPEX, ore operative, efficienza
+- **Input:** Task 3E.1 completed
+- **Output:** Tornado chart: NPV variation with ±20% change in energy price, CAPEX, operating hours, efficiency
 - **Pass/Fail:**
-  - Barre ordinate per impatto (parametro più influente in alto)
-  - Test: output ha 4+ barre con valori non-zero
+  - Bars sorted by impact (most influential parameter on top)
+  - Test: output has 4+ bars with non-zero values
 - **Pre-mortem:**
-  - Troppi parametri → limitare ai 4 più rilevanti
-  - Interazioni ignorate → dichiarare assunzione "one-at-a-time" in UI
+  - Too many parameters → limit to 4 most relevant
+  - Interactions ignored → declare "one-at-a-time" assumption in UI
 
 ---
 
-## FASE 3F — Robustezza
+## PHASE 3F — Robustness
 
-> L'app non deve mai crashare davanti a un utente.
+> The app must never crash in front of a user.
 
-### Task 3F.1: Error handling UI
+### Task 3F.1: UI error handling
 
-- **Input:** app.py attuale con try/except generici
-- **Output:** Messaggi errore user-friendly:
-  - Nessuno stream → "Aggiungi almeno uno stream prima di analizzare"
-  - Tutti COLD_DEMAND → "Serve almeno uno stream HOT_WASTE"
-  - CoolProp fallisce → "Errore calcolo proprietà fluido: [dettaglio]"
-  - PDF fallisce → "Errore generazione PDF. Prova Excel."
-  - Catch-all → "Errore imprevisto. Segnalalo su GitHub."
+- **Input:** Current app.py with generic try/except
+- **Output:** User-friendly error messages:
+  - No streams → "Add at least one stream before analyzing"
+  - All COLD_DEMAND → "At least one HOT_WASTE stream is required"
+  - CoolProp fails → "Error calculating fluid properties: [detail]"
+  - PDF fails → "Error generating PDF. Try Excel."
+  - Catch-all → "Unexpected error. Report it on GitHub."
 - **Pass/Fail:**
-  - Nessun traceback Python visibile all'utente MAI
-  - Ogni errore mostra `st.error()` in italiano comprensibile
-  - Test manuale: provocare ognuno dei 5 errori, verificare messaggio
+  - No Python traceback ever visible to the user
+  - Every error shows `st.error()` with clear, understandable message
+  - Manual test: trigger each of the 5 errors, verify message
 - **Pre-mortem:**
-  - Errori non previsti → catch-all finale con link a GitHub issues
+  - Unforeseen errors → final catch-all with link to GitHub issues
 
-### Task 3F.2: Integration test end-to-end
+### Task 3F.2: End-to-end integration test
 
-- **Input:** Tutti i moduli core funzionanti
-- **Output:** `test_integration.py` con 5 test:
-  1. Workflow completo da stream a summary
-  2. Esempio "fonderia" end-to-end
-  3. Multi-stream (5 stream)
-  4. Edge case: stream 1 kW
+- **Input:** All core modules working
+- **Output:** `test_integration.py` with 5 tests:
+  1. Complete workflow from stream to summary
+  2. "Foundry" example end-to-end
+  3. Multi-stream (5 streams)
+  4. Edge case: 1 kW stream
   5. Edge case: T = 800°C
-- **Pass/Fail:** Tutti passano. Nessuna eccezione non gestita.
+- **Pass/Fail:** All pass. No unhandled exceptions.
 - **Pre-mortem:**
-  - Test lenti (CoolProp) → accettabile, sono 5
-  - Path data/ → usare path relative al package
+  - Slow tests (CoolProp) → acceptable, there are only 5
+  - data/ path → use package-relative paths
 
 ---
 
-## FASE 4A — Documentazione & Metodologia
+## PHASE 4A — Documentation & Methodology
 
-> Credibilità = trasparenza. Fonti, limiti, assunzioni tutto visibile.
+> Credibility = transparency. Sources, limits, assumptions all visible.
 
-### Task 4A.1: Help in-app (tooltips) ✅
+### Task 4A.1: In-app help (tooltips) ✅
 
-- **Input:** UI attuale senza help contestuale
+- **Input:** Current UI without contextual help
 - **Output:**
   - Tooltips: T_in/T_out, HOT_WASTE vs COLD_DEMAND, NPV, payback
-  - Disclaimer visibile PRIMA dei risultati economici: "Analisi di primo livello, CAPEX ±30%, risparmi ±15%"
-  - Expander collassabili "Come interpretare questi risultati"
+  - Disclaimer visible BEFORE economic results: "First-level analysis, CAPEX ±30%, savings ±15%"
+  - Collapsible expanders "How to interpret these results"
 - **Pass/Fail:**
-  - Ogni sezione UI ha almeno un tooltip o info box
-  - Disclaimer visibile senza scrollare
+  - Every UI section has at least one tooltip or info box
+  - Disclaimer visible without scrolling
 - **Pre-mortem:**
-  - UI cluttered → expander collassabili, max 2 frasi per tooltip
+  - Cluttered UI → collapsible expanders, max 2 sentences per tooltip
 
-### Task 4A.2: Pagina Metodologia ✅
+### Task 4A.2: Methodology page ✅
 
-- **Input:** Fonti già documentate in cost_correlations.py, efficiency_models.py
-- **Output:** Pagina Streamlit "Metodologia" con:
-  - Tabella: tecnologia → correlazione CAPEX → fonte → anno
-  - Modelli efficienza: formula + fonte
-  - Range di validità per ogni tecnologia
-  - Case study di validazione (summary)
+- **Input:** Sources already documented in cost_correlations.py, efficiency_models.py
+- **Output:** Streamlit "Methodology" page with:
+  - Table: technology → CAPEX correlation → source → year
+  - Efficiency models: formula + source
+  - Validity range for each technology
+  - Validation case studies (summary)
 - **Pass/Fail:**
-  - Ogni correlazione ha fonte citata (autore/ente, anno)
-  - Range di validità espliciti
+  - Every correlation has a cited source (author/organization, year)
+  - Explicit validity ranges
 - **Pre-mortem:**
-  - Troppo accademica → bilanciare rigore e leggibilità
-  - Fonti datate → segnalare anno
+  - Too academic → balance rigor and readability
+  - Dated sources → flag the year
 
 ---
 
-## FASE 4B — Beta & Release
+## PHASE 4B — Beta & Release
 
-> Validazione con utenti reali, poi tag v1.0.
+> Validation with real users, then tag v1.0.
 
-### Task 4B.1: Beta testing (3-5 utenti) 🔄 IN PROGRESS
+### Task 4B.1: Beta testing (3-5 users) 🔄 IN PROGRESS
 
 - **GitHub Issue:** https://github.com/cesabici-bit/heatscout/issues/1
-- **Input:** App live su Streamlit Cloud, documentazione in-app
+- **Input:** Live app on Streamlit Cloud, in-app documentation
 - **Output:**
-  - 3-5 utenti (ingegneri/energy manager) testano con dati reali
-  - Feedback strutturato (funziona / confonde / manca)
-  - Bug list prioritizzata
+  - 3-5 users (engineers/energy managers) test with real data
+  - Structured feedback (works / confusing / missing)
+  - Prioritized bug list
 - **Pass/Fail:**
-  - Almeno 3 utenti completano analisi end-to-end senza assistenza
-  - Nessun crash durante il test
-  - Feedback raccolto e categorizzato
+  - At least 3 users complete end-to-end analysis without assistance
+  - No crashes during testing
+  - Feedback collected and categorized
 - **Pre-mortem:**
-  - Utenti non disponibili → partire con 1-2 contatti
-  - Dati fuori range → limiti documentati in UI
-  - Aspettative enterprise → chiarire che è screening tool
+  - Users not available → start with 1-2 contacts
+  - Data out of range → limits documented in UI
+  - Enterprise expectations → clarify it's a screening tool
 
 ### Task 4B.2: Release v1.0
 
-- **Input:** Bug list dal beta test
+- **Input:** Bug list from beta test
 - **Output:**
-  - Bug critici fixati
-  - Tag git `v1.0.0`
+  - Critical bugs fixed
+  - Git tag `v1.0.0`
   - CHANGELOG.md
-  - Annuncio (LinkedIn, community energetica, FIRE)
+  - Announcement (LinkedIn, energy community, FIRE)
 - **Pass/Fail:**
-  - Zero bug critici aperti
-  - 163+ test passano
-  - CHANGELOG elenca tutte le modifiche
+  - Zero open critical bugs
+  - 163+ tests pass
+  - CHANGELOG lists all changes
 - **Pre-mortem:**
-  - Scope creep dal feedback → solo crash fix e UX confusion, feature request in backlog
-  - Regressioni → CI deve catturare tutto
+  - Scope creep from feedback → only crash fixes and UX confusion, feature requests go to backlog
+  - Regressions → CI must catch everything
 
 ---
 
-## Riepilogo e Dipendenze
+## Summary and Dependencies
 
 ```
-FASE 3A: GitHub + CI         ←── PRIMO (tutto il resto dipende da qui)
-  ├── 3A.1 Repo pubblico + README
+PHASE 3A: GitHub + CI         <-- FIRST (everything else depends on this)
+  ├── 3A.1 Public repo + README
   ├── 3A.2 GitHub Actions CI
   └── 3A.3 Pre-commit
 
-FASE 3B: Deploy pubblico     ←── subito dopo 3A (l'app deve essere provabile)
+PHASE 3B: Public deploy       <-- right after 3A (app must be testable)
   └── 3B.1 Streamlit Cloud
 
-FASE 3C: Incentivi italiani  ←── feature differenziante
-  ├── 3C.1 Certificati Bianchi
-  └── 3C.2 Transizione 5.0 (dipende da 3C.1)
+PHASE 3C: Italian incentives  <-- differentiating feature
+  ├── 3C.1 White Certificates
+  └── 3C.2 Transizione 5.0 (depends on 3C.1)
 
-FASE 3D: Export/Persistenza  ←── indipendente
-  ├── 3D.1 Export Excel
-  ├── 3D.2 Salva/Carica JSON
-  └── 3D.3 Import CSV/Excel (dipende da 3D.1)
+PHASE 3D: Export/Persistence  <-- independent
+  ├── 3D.1 Excel export
+  ├── 3D.2 Save/Load JSON
+  └── 3D.3 Import CSV/Excel (depends on 3D.1)
 
-FASE 3E: Sensitività         ←── indipendente
-  ├── 3E.1 Sensitivity prezzo
-  └── 3E.2 Tornado chart (dipende da 3E.1)
+PHASE 3E: Sensitivity         <-- independent
+  ├── 3E.1 Price sensitivity
+  └── 3E.2 Tornado chart (depends on 3E.1)
 
-FASE 3F: Robustezza          ←── indipendente
-  ├── 3F.1 Error handling UI
+PHASE 3F: Robustness          <-- independent
+  ├── 3F.1 UI error handling
   └── 3F.2 Integration test
 
-FASE 4A: Documentazione      ←── dopo 3C-3F (UI stabile)
-  ├── 4A.1 Help in-app
-  └── 4A.2 Pagina metodologia
+PHASE 4A: Documentation       <-- after 3C-3F (stable UI)
+  ├── 4A.1 In-app help
+  └── 4A.2 Methodology page
 
-FASE 4B: Beta & Release      ←── dopo tutto
+PHASE 4B: Beta & Release      <-- after everything
   ├── 4B.1 Beta test
   └── 4B.2 Release v1.0
 ```
 
-## Ordine di esecuzione consigliato
+## Recommended execution order
 
-| # | Task | Dipendenze |
+| # | Task | Dependencies |
 |---|------|------------|
-| 1 | 3A.1 Repo GitHub + README | nessuna |
+| 1 | 3A.1 GitHub repo + README | none |
 | 2 | 3A.2 GitHub Actions CI | 3A.1 |
 | 3 | 3A.3 Pre-commit | 3A.2 |
 | 4 | 3B.1 Streamlit Cloud deploy | 3A.1 |
-| 5 | ~~3F.1 Error handling UI~~ ✅ | nessuna |
-| 6 | ~~3F.2 Integration test~~ ✅ | nessuna |
-| 7 | ~~3C.1 Certificati Bianchi~~ ✅ | nessuna |
+| 5 | ~~3F.1 UI error handling~~ ✅ | none |
+| 6 | ~~3F.2 Integration test~~ ✅ | none |
+| 7 | ~~3C.1 White Certificates~~ ✅ | none |
 | 8 | ~~3C.2 Generic CAPEX incentive~~ ✅ | 3C.1 |
-| 9 | ~~3D.1 Export Excel~~ ✅ | nessuna |
-| 10 | ~~3D.2 Salva/Carica JSON~~ ✅ | nessuna |
+| 9 | ~~3D.1 Excel export~~ ✅ | none |
+| 10 | ~~3D.2 Save/Load JSON~~ ✅ | none |
 | 11 | ~~3D.3 Import CSV/Excel~~ ✅ | 3D.1 |
-| 12 | 3E.1 Sensitivity prezzo | nessuna |
+| 12 | 3E.1 Price sensitivity | none |
 | 13 | 3E.2 Tornado chart | 3E.1 |
-| 14 | 4A.1 Help in-app | 3C-3F |
-| 15 | 4A.2 Pagina metodologia | nessuna |
-| 16 | 4B.1 Beta test | tutto |
+| 14 | 4A.1 In-app help | 3C-3F |
+| 15 | 4A.2 Methodology page | none |
+| 16 | 4B.1 Beta test | all |
 | 17 | 4B.2 Release v1.0 | 4B.1 |
 
-## Feature escluse da v1.0 (backlog v2.0)
+## Features excluded from v1.0 (backlog v2.0)
 
-- **Autenticazione utente** — open source, non necessaria
-- **Database persistente** — JSON locale sufficiente
-- **Multi-lingua** (EN/ES/FR) — italiano per ora
-- **API REST** — nessun caso d'uso immediato
-- **Benchmark database** — richiede dati che non abbiamo
-- **Docker** — Streamlit Cloud basta per v1.0, Docker in v2.0 se serve self-hosting
-- **Confronto scenari side-by-side** — rimandata, salva/carica copre il bisogno base
+- **User authentication** — open source, not needed
+- **Persistent database** — local JSON is sufficient
+- **Multi-language** (EN/ES/FR) — English for now
+- **REST API** — no immediate use case
+- **Benchmark database** — requires data we don't have
+- **Docker** — Streamlit Cloud is enough for v1.0, Docker in v2.0 if self-hosting is needed
+- **Side-by-side scenario comparison** — deferred, save/load covers the basic need
 
 ---
 
-*Ultimo aggiornamento: 2026-03-09*
+*Last updated: 2026-03-09*
