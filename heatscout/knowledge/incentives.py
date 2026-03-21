@@ -1,66 +1,66 @@
-"""Calcolo incentivi per recupero calore industriale.
+"""Incentive calculations for industrial heat recovery.
 
-Modulo 1: Certificati Bianchi (TEE) — incentivo italiano
-Modulo 2: Riduzione CAPEX generica — qualsiasi incentivo internazionale
-  (tax credit, grant, sussidio: IRA §48C, UK IETF, Transizione 5.0, ecc.)
+Module 1: White Certificates (TEE) — Italian incentive
+Module 2: Generic CAPEX reduction — any international incentive
+  (tax credit, grant, subsidy: IRA §48C, UK IETF, Transizione 5.0, etc.)
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-# --- Costanti normative ---
+# --- Regulatory constants ---
 
-# Conversione: 1 TEP = 11.628 MWh → 1 MWh = 0.08600 TEP
-# Fonte: ARERA delibera EEN 3/08
+# Conversion: 1 TEP = 11.628 MWh → 1 MWh = 0.08600 TEP
+# Source: ARERA resolution EEN 3/08
 TEP_PER_MWH_THERMAL: float = 0.086
 
-# Vita utile per recupero calore (DM MASE 2025, Allegato 2)
+# Useful life for heat recovery (DM MASE 2025, Annex 2)
 TEE_VITA_UTILE_ANNI: int = 7
 
-# Coefficiente K (DM 2017+, sostituisce tau)
-# Prima metà vita utile: K = 1.2, seconda metà: K = 0.8
-# Per 7 anni: primi 3 anni K=1.2, ultimi 4 anni K=0.8
-# (Il totale ponderato = (3*1.2 + 4*0.8)/7 = 1.017 ≈ 1.0, neutro su vita intera)
+# K coefficient (DM 2017+, replaces tau)
+# First half of useful life: K = 1.2, second half: K = 0.8
+# For 7 years: first 3 years K=1.2, last 4 years K=0.8
+# (Weighted total = (3*1.2 + 4*0.8)/7 = 1.017 ≈ 1.0, neutral over full life)
 TEE_K_PRIMA_META: float = 1.2
 TEE_K_SECONDA_META: float = 0.8
 
-# Soglia minima progetto a consuntivo [TEP/anno]
+# Minimum threshold for metered projects [TEP/year]
 TEE_SOGLIA_MINIMA_TEP: float = 10.0
 
-# Prezzo TEE indicativo [€/TEE] — media mercato GME feb 2026
-# Nota: valore soggetto a variazioni di mercato
+# Indicative TEE price [€/TEE] — GME market average Feb 2026
+# Note: value subject to market variations
 TEE_PREZZO_DEFAULT: float = 250.0
 
-# Rendimento caldaia di riferimento (gas naturale)
-# Usato per convertire energia termica recuperata in combustibile risparmiato
+# Reference boiler efficiency (natural gas)
+# Used to convert recovered thermal energy to saved fuel
 ETA_CALDAIA_RIFERIMENTO: float = 0.90
 
-# Data ultimo aggiornamento normativa
+# Last regulatory update date
 TEE_DATA_AGGIORNAMENTO: str = "2026-03"
 
 
 @dataclass
 class TEEResult:
-    """Risultato del calcolo Certificati Bianchi per un progetto di recupero calore."""
+    """White Certificates calculation result for a heat recovery project."""
 
     # Input
-    E_recovered_MWh_anno: float  # Energia termica recuperata [MWh/anno]
-    eta_riferimento: float  # Rendimento generazione sostituita
+    E_recovered_MWh_anno: float  # Recovered thermal energy [MWh/year]
+    eta_riferimento: float  # Replaced generation efficiency
 
-    # TEP e TEE
-    tep_risparmiati_anno: float  # TEP risparmiati per anno [TEP/anno]
-    sopra_soglia: bool  # True se >= 10 TEP/anno (ammissibile)
+    # TEP and TEE
+    tep_risparmiati_anno: float  # TEP saved per year [TEP/year]
+    sopra_soglia: bool  # True if >= 10 TEP/year (eligible)
 
-    # Cashflow incentivo per anno (7 anni, con coefficiente K)
-    tee_per_anno: list[float]  # TEE ottenuti per anno
-    ricavo_per_anno: list[float]  # € ricavo per anno
-    ricavo_totale: float  # Somma ricavi su vita utile [€]
-    ricavo_medio_anno: float  # Media annua [€/anno]
+    # Incentive cashflow per year (7 years, with K coefficient)
+    tee_per_anno: list[float]  # TEE earned per year
+    ricavo_per_anno: list[float]  # € revenue per year
+    ricavo_totale: float  # Total revenue over useful life [€]
+    ricavo_medio_anno: float  # Annual average [€/year]
 
-    # Parametri usati
-    prezzo_tee: float  # €/TEE usato nel calcolo
-    vita_utile: int  # Anni di incentivo
+    # Parameters used
+    prezzo_tee: float  # €/TEE used in calculation
+    vita_utile: int  # Incentive years
 
 
 def calc_tee(
@@ -68,32 +68,32 @@ def calc_tee(
     prezzo_tee: float = TEE_PREZZO_DEFAULT,
     eta_riferimento: float = ETA_CALDAIA_RIFERIMENTO,
 ) -> TEEResult:
-    """Calcola i Certificati Bianchi per un progetto di recupero calore.
+    """Calculate White Certificates for a heat recovery project.
 
     Args:
-        E_recovered_MWh_anno: Energia termica recuperata [MWh/anno]
-        prezzo_tee: Prezzo di mercato TEE [€/TEE]
-        eta_riferimento: Rendimento caldaia di riferimento (default 0.90)
+        E_recovered_MWh_anno: Recovered thermal energy [MWh/year]
+        prezzo_tee: TEE market price [€/TEE]
+        eta_riferimento: Reference boiler efficiency (default 0.90)
 
     Returns:
-        TEEResult con dettaglio annuale e totale.
+        TEEResult with annual detail and totals.
 
-    Il risparmio in energia primaria tiene conto del rendimento della
-    caldaia sostituita: si risparmia il combustibile, non solo il calore.
+    Primary energy savings account for the replaced boiler efficiency:
+    fuel is saved, not just heat.
 
-    Fonte: DM MASE 21/07/2025, art. 6-7
+    Source: DM MASE 21/07/2025, art. 6-7
     """
-    assert E_recovered_MWh_anno >= 0, f"Energia recuperata negativa: {E_recovered_MWh_anno}"
-    assert 0.5 <= eta_riferimento <= 1.0, f"Rendimento riferimento fuori range: {eta_riferimento}"
-    assert prezzo_tee > 0, f"Prezzo TEE non valido: {prezzo_tee}"
+    assert E_recovered_MWh_anno >= 0, f"Negative recovered energy: {E_recovered_MWh_anno}"
+    assert 0.5 <= eta_riferimento <= 1.0, f"Reference efficiency out of range: {eta_riferimento}"
+    assert prezzo_tee > 0, f"Invalid TEE price: {prezzo_tee}"
 
-    # Conversione energia termica → energia primaria risparmiata → TEP
-    # TEP = (MWh_th / eta_caldaia) × 0.086
+    # Conversion: thermal energy → saved primary energy → TEP
+    # TEP = (MWh_th / eta_boiler) × 0.086
     tep_anno = (E_recovered_MWh_anno / eta_riferimento) * TEP_PER_MWH_THERMAL
 
     sopra_soglia = tep_anno >= TEE_SOGLIA_MINIMA_TEP
 
-    # Calcolo TEE annuali con coefficiente K
+    # Annual TEE calculation with K coefficient
     vita = TEE_VITA_UTILE_ANNI
     meta = vita // 2  # 3 per vita=7
 
@@ -124,22 +124,22 @@ def calc_tee(
     )
 
 
-# ── Modulo 2: Riduzione CAPEX generica ──────────────────────────────────────
-# Copre qualsiasi incentivo che riduca il costo di investimento:
-# - Tax credit (IRA §48C USA, Transizione 5.0 Italia, ...)
-# - Grant / sussidi (UK IETF, EU Innovation Fund, ...)
-# - Deduzioni fiscali maggiorate (Iperammortamento Italia 2026, ...)
+# ── Module 2: Generic CAPEX reduction ───────────────────────────────────────
+# Covers any incentive that reduces investment cost:
+# - Tax credit (IRA §48C USA, Transizione 5.0 Italy, ...)
+# - Grant / subsidies (UK IETF, EU Innovation Fund, ...)
+# - Enhanced tax deductions (Iperammortamento Italy 2026, ...)
 
 
 @dataclass
 class CapexIncentiveResult:
-    """Risultato del calcolo incentivo generico su CAPEX."""
+    """Generic CAPEX incentive calculation result."""
 
-    capex_lordo: float  # CAPEX originale [€]
-    riduzione_pct: float  # % di riduzione applicata
-    riduzione_EUR: float  # Importo riduzione [€]
-    capex_netto: float  # CAPEX dopo incentivo [€]
-    nome_incentivo: str  # Nome incentivo (libero)
+    capex_lordo: float  # Original CAPEX [€]
+    riduzione_pct: float  # % reduction applied
+    riduzione_EUR: float  # Reduction amount [€]
+    capex_netto: float  # CAPEX after incentive [€]
+    nome_incentivo: str  # Incentive name (free text)
 
 
 def calc_capex_incentive(
@@ -147,21 +147,21 @@ def calc_capex_incentive(
     riduzione_pct: float,
     nome_incentivo: str = "Tax credit / Grant",
 ) -> CapexIncentiveResult:
-    """Calcola la riduzione CAPEX da un incentivo generico.
+    """Calculate CAPEX reduction from a generic incentive.
 
-    Funziona per qualsiasi programma di incentivi che riduca il costo
-    di investimento: tax credit, grant, sussidi, deduzioni fiscali.
+    Works for any incentive program that reduces investment cost:
+    tax credit, grant, subsidy, enhanced tax deductions.
 
     Args:
-        capex: CAPEX originale (investimento totale) [€]
-        riduzione_pct: Percentuale di riduzione [0-100]
-        nome_incentivo: Nome descrittivo dell'incentivo
+        capex: Original CAPEX (total investment) [€]
+        riduzione_pct: Reduction percentage [0-100]
+        nome_incentivo: Descriptive incentive name
 
     Returns:
-        CapexIncentiveResult con CAPEX netto
+        CapexIncentiveResult with net CAPEX.
     """
-    assert capex >= 0, f"CAPEX negativo: {capex}"
-    assert 0 <= riduzione_pct <= 100, f"Riduzione % fuori range [0-100]: {riduzione_pct}"
+    assert capex >= 0, f"Negative CAPEX: {capex}"
+    assert 0 <= riduzione_pct <= 100, f"Reduction % out of range [0-100]: {riduzione_pct}"
 
     riduzione = capex * riduzione_pct / 100
     netto = capex - riduzione

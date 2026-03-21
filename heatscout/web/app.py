@@ -1,4 +1,4 @@
-"""HeatScout — Interfaccia web Streamlit per analisi recupero calore."""
+"""HeatScout — Streamlit web interface for heat recovery analysis."""
 
 import json
 from pathlib import Path
@@ -14,7 +14,7 @@ from heatscout.plotting.sankey import create_sankey
 # ── Configurazione pagina ────────────────────────────────────────────────────
 
 st.set_page_config(
-    page_title="HeatScout — Recupero Calore Industriale",
+    page_title="HeatScout — Industrial Heat Recovery",
     page_icon="🔥",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -480,7 +480,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ── Carica fluidi disponibili ────────────────────────────────────────────────
+# ── Load available fluids ────────────────────────────────────────────────────
 
 FLUIDS_PATH = Path(__file__).parent.parent / "data" / "fluids.json"
 with open(FLUIDS_PATH, encoding="utf-8") as f:
@@ -493,13 +493,13 @@ FLUID_NAMES = list(FLUID_OPTIONS.values())
 # ── Sidebar ──────────────────────────────────────────────────────────────────
 
 with st.sidebar:
-    st.markdown("### ⚙️ Parametri Generali")
-    factory_name = st.text_input("Nome impianto", value="Il mio impianto")
+    st.markdown("### ⚙️ General Parameters")
+    factory_name = st.text_input("Plant name", value="My plant")
 
     col_t, col_p = st.columns(2)
     with col_t:
         T_ambient = st.number_input(
-            "T ambiente (°C)", value=25.0, min_value=-20.0, max_value=50.0, step=1.0
+            "Ambient T (°C)", value=25.0, min_value=-20.0, max_value=50.0, step=1.0
         )
     with col_p:
         energy_price = st.number_input(
@@ -565,11 +565,11 @@ with st.sidebar:
             "Decrease for greenfield, low labor cost regions.",
         )
 
-    # Incentivi
+    # Incentives
     st.divider()
     st.markdown("### Incentives")
 
-    # Incentivo generico CAPEX (internazionale)
+    # Generic CAPEX incentive (international)
     capex_inc_enabled = st.checkbox(
         "CAPEX reduction (tax credit / grant)",
         value=False,
@@ -595,7 +595,7 @@ with st.sidebar:
                 help="E.g.: IRA §48C, IETF, Transizione 5.0, EU Innovation Fund",
             )
 
-    # TEE — incentivo italiano
+    # TEE — Italian incentive
     tee_enabled = st.checkbox(
         "Certificati Bianchi / TEE (Italy)",
         value=False,
@@ -625,34 +625,32 @@ with st.sidebar:
         st.caption("Source: DM MASE 21/07/2025 — TEE value subject to market variations")
 
     st.divider()
-    st.markdown("### 📥 Input Energetico")
+    st.markdown("### 📥 Energy Input")
     energy_input_mode = st.radio(
-        "Stima input energetico",
-        ["Automatica (eff. 85%)", "Manuale"],
+        "Energy input estimate",
+        ["Automatic (eff. 85%)", "Manual"],
         key="energy_input_mode",
         horizontal=True,
     )
     manual_consumption = None
     manual_unit = None
-    if energy_input_mode == "Manuale":
+    if energy_input_mode == "Manual":
         manual_consumption = st.number_input(
-            "Consumo annuo", value=100000.0, min_value=0.0, step=1000.0
+            "Annual consumption", value=100000.0, min_value=0.0, step=1000.0
         )
-        manual_unit = st.selectbox("Unita", ["Sm3/anno", "MWh/anno", "kWh/anno", "tep/anno"])
+        manual_unit = st.selectbox("Unit", ["Sm3/anno", "MWh/anno", "kWh/anno", "tep/anno"])
 
     st.divider()
-    st.markdown("### 📂 Esempi Precaricati")
+    st.markdown("### 📂 Preloaded Examples")
     examples = list_examples()
-    example_options = ["-- Seleziona --"] + [
+    example_options = ["-- Select --"] + [
         f"{e['name']} ({e['n_streams']} stream)" for e in examples
     ]
-    example_choice = st.selectbox(
-        "Carica un esempio", example_options, label_visibility="collapsed"
-    )
+    example_choice = st.selectbox("Load an example", example_options, label_visibility="collapsed")
 
     def _load_selected_example():
-        """Carica esempio selezionato nel session state."""
-        if example_choice != "-- Seleziona --":
+        """Load selected example into session state."""
+        if example_choice != "-- Select --":
             idx = example_options.index(example_choice) - 1
             example_id = examples[idx]["id"]
             streams, meta = load_example(example_id)
@@ -664,7 +662,7 @@ with st.sidebar:
         else:
             st.session_state.pop("loaded_example", None)
 
-    st.button("📂 Carica esempio", on_click=_load_selected_example, use_container_width=True)
+    st.button("📂 Load example", on_click=_load_selected_example, use_container_width=True)
 
     # Save/Load analysis
     st.divider()
@@ -784,8 +782,8 @@ st.markdown(
 <div class="hero-container">
     <p class="hero-title">🔥 HeatScout</p>
     <p class="hero-subtitle">
-        Dal calore sprecato al risparmio &mdash;
-        analizza i flussi termici del tuo impianto e scopri le tecnologie di recupero piu adatte.
+        From wasted heat to savings &mdash;
+        analyze your plant's thermal streams and discover the best recovery technologies.
     </p>
     <span class="hero-badge">Open Source · Screening Tool</span>
 </div>
@@ -793,27 +791,27 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ── Quick start (solo se nessuna analisi e' stata fatta) ─────────────────────
+# ── Quick start (only if no analysis has been run) ───────────────────────────
 
 if "last_summary" not in st.session_state:
     with st.container():
-        st.markdown("#### Come iniziare")
+        st.markdown("#### Getting Started")
         qs1, qs2, qs3 = st.columns(3)
         with qs1:
             st.markdown(
-                "**1. Inserisci gli stream**  \nAggiungi i flussi termici del tuo impianto: temperature, portata, fluido."
+                "**1. Enter your streams**  \nAdd your plant's thermal streams: temperatures, flow rate, fluid."
             )
         with qs2:
             st.markdown(
-                "**2. Clicca Analizza**  \nHeatScout calcola potenza, energia, exergia e seleziona le tecnologie migliori."
+                "**2. Click Analyze**  \nHeatScout computes power, energy, exergy and selects the best technologies."
             )
         with qs3:
             st.markdown(
-                "**3. Scarica il report**  \nOttieni un PDF professionale con executive summary, grafici e raccomandazioni."
+                "**3. Download the report**  \nGet a professional PDF with executive summary, charts and recommendations."
             )
-        st.info("💡 **Suggerimento:** Carica un esempio dalla sidebar per provare subito!")
+        st.info("💡 **Tip:** Load an example from the sidebar to try it out right away!")
 
-# ── Gestione stream nel session state ────────────────────────────────────────
+# ── Stream management in session state ───────────────────────────────────────
 
 if "n_streams" not in st.session_state:
     st.session_state.n_streams = 1
@@ -827,30 +825,28 @@ def remove_stream():
     st.session_state.n_streams = max(st.session_state.n_streams - 1, 1)
 
 
-# ── Input stream termici ─────────────────────────────────────────────────────
+# ── Thermal stream input ─────────────────────────────────────────────────────
 
 st.markdown(
-    '<div class="section-header"><h2>📊 Stream Termici</h2></div>',
+    '<div class="section-header"><h2>📊 Thermal Streams</h2></div>',
     unsafe_allow_html=True,
 )
 
 col_info, col_add, col_rem = st.columns([4, 1, 1])
 with col_info:
     n = st.session_state.n_streams
-    st.markdown(
-        f"**{n}** stream configurati{'  — massimo 10' if n < 10 else '  — limite raggiunto'}"
-    )
+    st.markdown(f"**{n}** streams configured{'  — max 10' if n < 10 else '  — limit reached'}")
 with col_add:
-    st.button("➕ Aggiungi", on_click=add_stream, use_container_width=True, disabled=(n >= 10))
+    st.button("➕ Add", on_click=add_stream, use_container_width=True, disabled=(n >= 10))
 with col_rem:
     st.button(
-        "➖ Rimuovi",
+        "➖ Remove",
         on_click=remove_stream,
         use_container_width=True,
         disabled=(n <= 1),
     )
 
-# Pre-fill da esempio se caricato
+# Pre-fill from loaded example
 loaded = st.session_state.get("loaded_example")
 
 streams_input = []
@@ -859,7 +855,7 @@ for i in range(st.session_state.n_streams):
     if loaded and i < len(loaded["streams"]):
         ex = loaded["streams"][i]
 
-    # Colore indicatore nel titolo expander
+    # Color indicator in expander title
     type_indicator = "🔴" if (ex is None or ex.stream_type == StreamType.HOT_WASTE) else "🔵"
     label = f"{type_indicator} Stream {i + 1}" + (f" — {ex.name}" if ex else "")
 
@@ -867,7 +863,7 @@ for i in range(st.session_state.n_streams):
         col1, col2, col3 = st.columns(3)
         with col1:
             name = st.text_input(
-                "Nome",
+                "Name",
                 value=ex.name if ex else f"Stream {i + 1}",
                 key=f"name_{i}",
             )
@@ -875,7 +871,7 @@ for i in range(st.session_state.n_streams):
                 FLUID_IDS.index(ex.fluid_type) if ex and ex.fluid_type in FLUID_IDS else 0
             )
             fluid_idx = st.selectbox(
-                "Fluido",
+                "Fluid",
                 range(len(FLUID_IDS)),
                 format_func=lambda x: FLUID_NAMES[x],
                 index=default_fluid_idx,
@@ -883,10 +879,10 @@ for i in range(st.session_state.n_streams):
             )
             default_type_idx = 0 if (ex is None or ex.stream_type == StreamType.HOT_WASTE) else 1
             stream_type = st.selectbox(
-                "Tipo",
+                "Type",
                 [StreamType.HOT_WASTE, StreamType.COLD_DEMAND],
                 format_func=lambda x: (
-                    "🔴 Calore di scarto" if x == StreamType.HOT_WASTE else "🔵 Domanda termica"
+                    "🔴 Waste heat" if x == StreamType.HOT_WASTE else "🔵 Heat demand"
                 ),
                 index=default_type_idx,
                 key=f"type_{i}",
@@ -895,7 +891,7 @@ for i in range(st.session_state.n_streams):
             )
         with col2:
             T_in = st.number_input(
-                "T ingresso (°C)",
+                "T inlet (°C)",
                 value=ex.T_in if ex else 200.0,
                 min_value=-200.0,
                 max_value=1500.0,
@@ -904,7 +900,7 @@ for i in range(st.session_state.n_streams):
                 help="Temperature at the source (before cooling/heating).",
             )
             T_out = st.number_input(
-                "T uscita (°C)",
+                "T outlet (°C)",
                 value=ex.T_out if ex else 80.0,
                 min_value=-200.0,
                 max_value=1500.0,
@@ -914,7 +910,7 @@ for i in range(st.session_state.n_streams):
             )
         with col3:
             mass_flow = st.number_input(
-                "Portata (kg/s)",
+                "Flow rate (kg/s)",
                 value=ex.mass_flow if ex else 1.0,
                 min_value=0.01,
                 max_value=1000.0,
@@ -923,7 +919,7 @@ for i in range(st.session_state.n_streams):
                 help="Mass flow rate of the fluid in kg/s. Check process data or flow meters.",
             )
             hours = st.number_input(
-                "Ore/giorno",
+                "Hours/day",
                 value=ex.hours_per_day if ex else 16.0,
                 min_value=0.5,
                 max_value=24.0,
@@ -932,7 +928,7 @@ for i in range(st.session_state.n_streams):
                 help="Average operating hours per day when this stream is active.",
             )
             days = st.number_input(
-                "Giorni/anno",
+                "Days/year",
                 value=ex.days_per_year if ex else 250.0,
                 min_value=1.0,
                 max_value=366.0,
@@ -953,11 +949,11 @@ for i in range(st.session_state.n_streams):
             }
         )
 
-# ── Bottone Analizza ─────────────────────────────────────────────────────────
+# ── Analyze button ───────────────────────────────────────────────────────────
 
 st.markdown("")  # spacing
-if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
-    # Validazione e creazione stream
+if st.button("🔍 Run Analysis", type="primary", use_container_width=True):
+    # Validation and stream creation
     hb = FactoryHeatBalance(factory_name=factory_name, T_ambient=T_ambient)
     errors = []
 
@@ -971,7 +967,7 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
             error_msg = str(e)
             if "CoolProp" in type(e).__module__ if hasattr(type(e), "__module__") else False:
                 errors.append(
-                    f"Stream {i + 1} ({data['name']}): Errore calcolo proprietà fluido: {error_msg}"
+                    f"Stream {i + 1} ({data['name']}): Fluid property calculation error: {error_msg}"
                 )
             elif (
                 "fluid" in error_msg.lower()
@@ -979,7 +975,7 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                 or "property" in error_msg.lower()
             ):
                 errors.append(
-                    f"Stream {i + 1} ({data['name']}): Errore calcolo proprietà fluido: {error_msg}"
+                    f"Stream {i + 1} ({data['name']}): Fluid property calculation error: {error_msg}"
                 )
             else:
                 errors.append(f"Stream {i + 1} ({data['name']}): {error_msg}")
@@ -988,28 +984,28 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
         for err in errors:
             st.error(err)
     elif not hb.streams:
-        st.error("Aggiungi almeno uno stream prima di analizzare.")
+        st.error("Add at least one stream before analyzing.")
     elif all(s.stream_type == StreamType.COLD_DEMAND for s in hb.streams):
         st.error(
-            "Serve almeno uno stream di tipo **🔴 Calore di scarto** (HOT_WASTE) per l'analisi di recupero calore."
+            "At least one **🔴 Waste heat** (HOT_WASTE) stream is required for heat recovery analysis."
         )
     else:
         try:
             with st.spinner(
-                "Analisi in corso... calcolo proprietà termiche e selezione tecnologie"
+                "Analysis in progress... computing thermal properties and selecting technologies"
             ):
-                # Input energetico
-                if energy_input_mode == "Manuale" and manual_consumption:
+                # Energy input
+                if energy_input_mode == "Manual" and manual_consumption:
                     hb.set_energy_input("gas_naturale", manual_consumption, manual_unit)
                 else:
                     hb.estimate_energy_input(efficiency=0.85)
 
-                # Calcola risultati
+                # Compute results
                 summary = hb.summary()
                 st.session_state.last_summary = summary
                 st.session_state.last_hb = hb
 
-                # Pre-calcola tecnologie ed economia
+                # Pre-compute technologies and economics
                 from heatscout.core.economics import (
                     economic_analysis,
                     economic_analysis_with_incentives,
@@ -1043,7 +1039,7 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                             all_econ_results.append(econ)
                             stream_recs[stream.name].append((rec, econ))
 
-                # Calcolo incentivi se abilitati
+                # Compute incentives if enabled
                 all_summaries = []
                 has_incentives = capex_inc_enabled or tee_enabled
                 if has_incentives and all_econ_results:
@@ -1061,58 +1057,58 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
 
             # ── Success banner ────────────────────────────────────────────
             st.success(
-                f"Analisi completata per **{summary['n_streams']}** stream — "
-                f"trovate **{len(all_econ_results)}** soluzioni di recupero"
+                f"Analysis completed for **{summary['n_streams']}** streams — "
+                f"found **{len(all_econ_results)}** recovery solutions"
             )
 
             # ══════════════════════════════════════════════════════════════
-            # RISULTATI IN TABS
+            # RESULTS IN TABS
             # ══════════════════════════════════════════════════════════════
 
             tab_panoramica, tab_tecnologie, tab_economia, tab_report = st.tabs(
-                ["📊 Panoramica", "🔧 Tecnologie", "💰 Economia", "📄 Report"]
+                ["📊 Overview", "🔧 Technologies", "💰 Economics", "📄 Report"]
             )
 
-            # ── TAB PANORAMICA ────────────────────────────────────────────
+            # ── TAB OVERVIEW ──────────────────────────────────────────────
             with tab_panoramica:
-                # Metriche principali
+                # Key metrics
                 m1, m2, m3, m4 = st.columns(4)
-                m1.metric("Potenza scarto", f"{summary['total_waste_kW']:,.1f} kW")
-                m2.metric("Energia annua", f"{summary['total_waste_MWh_anno']:,.1f} MWh/a")
-                m3.metric("Exergia scarto", f"{summary['total_waste_exergy_kW']:,.1f} kW")
+                m1.metric("Waste power", f"{summary['total_waste_kW']:,.1f} kW")
+                m2.metric("Annual energy", f"{summary['total_waste_MWh_anno']:,.1f} MWh/a")
+                m3.metric("Waste exergy", f"{summary['total_waste_exergy_kW']:,.1f} kW")
                 annual_cost = summary["total_waste_MWh_anno"] * 1000 * energy_price
-                m4.metric("Costo annuo spreco", f"€ {annual_cost:,.0f}")
+                m4.metric("Annual waste cost", f"€ {annual_cost:,.0f}")
 
                 # Impact banner
                 waste_pct = summary.get("waste_pct_of_input")
-                waste_pct_str = f" ({waste_pct:.0f}% dell'input energetico)" if waste_pct else ""
+                waste_pct_str = f" ({waste_pct:.0f}% of energy input)" if waste_pct else ""
                 st.markdown(
                     f"""
                 <div class="impact-banner">
-                    <p>💡 Stai sprecando <strong>{summary["total_waste_kW"]:,.1f} kW</strong> di calore{waste_pct_str},
-                    pari a <strong>{summary["total_waste_MWh_anno"]:,.1f} MWh/anno</strong>,
-                    che costano circa <strong>€ {annual_cost:,.0f}/anno</strong>.</p>
+                    <p>💡 You are wasting <strong>{summary["total_waste_kW"]:,.1f} kW</strong> of heat{waste_pct_str},
+                    equal to <strong>{summary["total_waste_MWh_anno"]:,.1f} MWh/year</strong>,
+                    costing approximately <strong>€ {annual_cost:,.0f}/year</strong>.</p>
                 </div>
                 """,
                     unsafe_allow_html=True,
                 )
 
                 # Sankey
-                st.markdown("#### Bilancio Energetico")
+                st.markdown("#### Energy Balance")
                 fig_sankey = create_sankey(hb, factory_name)
                 st.plotly_chart(fig_sankey, use_container_width=True)
 
-                # Breakdown temperatura con card colorate
-                st.markdown("#### Distribuzione per Classe di Temperatura")
+                # Temperature breakdown with colored cards
+                st.markdown("#### Distribution by Temperature Class")
                 by_class = summary["by_temperature_class"]
                 tc1, tc2, tc3 = st.columns(3)
 
                 for col, (cls, label, css_class) in zip(
                     [tc1, tc2, tc3],
                     [
-                        ("alta", "Alta (>250°C)", "temp-alta"),
-                        ("media", "Media (80-250°C)", "temp-media"),
-                        ("bassa", "Bassa (<80°C)", "temp-bassa"),
+                        ("alta", "High (>250°C)", "temp-alta"),
+                        ("media", "Medium (80-250°C)", "temp-media"),
+                        ("bassa", "Low (<80°C)", "temp-bassa"),
                     ],
                 ):
                     cls_data = by_class[cls]
@@ -1128,33 +1124,33 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                             unsafe_allow_html=True,
                         )
 
-                # Tabella dettaglio
+                # Detail table
                 st.markdown("")  # spacing
-                with st.expander("📋 Dettaglio per stream", expanded=False):
+                with st.expander("📋 Stream details", expanded=False):
                     rows = []
                     for r in summary["stream_results"]:
                         rows.append(
                             {
-                                "Nome": r["name"],
-                                "Tipo": "🔴 Scarto"
+                                "Name": r["name"],
+                                "Type": "🔴 Waste"
                                 if r["stream_type"] == "hot_waste"
-                                else "🔵 Domanda",
-                                "Fluido": r["fluid_type"],
+                                else "🔵 Demand",
+                                "Fluid": r["fluid_type"],
                                 "T in (°C)": r["T_in"],
                                 "T out (°C)": r["T_out"],
                                 "Q (kW)": f"{r['Q_kW']:,.1f}",
                                 "E (MWh/a)": f"{r['E_MWh_anno']:,.1f}",
-                                "Exergia (kW)": f"{r['Ex_kW']:,.1f}",
-                                "Classe": r["T_class"].capitalize(),
-                                "Qualita": f"{r['quality_ratio']:.1%}",
+                                "Exergy (kW)": f"{r['Ex_kW']:,.1f}",
+                                "Class": r["T_class"].capitalize(),
+                                "Quality": f"{r['quality_ratio']:.1%}",
                             }
                         )
                     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
-            # ── TAB TECNOLOGIE ────────────────────────────────────────────
+            # ── TAB TECHNOLOGIES ──────────────────────────────────────────
             with tab_tecnologie:
                 if not stream_recs:
-                    st.info("Nessuna tecnologia di recupero trovata per gli stream inseriti.")
+                    st.info("No recovery technologies found for the entered streams.")
                 else:
                     for sname, recs_econs in stream_recs.items():
                         with st.expander(
@@ -1164,9 +1160,9 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                             best_rec = min(recs_econs, key=lambda x: x[1].payback_years)
                             best_econ = best_rec[1]
                             st.markdown(
-                                f"⭐ **Migliore:** {best_rec[0].technology.name} — "
-                                f"payback **{best_econ.payback_years:.1f} anni**, "
-                                f"risparmio **€ {best_econ.annual_savings_EUR:,.0f}/anno**"
+                                f"⭐ **Best:** {best_rec[0].technology.name} — "
+                                f"payback **{best_econ.payback_years:.1f} years**, "
+                                f"savings **€ {best_econ.annual_savings_EUR:,.0f}/year**"
                             )
 
                             tech_rows = []
@@ -1178,15 +1174,15 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                                 )
                                 tech_rows.append(
                                     {
-                                        "Tecnologia": rec.technology.name,
-                                        "Q recup. (kW)": f"{rec.Q_recovered_kW:,.1f}",
-                                        "E recup. (MWh/a)": f"{rec.E_recovered_MWh:,.1f}",
-                                        "Efficienza": eff_str,
+                                        "Technology": rec.technology.name,
+                                        "Q recov. (kW)": f"{rec.Q_recovered_kW:,.1f}",
+                                        "E recov. (MWh/a)": f"{rec.E_recovered_MWh:,.1f}",
+                                        "Efficiency": eff_str,
                                         "CAPEX (€)": f"{econ.capex_EUR:,.0f}",
-                                        "Risparmio/a (€)": f"{econ.annual_savings_EUR:,.0f}",
-                                        "Payback": f"{econ.payback_years:.1f} anni"
+                                        "Savings/yr (€)": f"{econ.annual_savings_EUR:,.0f}",
+                                        "Payback": f"{econ.payback_years:.1f} yr"
                                         if econ.payback_years < 50
-                                        else ">50 anni",
+                                        else ">50 yr",
                                         "NPV 10a (€)": f"{econ.npv_EUR:,.0f}",
                                     }
                                 )
@@ -1197,16 +1193,16 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                                 hide_index=True,
                             )
 
-                    # Streams senza tecnologie
+                    # Streams without technologies
                     no_tech = [
                         s.name
                         for s in hb.streams
                         if s.stream_type == StreamType.HOT_WASTE and s.name not in stream_recs
                     ]
                     for sname in no_tech:
-                        st.info(f"**{sname}**: nessuna tecnologia compatibile trovata")
+                        st.info(f"**{sname}**: no compatible technology found")
 
-            # ── TAB ECONOMIA ──────────────────────────────────────────────
+            # ── TAB ECONOMICS ─────────────────────────────────────────────
             with tab_economia:
                 if all_econ_results:
                     # Disclaimer — always visible before results
@@ -1220,18 +1216,18 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                     total_savings = sum(e.annual_savings_EUR for e in all_econ_results)
                     total_npv = sum(e.npv_EUR for e in all_econ_results)
 
-                    # Metriche economiche
+                    # Economic metrics
                     e1, e2, e3, e4 = st.columns(4)
-                    e1.metric("Investimento totale", f"€ {total_capex:,.0f}")
-                    e2.metric("Risparmio annuo", f"€ {total_savings:,.0f}")
-                    e3.metric("Payback migliore", f"{best.payback_years:.1f} anni")
+                    e1.metric("Total investment", f"€ {total_capex:,.0f}")
+                    e2.metric("Annual savings", f"€ {total_savings:,.0f}")
+                    e3.metric("Best payback", f"{best.payback_years:.1f} yr")
                     e4.metric(
                         "NPV totale 10a",
                         f"€ {total_npv:,.0f}",
-                        delta="positivo" if total_npv > 0 else "negativo",
+                        delta="positive" if total_npv > 0 else "negative",
                     )
 
-                    # Grafici in 2x2
+                    # Charts in 2x2
                     gc1, gc2 = st.columns(2)
                     with gc1:
                         st.plotly_chart(
@@ -1256,16 +1252,16 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                             use_container_width=True,
                         )
 
-                    # Cashflow cumulativo
-                    st.markdown("#### Cashflow Cumulativo — Progetto Migliore")
+                    # Cumulative cashflow
+                    st.markdown("#### Cumulative Cashflow — Best Project")
                     st.caption(f"{best.tech_recommendation.technology.name}")
                     st.plotly_chart(cumulative_cashflow_chart(best), use_container_width=True)
 
-                    # Riepilogo testuale
+                    # Text summary
                     st.markdown(
-                        f"> **Riepilogo:** Investendo **€ {total_capex:,.0f}** si ottiene un risparmio di "
-                        f"**€ {total_savings:,.0f}/anno** con rientro in **{best.payback_years:.1f} anni** "
-                        f"e un valore netto a {horizon_years} anni di **€ {total_npv:,.0f}**."
+                        f"> **Summary:** Investing **€ {total_capex:,.0f}** yields savings of "
+                        f"**€ {total_savings:,.0f}/year** with payback in **{best.payback_years:.1f} years** "
+                        f"and a net value at {horizon_years} years of **€ {total_npv:,.0f}**."
                     )
 
                     with st.expander("ℹ️ How to interpret these results"):
@@ -1281,14 +1277,14 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                             "- **Savings**: estimated ±15%. Actual savings depend on real operating conditions."
                         )
 
-                    # ── SEZIONE INCENTIVI ────────────────────────────────
+                    # ── INCENTIVES SECTION ────────────────────────────────
                     if has_incentives and all_summaries:
                         st.divider()
                         st.markdown("#### Incentive Comparison")
 
                         import pandas as pd
 
-                        # Tabella comparativa
+                        # Comparison table
                         inc_rows = []
                         for s in all_summaries:
                             tech_name = s.base.tech_recommendation.technology.name
@@ -1325,8 +1321,8 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                             hide_index=True,
                         )
 
-                        # Metriche aggregate — scenario migliore
-                        # Determina quale scenario incentivo mostrare nelle metriche
+                        # Aggregate metrics — best scenario
+                        # Determine which incentive scenario to show in metrics
                         if capex_inc_enabled and tee_enabled:
                             # Combinato
                             best_s = min(
@@ -1387,7 +1383,7 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                             delta=f"€ {total_npv_inc - total_npv:+,.0f}",
                         )
 
-                        # Note
+                        # Notes
                         if tee_enabled:
                             from heatscout.knowledge.incentives import (
                                 TEE_DATA_AGGIORNAMENTO,
@@ -1545,7 +1541,7 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
 
                 else:
                     st.info(
-                        "Nessun risultato economico disponibile. Verifica che ci siano stream HOT_WASTE con tecnologie compatibili."
+                        "No economic results available. Verify that there are HOT_WASTE streams with compatible technologies."
                     )
 
             # ── TAB REPORT ────────────────────────────────────────────────
@@ -1644,18 +1640,16 @@ if st.button("🔍 Avvia Analisi", type="primary", use_container_width=True):
                             "JSON: save inputs to reload later."
                         )
                 else:
-                    st.info(
-                        "Nessun risultato da esportare. Esegui prima un'analisi con stream HOT_WASTE."
-                    )
+                    st.info("No results to export. Run an analysis with HOT_WASTE streams first.")
 
         except Exception:
             import traceback
 
             traceback.print_exc()
             st.error(
-                "Errore imprevisto durante l'analisi. "
-                "Segnalalo su [GitHub Issues](https://github.com/cesabici-bit/heatscout/issues) "
-                "indicando i parametri inseriti."
+                "Unexpected error during analysis. "
+                "Report it on [GitHub Issues](https://github.com/cesabici-bit/heatscout/issues) "
+                "including the parameters you entered."
             )
 
 # ── Methodology ──────────────────────────────────────────────────────────────
@@ -1798,9 +1792,9 @@ with st.expander("Bibliography"):
 st.markdown(
     """
 <div class="footer">
-    <strong>HeatScout</strong> · Analisi recupero calore industriale · Open Source (MIT)<br>
+    <strong>HeatScout</strong> · Industrial heat recovery analysis · Open Source (MIT)<br>
     <a href="https://github.com/cesabici-bit/heatscout">GitHub</a> ·
-    <a href="https://github.com/cesabici-bit/heatscout/issues">Segnala un problema</a>
+    <a href="https://github.com/cesabici-bit/heatscout/issues">Report an issue</a>
 </div>
 """,
     unsafe_allow_html=True,
