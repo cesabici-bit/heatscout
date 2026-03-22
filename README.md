@@ -89,6 +89,10 @@ pytest tests/ -v
 - This tool is for **initial screening** — it does not replace a detailed engineering feasibility study
 - All sources and formulas are documented in the in-app Methodology section
 
+## Acknowledgments
+
+Development assisted by [Claude Code](https://claude.ai/claude-code) (Anthropic).
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
