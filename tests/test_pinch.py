@@ -13,16 +13,11 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from heatscout.core.pinch import (
-    PinchResult,
-    PinchStream,
-    TemperatureInterval,
     _collect_shifted_temperatures,
-    _heat_cascade,
     _prepare_streams,
     pinch_analysis,
 )
 from heatscout.core.stream import StreamType, ThermalStream
-
 
 # ── Fixtures ─────────────────────────────────────────────────────────────
 
