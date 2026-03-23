@@ -151,3 +151,31 @@ class FactoryHeatBalance:
             summary["waste_pct_of_input"] = None
 
         return summary
+
+    def pinch_analysis(self, dT_min: float = 10.0):
+        """Run Pinch Analysis on this factory's streams.
+
+        Requires at least 1 hot (HOT_WASTE) and 1 cold (COLD_DEMAND) stream.
+
+        Args:
+            dT_min: Minimum approach temperature [°C], default 10.
+
+        Returns:
+            PinchResult with utility targets, pinch point, and plotting data.
+
+        Raises:
+            ValueError: If missing hot or cold streams, or dT_min <= 0.
+        """
+        from heatscout.core.pinch import pinch_analysis  # lazy import
+
+        hot = [s for s in self._streams if s.stream_type == StreamType.HOT_WASTE]
+        cold = [s for s in self._streams if s.stream_type == StreamType.COLD_DEMAND]
+        if not hot:
+            raise ValueError(
+                "Pinch analysis requires at least 1 hot stream (HOT_WASTE)"
+            )
+        if not cold:
+            raise ValueError(
+                "Pinch analysis requires at least 1 cold stream (COLD_DEMAND)"
+            )
+        return pinch_analysis(self._streams, dT_min)
