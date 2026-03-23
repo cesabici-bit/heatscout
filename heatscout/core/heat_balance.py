@@ -171,11 +171,7 @@ class FactoryHeatBalance:
         hot = [s for s in self._streams if s.stream_type == StreamType.HOT_WASTE]
         cold = [s for s in self._streams if s.stream_type == StreamType.COLD_DEMAND]
         if not hot:
-            raise ValueError(
-                "Pinch analysis requires at least 1 hot stream (HOT_WASTE)"
-            )
+            raise ValueError("Pinch analysis requires at least 1 hot stream (HOT_WASTE)")
         if not cold:
-            raise ValueError(
-                "Pinch analysis requires at least 1 cold stream (COLD_DEMAND)"
-            )
+            raise ValueError("Pinch analysis requires at least 1 cold stream (COLD_DEMAND)")
         return pinch_analysis(self._streams, dT_min)

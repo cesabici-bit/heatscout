@@ -77,8 +77,10 @@ _LOTTIE_LOADING = {
                     "c": {"a": 0, "k": [0, 0.83, 0.67, 1]},
                     "o": {"a": 0, "k": 100},
                     "w": {"a": 0, "k": 4},
-                    "d": [{"n": "d", "nm": "dash", "v": {"a": 0, "k": 20}},
-                           {"n": "g", "nm": "gap", "v": {"a": 0, "k": 80}}],
+                    "d": [
+                        {"n": "d", "nm": "dash", "v": {"a": 0, "k": 20}},
+                        {"n": "g", "nm": "gap", "v": {"a": 0, "k": 80}},
+                    ],
                 },
             ],
             "ip": 0,
@@ -139,12 +141,20 @@ with st.sidebar:
         st.caption("Adjust cost model parameters. Defaults are industry averages.")
         _opex_default = st.session_state.pop("loaded_opex_multiplier", 1.0)
         opex_multiplier = st.slider(
-            "OPEX multiplier", 0.5, 2.0, _opex_default, 0.1,
+            "OPEX multiplier",
+            0.5,
+            2.0,
+            _opex_default,
+            0.1,
             help="Scale annual maintenance costs. 1.0 = default.",
         )
         _inst_default = st.session_state.pop("loaded_install_multiplier", 1.0)
         install_multiplier = st.slider(
-            "Installation multiplier", 0.5, 2.0, _inst_default, 0.1,
+            "Installation multiplier",
+            0.5,
+            2.0,
+            _inst_default,
+            0.1,
             help="Scale installation/piping/engineering overhead.",
         )
 
@@ -163,7 +173,11 @@ with st.sidebar:
         col_ci1, col_ci2 = st.columns(2)
         with col_ci1:
             capex_riduzione_pct = st.number_input(
-                "CAPEX reduction %", value=30.0, min_value=1.0, max_value=100.0, step=5.0,
+                "CAPEX reduction %",
+                value=30.0,
+                min_value=1.0,
+                max_value=100.0,
+                step=5.0,
             )
         with col_ci2:
             capex_inc_nome = st.text_input("Incentive name", value="Tax credit / Grant")
@@ -177,11 +191,19 @@ with st.sidebar:
         col_tee1, col_tee2 = st.columns(2)
         with col_tee1:
             tee_prezzo = st.number_input(
-                "TEE price (\u20ac/TEE)", value=250.0, min_value=50.0, max_value=500.0, step=10.0,
+                "TEE price (\u20ac/TEE)",
+                value=250.0,
+                min_value=50.0,
+                max_value=500.0,
+                step=10.0,
             )
         with col_tee2:
             tee_eta_rif = st.number_input(
-                "Ref. boiler eff.", value=0.90, min_value=0.50, max_value=1.00, step=0.05,
+                "Ref. boiler eff.",
+                value=0.90,
+                min_value=0.50,
+                max_value=1.00,
+                step=0.05,
                 format="%.2f",
             )
         st.caption("Source: DM MASE 21/07/2025 \u2014 TEE value subject to market variations")
@@ -210,9 +232,7 @@ with st.sidebar:
     example_options = ["-- Select --"] + [
         f"{e['name']} ({e['n_streams']} streams)" for e in examples
     ]
-    example_choice = st.selectbox(
-        "Load an example", example_options, label_visibility="collapsed"
-    )
+    example_choice = st.selectbox("Load an example", example_options, label_visibility="collapsed")
 
     def _load_selected_example():
         """Load selected example into session state."""
@@ -231,7 +251,8 @@ with st.sidebar:
     st.divider()
     st.markdown("### Save / Load Analysis")
     uploaded_json = st.file_uploader(
-        "Load analysis (.json)", type=["json"],
+        "Load analysis (.json)",
+        type=["json"],
         help="Upload a previously saved HeatScout analysis file",
         label_visibility="collapsed",
     )
@@ -251,8 +272,10 @@ with st.sidebar:
                     )
                 restored_streams.append(
                     ThermalStream(
-                        name=sd["name"], fluid_type=sd["fluid_type"],
-                        T_in=sd["T_in"], T_out=sd["T_out"],
+                        name=sd["name"],
+                        fluid_type=sd["fluid_type"],
+                        T_in=sd["T_in"],
+                        T_out=sd["T_out"],
                         mass_flow=sd["mass_flow"],
                         hours_per_day=sd["hours_per_day"],
                         days_per_year=sd["days_per_year"],
@@ -280,13 +303,16 @@ with st.sidebar:
         from heatscout.report.stream_import import generate_template
 
         st.download_button(
-            "CSV Template", data=generate_template(),
-            file_name="heatscout_template.csv", mime="text/csv",
+            "CSV Template",
+            data=generate_template(),
+            file_name="heatscout_template.csv",
+            mime="text/csv",
             use_container_width=True,
         )
     with col_imp:
         uploaded_streams = st.file_uploader(
-            "Upload CSV/Excel", type=["csv", "xlsx", "xls"],
+            "Upload CSV/Excel",
+            type=["csv", "xlsx", "xls"],
             help="Upload a CSV or Excel file with stream data",
             label_visibility="collapsed",
         )
@@ -301,8 +327,10 @@ with st.sidebar:
                 st_type = StreamType.HOT_WASTE if "hot" in st_type_str else StreamType.COLD_DEMAND
                 restored.append(
                     ThermalStream(
-                        name=sd["name"], fluid_type=sd["fluid_type"],
-                        T_in=sd["T_in"], T_out=sd["T_out"],
+                        name=sd["name"],
+                        fluid_type=sd["fluid_type"],
+                        T_in=sd["T_in"],
+                        T_out=sd["T_out"],
                         mass_flow=sd["mass_flow"],
                         hours_per_day=sd["hours_per_day"],
                         days_per_year=sd["days_per_year"],
@@ -316,7 +344,9 @@ with st.sidebar:
             st.error(f"Import error: {e}")
 
     st.divider()
-    st.caption("HeatScout v1.0  \nOpen source \u00b7 [GitHub](https://github.com/cesabici-bit/heatscout)")
+    st.caption(
+        "HeatScout v1.0  \nOpen source \u00b7 [GitHub](https://github.com/cesabici-bit/heatscout)"
+    )
 
 # ── Hero section ─────────────────────────────────────────────────────────────
 
@@ -366,10 +396,7 @@ st.markdown(section_header("\U0001f4ca", "Thermal Streams"), unsafe_allow_html=T
 col_info, col_add, col_rem = st.columns([4, 1, 1])
 with col_info:
     n = st.session_state.n_streams
-    st.markdown(
-        f"**{n}** stream(s) configured"
-        f"{'  — max 10' if n < 10 else '  — limit reached'}"
-    )
+    st.markdown(f"**{n}** stream(s) configured{'  — max 10' if n < 10 else '  — limit reached'}")
 with col_add:
     st.button("+ Add", on_click=add_stream, use_container_width=True, disabled=(n >= 10))
 with col_rem:
@@ -383,55 +410,84 @@ for i in range(st.session_state.n_streams):
     if loaded and i < len(loaded["streams"]):
         ex = loaded["streams"][i]
 
-    type_indicator = "\U0001f534" if (ex is None or ex.stream_type == StreamType.HOT_WASTE) else "\U0001f535"
+    type_indicator = (
+        "\U0001f534" if (ex is None or ex.stream_type == StreamType.HOT_WASTE) else "\U0001f535"
+    )
     label = f"{type_indicator} Stream {i + 1}" + (f" \u2014 {ex.name}" if ex else "")
 
     with st.expander(label, expanded=(i == 0)):
         col1, col2, col3 = st.columns(3)
         with col1:
             name = st.text_input(
-                "Name", value=ex.name if ex else f"Stream {i + 1}", key=f"name_{i}",
+                "Name",
+                value=ex.name if ex else f"Stream {i + 1}",
+                key=f"name_{i}",
             )
             default_fluid_idx = (
                 FLUID_IDS.index(ex.fluid_type) if ex and ex.fluid_type in FLUID_IDS else 0
             )
             fluid_idx = st.selectbox(
-                "Fluid", range(len(FLUID_IDS)),
+                "Fluid",
+                range(len(FLUID_IDS)),
                 format_func=lambda x: FLUID_NAMES[x],
-                index=default_fluid_idx, key=f"fluid_{i}",
+                index=default_fluid_idx,
+                key=f"fluid_{i}",
             )
             default_type_idx = 0 if (ex is None or ex.stream_type == StreamType.HOT_WASTE) else 1
             stream_type = st.selectbox(
                 "Type",
                 [StreamType.HOT_WASTE, StreamType.COLD_DEMAND],
                 format_func=lambda x: (
-                    "\U0001f534 Waste heat" if x == StreamType.HOT_WASTE else "\U0001f535 Heat demand"
+                    "\U0001f534 Waste heat"
+                    if x == StreamType.HOT_WASTE
+                    else "\U0001f535 Heat demand"
                 ),
-                index=default_type_idx, key=f"type_{i}",
+                index=default_type_idx,
+                key=f"type_{i}",
                 help="HOT_WASTE: heat to recover (T_in > T_out). "
                 "COLD_DEMAND: process needing heat (T_in < T_out).",
             )
         with col2:
             T_in = st.number_input(
-                "Inlet T (\u00b0C)", value=ex.T_in if ex else 200.0,
-                min_value=-200.0, max_value=1500.0, step=10.0, key=f"Tin_{i}",
+                "Inlet T (\u00b0C)",
+                value=ex.T_in if ex else 200.0,
+                min_value=-200.0,
+                max_value=1500.0,
+                step=10.0,
+                key=f"Tin_{i}",
             )
             T_out = st.number_input(
-                "Outlet T (\u00b0C)", value=ex.T_out if ex else 80.0,
-                min_value=-200.0, max_value=1500.0, step=10.0, key=f"Tout_{i}",
+                "Outlet T (\u00b0C)",
+                value=ex.T_out if ex else 80.0,
+                min_value=-200.0,
+                max_value=1500.0,
+                step=10.0,
+                key=f"Tout_{i}",
             )
         with col3:
             mass_flow = st.number_input(
-                "Flow rate (kg/s)", value=ex.mass_flow if ex else 1.0,
-                min_value=0.01, max_value=1000.0, step=0.1, key=f"mflow_{i}",
+                "Flow rate (kg/s)",
+                value=ex.mass_flow if ex else 1.0,
+                min_value=0.01,
+                max_value=1000.0,
+                step=0.1,
+                key=f"mflow_{i}",
             )
             hours = st.number_input(
-                "Hours/day", value=ex.hours_per_day if ex else 16.0,
-                min_value=0.5, max_value=24.0, step=0.5, key=f"hours_{i}",
+                "Hours/day",
+                value=ex.hours_per_day if ex else 16.0,
+                min_value=0.5,
+                max_value=24.0,
+                step=0.5,
+                key=f"hours_{i}",
             )
             days = st.number_input(
-                "Days/year", value=ex.days_per_year if ex else 250.0,
-                min_value=1.0, max_value=366.0, step=1.0, key=f"days_{i}",
+                "Days/year",
+                value=ex.days_per_year if ex else 250.0,
+                min_value=1.0,
+                max_value=366.0,
+                step=1.0,
+                key=f"days_{i}",
             )
 
         streams_input.append(
@@ -467,9 +523,7 @@ if st.button("Run Analysis", type="primary", use_container_width=True):
                 or "coolprop" in error_msg.lower()
                 or "property" in error_msg.lower()
             ):
-                errors.append(
-                    f"Stream {i + 1} ({data['name']}): Fluid property error: {error_msg}"
-                )
+                errors.append(f"Stream {i + 1} ({data['name']}): Fluid property error: {error_msg}")
             else:
                 errors.append(f"Stream {i + 1} ({data['name']}): {error_msg}")
 
@@ -747,24 +801,28 @@ if st.button("Run Analysis", type="primary", use_container_width=True):
                     with gc1:
                         st.plotly_chart(
                             payback_comparison_chart(all_econ_results),
-                            use_container_width=True, theme=None,
+                            use_container_width=True,
+                            theme=None,
                         )
                     with gc2:
                         st.plotly_chart(
                             npv_comparison_chart(all_econ_results),
-                            use_container_width=True, theme=None,
+                            use_container_width=True,
+                            theme=None,
                         )
 
                     gc3, gc4 = st.columns(2)
                     with gc3:
                         st.plotly_chart(
                             capex_comparison_chart(all_econ_results),
-                            use_container_width=True, theme=None,
+                            use_container_width=True,
+                            theme=None,
                         )
                     with gc4:
                         st.plotly_chart(
                             do_nothing_comparison(all_econ_results),
-                            use_container_width=True, theme=None,
+                            use_container_width=True,
+                            theme=None,
                         )
 
                     st.markdown("#### Cumulative Cashflow \u2014 Best Project")
@@ -830,7 +888,9 @@ if st.button("Run Analysis", type="primary", use_container_width=True):
                             inc_rows.append(row)
 
                         st.dataframe(
-                            pd.DataFrame(inc_rows), use_container_width=True, hide_index=True,
+                            pd.DataFrame(inc_rows),
+                            use_container_width=True,
+                            hide_index=True,
                         )
 
                         if capex_inc_enabled and tee_enabled:
@@ -875,9 +935,7 @@ if st.button("Run Analysis", type="primary", use_container_width=True):
                                 ),
                             )
                             total_npv_inc = sum(
-                                s.npv_con_tee
-                                for s in all_summaries
-                                if s.npv_con_tee is not None
+                                s.npv_con_tee for s in all_summaries if s.npv_con_tee is not None
                             )
                             best_pb = best_s.payback_con_tee
                             inc_label = "TEE"
@@ -912,9 +970,12 @@ if st.button("Run Analysis", type="primary", use_container_width=True):
                     from heatscout.core.sensitivity import energy_price_sensitivity
 
                     sens_points = energy_price_sensitivity(
-                        best, base_price=energy_price,
-                        n_points=15, range_pct=50.0,
-                        discount_rate=discount_rate, years=horizon_years,
+                        best,
+                        base_price=energy_price,
+                        n_points=15,
+                        range_pct=50.0,
+                        discount_rate=discount_rate,
+                        years=horizon_years,
                     )
                     prices = [p.param_value for p in sens_points]
                     paybacks = [
@@ -927,21 +988,25 @@ if st.button("Run Analysis", type="primary", use_container_width=True):
                         fig_pb = go.Figure()
                         fig_pb.add_trace(
                             go.Scatter(
-                                x=prices, y=paybacks,
+                                x=prices,
+                                y=paybacks,
                                 mode="lines+markers",
                                 line=dict(color="#00D4AA", width=2),
                                 marker=dict(size=6),
                             )
                         )
                         fig_pb.add_vline(
-                            x=energy_price, line_dash="dash",
-                            line_color="#8b949e", annotation_text="current",
+                            x=energy_price,
+                            line_dash="dash",
+                            line_color="#8b949e",
+                            annotation_text="current",
                         )
                         fig_pb.update_layout(
                             title="Payback vs Energy Price",
                             xaxis_title="Energy price (\u20ac/kWh)",
                             yaxis_title="Payback (years)",
-                            height=350, **PLOTLY_DARK_LAYOUT,
+                            height=350,
+                            **PLOTLY_DARK_LAYOUT,
                         )
                         st.plotly_chart(fig_pb, use_container_width=True, theme=None)
 
@@ -949,7 +1014,8 @@ if st.button("Run Analysis", type="primary", use_container_width=True):
                         fig_npv = go.Figure()
                         fig_npv.add_trace(
                             go.Scatter(
-                                x=prices, y=npvs,
+                                x=prices,
+                                y=npvs,
                                 mode="lines+markers",
                                 line=dict(color="#58a6ff", width=2),
                                 marker=dict(size=6),
@@ -958,15 +1024,18 @@ if st.button("Run Analysis", type="primary", use_container_width=True):
                             )
                         )
                         fig_npv.add_vline(
-                            x=energy_price, line_dash="dash",
-                            line_color="#8b949e", annotation_text="current",
+                            x=energy_price,
+                            line_dash="dash",
+                            line_color="#8b949e",
+                            annotation_text="current",
                         )
                         fig_npv.add_hline(y=0, line_dash="dot", line_color="#f85149")
                         fig_npv.update_layout(
                             title="NPV vs Energy Price",
                             xaxis_title="Energy price (\u20ac/kWh)",
                             yaxis_title=f"NPV {horizon_years}yr (\u20ac)",
-                            height=350, **PLOTLY_DARK_LAYOUT,
+                            height=350,
+                            **PLOTLY_DARK_LAYOUT,
                         )
                         st.plotly_chart(fig_npv, use_container_width=True, theme=None)
 
@@ -978,13 +1047,17 @@ if st.button("Run Analysis", type="primary", use_container_width=True):
                     # ── TORNADO CHART ─────────────────────────────────
                     st.divider()
                     st.markdown("#### Tornado Chart \u2014 NPV Sensitivity (\u00b120%)")
-                    st.caption("One-at-a-time: each parameter varied \u00b120% while others held constant.")
+                    st.caption(
+                        "One-at-a-time: each parameter varied \u00b120% while others held constant."
+                    )
 
                     from heatscout.core.sensitivity import tornado_analysis
 
                     tornado_bars = tornado_analysis(
-                        best, base_price=energy_price,
-                        variation_pct=20.0, discount_rate=discount_rate,
+                        best,
+                        base_price=energy_price,
+                        variation_pct=20.0,
+                        discount_rate=discount_rate,
                         years=horizon_years,
                     )
 
@@ -996,7 +1069,8 @@ if st.button("Run Analysis", type="primary", use_container_width=True):
                         go.Bar(
                             y=param_names,
                             x=[b.npv_low - base_npv for b in tornado_bars],
-                            orientation="h", name="\u221220%",
+                            orientation="h",
+                            name="\u221220%",
                             marker_color="#f85149",
                             customdata=[b.npv_low for b in tornado_bars],
                             hovertemplate="%{y}: NPV = \u20ac %{customdata:,.0f}<extra>\u221220%</extra>",
@@ -1006,7 +1080,8 @@ if st.button("Run Analysis", type="primary", use_container_width=True):
                         go.Bar(
                             y=param_names,
                             x=[b.npv_high - base_npv for b in tornado_bars],
-                            orientation="h", name="+20%",
+                            orientation="h",
+                            name="+20%",
                             marker_color="#3fb950",
                             customdata=[b.npv_high for b in tornado_bars],
                             hovertemplate="%{y}: NPV = \u20ac %{customdata:,.0f}<extra>+20%</extra>",
@@ -1121,13 +1196,15 @@ doesn't require external utilities.
                     with st.expander("Problem Table details", expanded=False):
                         interval_data = []
                         for iv in pinch_result.intervals:
-                            interval_data.append({
-                                "T upper (°C)": f"{iv.T_upper:.1f}",
-                                "T lower (°C)": f"{iv.T_lower:.1f}",
-                                "Hot CP (kW/K)": f"{iv.hot_CP_total:.2f}",
-                                "Cold CP (kW/K)": f"{iv.cold_CP_total:.2f}",
-                                "ΔH (kW)": f"{iv.delta_H:.1f}",
-                            })
+                            interval_data.append(
+                                {
+                                    "T upper (°C)": f"{iv.T_upper:.1f}",
+                                    "T lower (°C)": f"{iv.T_lower:.1f}",
+                                    "Hot CP (kW/K)": f"{iv.hot_CP_total:.2f}",
+                                    "Cold CP (kW/K)": f"{iv.cold_CP_total:.2f}",
+                                    "ΔH (kW)": f"{iv.delta_H:.1f}",
+                                }
+                            )
                         st.dataframe(
                             pd.DataFrame(interval_data),
                             use_container_width=True,
@@ -1156,8 +1233,10 @@ doesn't require external utilities.
                         try:
                             fig_sankey_pdf = create_sankey(hb, factory_name)
                             pdf_bytes = generate_report(
-                                summary, all_econ_results,
-                                fig_sankey_pdf, energy_price=energy_price,
+                                summary,
+                                all_econ_results,
+                                fig_sankey_pdf,
+                                energy_price=energy_price,
                             )
                             st.download_button(
                                 label="Download PDF Report",
@@ -1177,7 +1256,8 @@ doesn't require external utilities.
                             from heatscout.report.excel_export import export_to_excel
 
                             xlsx_bytes = export_to_excel(
-                                summary, all_econ_results,
+                                summary,
+                                all_econ_results,
                                 incentive_summaries=all_summaries if has_incentives else None,
                                 energy_price=energy_price,
                             )
@@ -1197,17 +1277,20 @@ doesn't require external utilities.
                         if has_incentives:
                             inc_params = {
                                 "capex_reduction_pct": capex_riduzione_pct
-                                if capex_inc_enabled else 0,
-                                "capex_incentive_name": capex_inc_nome
-                                if capex_inc_enabled else "",
+                                if capex_inc_enabled
+                                else 0,
+                                "capex_incentive_name": capex_inc_nome if capex_inc_enabled else "",
                                 "tee_enabled": tee_enabled,
                             }
                             if tee_enabled:
                                 inc_params["tee_price"] = tee_prezzo
                                 inc_params["tee_eta_ref"] = tee_eta_rif
                         json_str = save_analysis(
-                            factory_name, T_ambient, energy_price,
-                            streams_input, inc_params,
+                            factory_name,
+                            T_ambient,
+                            energy_price,
+                            streams_input,
+                            inc_params,
                             discount_rate=discount_rate,
                             horizon_years=horizon_years,
                             opex_multiplier=opex_multiplier,
@@ -1304,7 +1387,9 @@ if st.session_state.get("analysis_complete"):
         section_header("Waste Heat by Temperature Class", "thermometer-half")
         class_data = _summary.get("by_temperature_class", {})
         tcols = st.columns(3)
-        for i, (cls_key, cls_label) in enumerate([("alta", "High >250°C"), ("media", "Medium 80-250°C"), ("bassa", "Low <80°C")]):
+        for i, (cls_key, cls_label) in enumerate(
+            [("alta", "High >250°C"), ("media", "Medium 80-250°C"), ("bassa", "Low <80°C")]
+        ):
             with tcols[i]:
                 cls = class_data.get(cls_key, {})
                 temp_card(
@@ -1318,16 +1403,18 @@ if st.session_state.get("analysis_complete"):
         with st.expander("Stream Details", expanded=False):
             rows = []
             for r in _summary.get("stream_results", []):
-                rows.append({
-                    "Stream": r["name"],
-                    "Type": r["stream_type"],
-                    "T_in (°C)": r["T_in"],
-                    "T_out (°C)": r["T_out"],
-                    "Q (kW)": r["Q_kW"],
-                    "E (MWh/yr)": r["E_MWh_anno"],
-                    "Exergy (kW)": r["Ex_kW"],
-                    "T Class": T_CLASS_MAP.get(r["T_class"], r["T_class"]),
-                })
+                rows.append(
+                    {
+                        "Stream": r["name"],
+                        "Type": r["stream_type"],
+                        "T_in (°C)": r["T_in"],
+                        "T_out (°C)": r["T_out"],
+                        "Q (kW)": r["Q_kW"],
+                        "E (MWh/yr)": r["E_MWh_anno"],
+                        "Exergy (kW)": r["Ex_kW"],
+                        "T Class": T_CLASS_MAP.get(r["T_class"], r["T_class"]),
+                    }
+                )
             if rows:
                 st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
@@ -1339,14 +1426,16 @@ if st.session_state.get("analysis_complete"):
                 st.markdown(f"##### {stream_name}")
                 tech_rows = []
                 for rec, econ in rec_list:
-                    tech_rows.append({
-                        "Technology": rec.technology.name,
-                        "Q Recovered (kW)": f"{rec.Q_recovered_kW:.0f}",
-                        "Efficiency": f"{rec.efficiency:.0%}",
-                        "CAPEX (€)": f"{econ.capex_EUR:,.0f}",
-                        "Payback (yr)": f"{econ.payback_years:.1f}",
-                        "NPV (€)": f"{econ.npv_EUR:,.0f}",
-                    })
+                    tech_rows.append(
+                        {
+                            "Technology": rec.technology.name,
+                            "Q Recovered (kW)": f"{rec.Q_recovered_kW:.0f}",
+                            "Efficiency": f"{rec.efficiency:.0%}",
+                            "CAPEX (€)": f"{econ.capex_EUR:,.0f}",
+                            "Payback (yr)": f"{econ.payback_years:.1f}",
+                            "NPV (€)": f"{econ.npv_EUR:,.0f}",
+                        }
+                    )
                 st.dataframe(pd.DataFrame(tech_rows), use_container_width=True, hide_index=True)
         else:
             st.info("No technologies found for the given streams.")
@@ -1362,23 +1451,36 @@ if st.session_state.get("analysis_complete"):
                 npv_comparison_chart,
                 payback_comparison_chart,
             )
+
             chart_col1, chart_col2 = st.columns(2)
             with chart_col1:
-                st.plotly_chart(capex_comparison_chart(_all_econ), use_container_width=True, theme=None)
+                st.plotly_chart(
+                    capex_comparison_chart(_all_econ), use_container_width=True, theme=None
+                )
             with chart_col2:
-                st.plotly_chart(payback_comparison_chart(_all_econ), use_container_width=True, theme=None)
+                st.plotly_chart(
+                    payback_comparison_chart(_all_econ), use_container_width=True, theme=None
+                )
 
             chart_col3, chart_col4 = st.columns(2)
             with chart_col3:
-                st.plotly_chart(npv_comparison_chart(_all_econ), use_container_width=True, theme=None)
+                st.plotly_chart(
+                    npv_comparison_chart(_all_econ), use_container_width=True, theme=None
+                )
             with chart_col4:
-                st.plotly_chart(do_nothing_comparison(_all_econ), use_container_width=True, theme=None)
+                st.plotly_chart(
+                    do_nothing_comparison(_all_econ), use_container_width=True, theme=None
+                )
 
             if len(_all_econ) > 0:
                 st.markdown("#### Cumulative Cash Flow")
                 for econ in _all_econ:
-                    with st.expander(f"{econ.tech_recommendation.stream_name} — {econ.tech_recommendation.technology.name}"):
-                        st.plotly_chart(cumulative_cashflow_chart(econ), use_container_width=True, theme=None)
+                    with st.expander(
+                        f"{econ.tech_recommendation.stream_name} — {econ.tech_recommendation.technology.name}"
+                    ):
+                        st.plotly_chart(
+                            cumulative_cashflow_chart(econ), use_container_width=True, theme=None
+                        )
         else:
             st.info("No economic results available.")
 
@@ -1468,13 +1570,15 @@ doesn't require external utilities.
             with st.expander("Problem Table details", expanded=False):
                 interval_data = []
                 for iv in pinch_result.intervals:
-                    interval_data.append({
-                        "T upper (°C)": f"{iv.T_upper:.1f}",
-                        "T lower (°C)": f"{iv.T_lower:.1f}",
-                        "Hot CP (kW/K)": f"{iv.hot_CP_total:.2f}",
-                        "Cold CP (kW/K)": f"{iv.cold_CP_total:.2f}",
-                        "ΔH (kW)": f"{iv.delta_H:.1f}",
-                    })
+                    interval_data.append(
+                        {
+                            "T upper (°C)": f"{iv.T_upper:.1f}",
+                            "T lower (°C)": f"{iv.T_lower:.1f}",
+                            "Hot CP (kW/K)": f"{iv.hot_CP_total:.2f}",
+                            "Cold CP (kW/K)": f"{iv.cold_CP_total:.2f}",
+                            "ΔH (kW)": f"{iv.delta_H:.1f}",
+                        }
+                    )
                 st.dataframe(
                     pd.DataFrame(interval_data),
                     use_container_width=True,
@@ -1503,8 +1607,10 @@ doesn't require external utilities.
                 try:
                     fig_sankey_pdf = create_sankey(_hb, _factory_name)
                     pdf_bytes = generate_report(
-                        _summary, _all_econ,
-                        fig_sankey_pdf, energy_price=_energy_price,
+                        _summary,
+                        _all_econ,
+                        fig_sankey_pdf,
+                        energy_price=_energy_price,
                     )
                     st.download_button(
                         label="Download PDF Report",
@@ -1521,7 +1627,8 @@ doesn't require external utilities.
                     from heatscout.report.excel_export import export_to_excel
 
                     xlsx_bytes = export_to_excel(
-                        _summary, _all_econ,
+                        _summary,
+                        _all_econ,
                         incentive_summaries=_all_summaries if _has_incentives else None,
                         energy_price=_energy_price,
                     )
@@ -1538,8 +1645,11 @@ doesn't require external utilities.
                 from heatscout.report.persistence import save_analysis
 
                 json_str = save_analysis(
-                    _factory_name, _hb.T_ambient, _energy_price,
-                    streams_input, None,
+                    _factory_name,
+                    _hb.T_ambient,
+                    _energy_price,
+                    streams_input,
+                    None,
                 )
                 st.download_button(
                     label="Save Analysis (JSON)",
@@ -1595,7 +1705,15 @@ with st.expander("CAPEX Correlations"):
     capex_data = [
         ["Gas-gas HX", "800", "0.80", "500\u20131,200", "3%", "1.5", "Thekdi & Belt, ACEEE (2011)"],
         ["Economizer", "600", "0.78", "400\u2013900", "3%", "1.5", "Cleaver-Brooks + literature"],
-        ["Liquid-liquid HX", "400", "0.75", "250\u2013600", "2%", "1.3", "Alfa Laval + Perry\u2019s Handbook"],
+        [
+            "Liquid-liquid HX",
+            "400",
+            "0.75",
+            "250\u2013600",
+            "2%",
+            "1.3",
+            "Alfa Laval + Perry\u2019s Handbook",
+        ],
         ["HRSG", "1,500", "0.80", "1,000\u20132,000", "4%", "1.8", "Ganapathy (2003)"],
         ["Heat pump (air)", "600", "0.85", "450\u2013800", "3%", "1.4", "IEA HPT Annex 48"],
         ["Heat pump (water)", "550", "0.85", "400\u2013750", "3%", "1.4", "IEA HPT Annex 48"],

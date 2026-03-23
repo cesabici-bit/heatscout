@@ -137,15 +137,11 @@ def pinch_analysis(
     pinch_T_cold = pinch_T_shifted - half_dt
 
     # Max recovery (computed from interval data for consistency)
-    total_hot_interval = sum(
-        iv.hot_CP_total * (iv.T_upper - iv.T_lower) for iv in intervals
-    )
+    total_hot_interval = sum(iv.hot_CP_total * (iv.T_upper - iv.T_lower) for iv in intervals)
     max_recovery = total_hot_interval - QC_min
 
     # Step 5: Composite curves
-    hot_T, hot_H, cold_T, cold_H = _build_composite_curves(
-        pinch_streams, half_dt, QH_min
-    )
+    hot_T, hot_H, cold_T, cold_H = _build_composite_curves(pinch_streams, half_dt, QH_min)
 
     # Step 6: Grand Composite Curve
     gcc_T = list(shifted_temps)
@@ -177,9 +173,7 @@ def pinch_analysis(
 # ── Internal Functions ───────────────────────────────────────────────────
 
 
-def _prepare_streams(
-    streams: list[ThermalStream], half_dt: float
-) -> list[PinchStream]:
+def _prepare_streams(streams: list[ThermalStream], half_dt: float) -> list[PinchStream]:
     """Convert ThermalStreams to PinchStreams with shifted temperatures."""
     result = []
     for s in streams:
@@ -229,9 +223,7 @@ def _avg_cp(fluid_type: str, T1: float, T2: float, pressure: float) -> float:
     return (cp1 + cp2) / 2.0
 
 
-def _stream_active_in_interval(
-    s: PinchStream, T_upper: float, T_lower: float
-) -> bool:
+def _stream_active_in_interval(s: PinchStream, T_upper: float, T_lower: float) -> bool:
     """Check if a stream spans the given shifted temperature interval."""
     return s.T_shifted_max >= T_upper and s.T_shifted_min <= T_lower
 
@@ -395,8 +387,7 @@ def _validate_results(
     assert QC_min >= -TOL, f"QC_min={QC_min:.2f} kW is negative"
 
     assert cascade[pinch_idx] < TOL, (
-        f"Cascade at pinch index {pinch_idx} = {cascade[pinch_idx]:.2f} kW, "
-        f"expected ≈ 0"
+        f"Cascade at pinch index {pinch_idx} = {cascade[pinch_idx]:.2f} kW, expected ≈ 0"
     )
 
     # Energy balance from interval data (consistent with PTA computation):

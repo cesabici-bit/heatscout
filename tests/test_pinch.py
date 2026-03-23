@@ -344,9 +344,7 @@ class TestL3PropertyBased:
         """pinch_T_hot - pinch_T_cold == dT_min always."""
         streams, dT_min = data
         result = pinch_analysis(streams, dT_min)
-        assert result.pinch_T_hot - result.pinch_T_cold == pytest.approx(
-            dT_min, abs=0.01
-        )
+        assert result.pinch_T_hot - result.pinch_T_cold == pytest.approx(dT_min, abs=0.01)
 
     @given(data=pinch_stream_pair())
     @settings(max_examples=100, deadline=5000)
@@ -382,8 +380,8 @@ class TestL3Monotonicity:
         QH_values = [r.QH_min for r in results]
         for i in range(1, len(QH_values)):
             assert QH_values[i] >= QH_values[i - 1] - 0.5, (
-                f"QH_min not monotonic: dT={5*(i)}→{QH_values[i-1]:.1f}, "
-                f"dT={5*(i+1)}→{QH_values[i]:.1f}"
+                f"QH_min not monotonic: dT={5 * (i)}→{QH_values[i - 1]:.1f}, "
+                f"dT={5 * (i + 1)}→{QH_values[i]:.1f}"
             )
 
     def test_total_utility_increases_with_dT_min(self):
@@ -397,6 +395,6 @@ class TestL3Monotonicity:
         totals = [r.QH_min + r.QC_min for r in results]
         for i in range(1, len(totals)):
             assert totals[i] >= totals[i - 1] - 2.0, (
-                f"Total utility not monotonic: dT={5*(i)}→{totals[i-1]:.1f}, "
-                f"dT={5*(i+1)}→{totals[i]:.1f}"
+                f"Total utility not monotonic: dT={5 * (i)}→{totals[i - 1]:.1f}, "
+                f"dT={5 * (i + 1)}→{totals[i]:.1f}"
             )

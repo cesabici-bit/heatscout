@@ -197,10 +197,7 @@ def _annotate_pinch(fig: go.Figure, result: PinchResult) -> None:
         fig.add_annotation(
             x=pinch_H,
             y=pinch_T_mid,
-            text=(
-                f"Pinch: {result.pinch_T_hot:.0f}°C / "
-                f"{result.pinch_T_cold:.0f}°C"
-            ),
+            text=(f"Pinch: {result.pinch_T_hot:.0f}°C / {result.pinch_T_cold:.0f}°C"),
             showarrow=True,
             arrowhead=2,
             arrowcolor=_PINCH_COLOR,
@@ -243,9 +240,7 @@ def _annotate_utilities(fig: go.Figure, result: PinchResult) -> None:
         )
 
 
-def _interpolate_H_at_T(
-    T_list: list[float], H_list: list[float], T_target: float
-) -> float | None:
+def _interpolate_H_at_T(T_list: list[float], H_list: list[float], T_target: float) -> float | None:
     """Linear interpolation of H at a given T on a composite curve."""
     if not T_list or not H_list:
         return None
