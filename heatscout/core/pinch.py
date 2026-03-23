@@ -21,7 +21,6 @@ from dataclasses import dataclass, field
 from heatscout.core.fluid_properties import get_cp
 from heatscout.core.stream import StreamType, ThermalStream
 
-
 # ── Data Models ──────────────────────────────────────────────────────────
 
 
