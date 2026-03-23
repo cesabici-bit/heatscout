@@ -368,7 +368,7 @@ with col_info:
     n = st.session_state.n_streams
     st.markdown(
         f"**{n}** stream(s) configured"
-        f"{'  \u2014 max 10' if n < 10 else '  \u2014 limit reached'}"
+        f"{'  — max 10' if n < 10 else '  — limit reached'}"
     )
 with col_add:
     st.button("+ Add", on_click=add_stream, use_container_width=True, disabled=(n >= 10))
@@ -1033,7 +1033,6 @@ if st.button("Run Analysis", type="primary", use_container_width=True):
 
             # ── TAB: PINCH ANALYSIS ──────────────────────────────────
             elif selected_tab == "Pinch Analysis" and pinch_available:
-                from heatscout.core.pinch import pinch_analysis as run_pinch
                 from heatscout.plotting.pinch_curves import (
                     create_composite_curves,
                     create_grand_composite,
@@ -1385,7 +1384,6 @@ if st.session_state.get("analysis_complete"):
 
     # ── TAB: PINCH ANALYSIS ──────────────────────────────────
     elif _selected_tab == "Pinch Analysis" and _pinch_available:
-        from heatscout.core.pinch import pinch_analysis as run_pinch
         from heatscout.plotting.pinch_curves import (
             create_composite_curves,
             create_grand_composite,
