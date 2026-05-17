@@ -27,9 +27,10 @@ def calc_thermal_power(stream: ThermalStream, detailed: bool = False) -> float |
     Q = stream.mass_flow * cp_mean * stream.delta_T  # kW
 
     assert Q >= 0, (
-        f"Q={Q:.1f} kW negativo per {stream.name}: "
-        f"m_dot={stream.mass_flow}, cp_mean={cp_mean:.3f}, dT={stream.delta_T}"
-    )
+    f"Heat duty (Q) = {Q:.1f} kW is negative for stream '{stream.name}': "
+    f"mass flow rate = {stream.mass_flow}, average specific heat capacity = {cp_mean:.3f}, "
+    f"temperature change (ΔT) = {stream.delta_T}."
+)
 
     if detailed:
         return {
@@ -102,10 +103,11 @@ def calc_exergy(stream: ThermalStream, T_ambient: float = 25.0) -> float:
     Ex = Q_kW * carnot_factor
 
     assert Ex <= Q_kW + 1e-6, (
-        f"Exergia ({Ex:.1f} kW) > Potenza ({Q_kW:.1f} kW): "
-        f"viola 2o principio. carnot_factor={carnot_factor:.3f}, "
-        f"T_mean={stream.T_mean}°C, T_amb={T_ambient}°C"
-    )
+    f"Exergy ({Ex:.1f} kW) is greater than thermal power ({Q_kW:.1f} kW), "
+    f"which violates the second law of thermodynamics. "
+    f"Carnot efficiency factor = {carnot_factor:.3f}, "
+    f"mean temperature = {stream.T_mean}°C, ambient temperature = {T_ambient}°C."
+)
     return Ex
 
 

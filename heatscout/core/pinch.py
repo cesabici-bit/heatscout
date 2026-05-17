@@ -108,7 +108,7 @@ def pinch_analysis(
         ValueError: If streams are missing hot or cold, or dT_min <= 0.
     """
     if dT_min <= 0:
-        raise ValueError(f"dT_min must be > 0, got {dT_min}")
+        raise ValueError(f"dT_min must be greater than 0; received {dT_min}")
 
     hot_streams = [s for s in streams if s.stream_type == StreamType.HOT_WASTE]
     cold_streams = [s for s in streams if s.stream_type == StreamType.COLD_DEMAND]

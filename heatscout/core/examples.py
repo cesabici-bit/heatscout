@@ -39,7 +39,7 @@ def load_example(name: str) -> tuple[list[ThermalStream], dict]:
     path = EXAMPLES_DIR / f"{name}.json"
     if not path.exists():
         available = [p.stem for p in EXAMPLES_DIR.glob("*.json")]
-        raise FileNotFoundError(f"Esempio '{name}' non trovato. Disponibili: {available}")
+        raise FileNotFoundError(f"Example '{name}' was not found. Available examples are: {available}")
 
     with open(path, encoding="utf-8") as f:
         data = json.load(f)

@@ -123,7 +123,7 @@ def import_streams(file_bytes: bytes, filename: str) -> list[dict]:
     }
     missing = required - set(df.columns)
     if missing:
-        raise ValueError(f"Missing required columns: {missing}. Available: {list(df.columns)}")
+        raise ValueError(f"Missing required columns: {missing}. Available options: {list(df.columns)}")
 
     # Convert to list of dicts
     streams = []
