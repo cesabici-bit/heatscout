@@ -85,7 +85,7 @@ def calc_tee(
     """
     assert E_recovered_MWh_anno >= 0, f"Negative recovered energy: {E_recovered_MWh_anno}"
     assert 0.5 <= eta_riferimento <= 1.0, f"Reference efficiency out of range: {eta_riferimento}"
-    assert prezzo_tee > 0, f"Invalid TEE price: {prezzo_tee}"
+    assert prezzo_tee > 0, f"Invalid Energy Efficiency Certificate (TEE) price: {prezzo_tee}"
 
     # Conversion: thermal energy → saved primary energy → TEP
     # TEP = (MWh_th / eta_boiler) × 0.086
@@ -160,8 +160,8 @@ def calc_capex_incentive(
     Returns:
         CapexIncentiveResult with net CAPEX.
     """
-    assert capex >= 0, f"Negative CAPEX: {capex}"
-    assert 0 <= riduzione_pct <= 100, f"Reduction % out of range [0-100]: {riduzione_pct}"
+    assert capex >= 0, f"Negative capital expenditure (CAPEX): {capex}"
+    assert 0 <= riduzione_pct <= 100, f"Reduction percentage is out of the valid range [0–100]: {riduzione_pct}"
 
     riduzione = capex * riduzione_pct / 100
     netto = capex - riduzione

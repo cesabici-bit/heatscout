@@ -57,9 +57,9 @@ def calc_payback(capex: float, annual_savings: float, opex: float) -> float:
     payback = CAPEX / (savings - OPEX)
     Returns inf if net benefit <= 0.
     """
-    assert capex >= 0, f"CAPEX negativo: {capex}"
-    assert annual_savings >= 0, f"Savings negativo: {annual_savings}"
-    assert opex >= 0, f"OPEX negativo: {opex}"
+    assert capex >= 0, f"Capital expenditure (CAPEX) is negative: {capex}"
+    assert annual_savings >= 0, f"Annual savings are negative: {annual_savings}"
+    assert opex >= 0, f"Operating expenditure (OPEX) is negative: {opex}"
     net = annual_savings - opex
     if net <= 0:
         return float("inf")
@@ -151,11 +151,10 @@ def economic_analysis(
     # (simple payback doesn't discount, NPV does — slight divergence is ok)
     if payback < years * 0.5 and npv < -total_inv * 0.1:
         assert False, (
-            f"Inconsistenza: payback={payback:.1f}yr << horizon/2={years / 2}yr "
-            f"ma NPV={npv:.0f} molto negativo (>{total_inv * 0.1:.0f}). "
-            f"capex={total_inv:.0f}, savings={annual_savings:.0f}, opex={opex:.0f}"
-        )
-
+    f"Inconsistency detected: payback period = {payback:.1f} years is significantly lower than half the analysis horizon ({years / 2:.1f} years), "
+    f"but the Net Present Value (NPV) is strongly negative ({npv:.0f}), which is below the expected threshold (>{total_inv * 0.1:.0f}). "
+    f"Key values: CAPEX = {total_inv:.0f}, annual savings = {annual_savings:.0f}, OPEX = {opex:.0f}."
+)
     return EconomicResult(
         tech_recommendation=rec,
         capex_EUR=capex["medio"],

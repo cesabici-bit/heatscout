@@ -29,7 +29,7 @@ def estimate_capex(tech_id: str, Q_kW: float) -> dict:
     """
     costs = _load_costs()
     if tech_id not in costs:
-        raise ValueError(f"Tecnologia '{tech_id}' non ha correlazione di costo")
+        raise ValueError(f"Technology '{tech_id}' has no cost correlation defined")
 
     c = costs[tech_id]
     capex_mid = c["capex_a"] * Q_kW ** c["capex_b"]
@@ -55,7 +55,7 @@ def estimate_opex(tech_id: str, capex: float) -> float:
     """
     costs = _load_costs()
     if tech_id not in costs:
-        raise ValueError(f"Tecnologia '{tech_id}' non ha correlazione di costo")
+        raise ValueError(f"Technology '{tech_id}' has no cost correlation defined")
 
     return round(capex * costs[tech_id]["opex_pct"], 0)
 
@@ -72,7 +72,7 @@ def estimate_total_investment(tech_id: str, Q_kW: float) -> dict:
     """
     costs = _load_costs()
     if tech_id not in costs:
-        raise ValueError(f"Tecnologia '{tech_id}' non ha correlazione di costo")
+        raise ValueError(f"Technology '{tech_id}' has no cost correlation defined")
 
     capex = estimate_capex(tech_id, Q_kW)
     inst_factor = costs[tech_id]["installation_factor"]

@@ -49,12 +49,12 @@ class FactoryHeatBalance:
         }
 
         if unit not in conversions:
-            raise ValueError(f"Unit '{unit}' not supported. Available: {list(conversions.keys())}")
+            raise ValueError(f"Unit '{unit}' is not supported. Available options: {list(conversions.keys())}")
 
         conv = conversions[unit]
         factor = conv.get(fuel_type, conv.get("_any"))
         if factor is None:
-            raise ValueError(f"Conversion not available for {fuel_type} in {unit}")
+            raise ValueError(f"Conversion is not available for {fuel_type} in {unit}")
 
         energy_kWh_anno = consumption * factor
         self._energy_input_kW = energy_kWh_anno / 8760.0

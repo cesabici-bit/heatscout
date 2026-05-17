@@ -24,7 +24,7 @@ def get_fluid_info(fluid_id: str) -> dict:
     """Return fluid information from the database."""
     db = _load_fluids_db()
     if fluid_id not in db:
-        raise ValueError(f"Fluid '{fluid_id}' not found. Available: {list(db.keys())}")
+        raise ValueError( f"Fluid '{fluid_id}' was not found. Available entries are: {list(db.keys())}")
     return db[fluid_id]
 
 
@@ -110,16 +110,16 @@ def get_cp(fluid_id: str, T_celsius: float, P: float = 101325) -> float:
         info = get_fluid_info(fluid_id)
         coolprop_name = info["coolprop_name"]
         if coolprop_name is None:
-            raise ValueError(f"Fluido '{fluid_id}' non ha nome CoolProp né correlazione custom")
+           raise ValueError(f"Fluid '{fluid_id}' does not have a CoolProp name or a custom correlation defined.")
         T_K = T_celsius + 273.15
         # CoolProp returns in J/kgK, convert to kJ/kgK
         cp = CP.PropsSI("Cpmass", "T", T_K, "P", P, coolprop_name) / 1000.0
 
     assert 0.1 < cp < 15, (
-        f"cp={cp:.3f} kJ/kgK fuori range plausibile "
-        f"per {fluid_id} a {T_celsius}°C. "
-        f"Range atteso: 0.1-15 kJ/kgK (aria~1.0, acqua~4.2, glicole~3.5)"
-    )
+    f"Specific heat capacity (cp) = {cp:.3f} kJ/kg·K is outside the plausible range "
+    f"for {fluid_id} at {T_celsius}°C. "
+    f"Expected range: 0.1–15 kJ/kg·K (air ~1.0, water ~4.2, glycol ~3.5)."
+)
     return cp
 
 
@@ -140,7 +140,7 @@ def get_density(fluid_id: str, T_celsius: float, P: float = 101325) -> float:
     info = get_fluid_info(fluid_id)
     coolprop_name = info["coolprop_name"]
     if coolprop_name is None:
-        raise ValueError(f"Fluido '{fluid_id}' non ha nome CoolProp né correlazione custom")
+        raise ValueError(f"Fluid '{fluid_id}' does not have a CoolProp name or a custom correlation defined")
 
     T_K = T_celsius + 273.15
     return CP.PropsSI("Dmass", "T", T_K, "P", P, coolprop_name)
